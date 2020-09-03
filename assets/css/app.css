@@ -1,6 +1,10 @@
 /* This file is for your main application css. */
-@import "./phoenix.css";
 @import "../node_modules/nprogress/nprogress.css";
+
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+
+@import "tailwindcss/utilities";
 
 /* LiveView specific classes for your customizations */
 .invalid-feedback {
@@ -59,7 +63,6 @@
   text-decoration: none;
   cursor: pointer;
 }
-
 
 /* Alerts and form errors */
 .alert {
