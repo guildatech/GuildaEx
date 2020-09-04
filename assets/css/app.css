@@ -6,6 +6,10 @@
 
 @import "tailwindcss/utilities";
 
+:root {
+  --color-primary: #e9b625;
+}
+
 /* LiveView specific classes for your customizations */
 .invalid-feedback {
   color: #a94442;
