@@ -1,6 +1,8 @@
 defmodule GuildaWeb.Router do
   use GuildaWeb, :router
 
+  import GuildaWeb.UserAuth
+
   @content_security_policy %{
     "default-src" => ~w[
       'self'
@@ -56,6 +58,7 @@ defmodule GuildaWeb.Router do
     plug :fetch_live_flash
     plug :put_root_layout, {GuildaWeb.LayoutView, :root}
     plug :protect_from_forgery
+    plug :fetch_current_user
 
     plug :put_secure_browser_headers, %{
       "content-security-policy" =>
@@ -68,11 +71,13 @@ defmodule GuildaWeb.Router do
   end
 
   scope "/", GuildaWeb do
-    pipe_through :browser
+    pipe_through [:browser]
 
     live "/", PageLive, :index
 
+    ## Authentication routes
     get "/auth/telegram", AuthController, :telegram_callback
+    delete "/users/log_out", UserSessionController, :delete
   end
 
   # Other scopes may use custom stacks.
