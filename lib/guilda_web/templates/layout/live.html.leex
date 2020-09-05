@@ -5,7 +5,7 @@
     <div class="flex justify-between h-16">
       <div class="flex">
         <div class="flex items-center flex-shrink-0">
-          <img class="w-auto h-8" src="<%= Routes.static_path(@socket, "/images/guilda-logo.png") %>" alt="Guilda Tech logo" />
+          <img class="w-auto h-8" src="<%= Routes.static_path(@socket, "/images/guilda-logo.png") %>" alt="GuildaTech logo" />
         </div>
         <div class="hidden space-x-8 sm:-my-px sm:ml-6 sm:flex">
           <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
@@ -52,24 +52,14 @@
 </nav>
 
 <div class="py-10">
-  <header>
-    <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-      <h1 class="text-3xl font-bold leading-tight text-gray-900">
-        Home
-      </h1>
-    </div>
-  </header>
-  <main>
-    <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-      <p class="alert alert-info" role="alert"
-        phx-click="lv:clear-flash"
-        phx-value-key="info"><%= live_flash(@flash, :info) %></p>
+  <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+    <p class="alert alert-info" role="alert"
+      phx-click="lv:clear-flash"
+      phx-value-key="info"><%= live_flash(@flash, :info) %></p>
 
-      <p class="alert alert-danger" role="alert"
-        phx-click="lv:clear-flash"
-        phx-value-key="error"><%= live_flash(@flash, :error) %></p>
+    <p class="alert alert-danger" role="alert"
+      phx-click="lv:clear-flash"
+      phx-value-key="error"><%= live_flash(@flash, :error) %></p>
 
-      <%= @inner_content %>
-    </div>
-  </main>
+  <%= @inner_content %>
 </div>

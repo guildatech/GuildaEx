@@ -1,13 +1,66 @@
 defmodule GuildaWeb.Router do
   use GuildaWeb, :router
 
+  @content_security_policy %{
+    "default-src" => ~w[
+      'self'
+    ],
+    "connect-src" => ~w[
+      ws://localhost:*
+      wss://localhost:*
+      http://localhost:*
+      ws://guildatech.dev:*
+      wss://guildatech.dev:*
+      http://guildatech.dev:*
+      https://guildatech.dev:*
+    ],
+    "img-src" => ~w[
+      'self'
+      data:
+    ],
+    "script-src" => ~w[
+      'self'
+      'unsafe-inline'
+      'unsafe-eval'
+      https://telegram.org
+    ],
+    "style-src" => ~w[
+      'self'
+      'unsafe-inline'
+      https://rsms.me
+    ],
+    "font-src" => ~w[
+      'self'
+      https://rsms.me
+    ],
+    "object-src" => ~w[
+      'none'
+    ],
+    "frame-src" => ~w[
+      'self'
+      https://oauth.telegram.org
+    ],
+    "frame-ancestors" => ~w[
+      'self'
+      https://oauth.telegram.org
+    ],
+    "child-src" => ~w[
+      'self'
+      https://oauth.telegram.org
+    ]
+  }
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_live_flash
     plug :put_root_layout, {GuildaWeb.LayoutView, :root}
     plug :protect_from_forgery
-    plug :put_secure_browser_headers
+
+    plug :put_secure_browser_headers, %{
+      "content-security-policy" =>
+        Enum.map_join(@content_security_policy, " ", fn {k, v} -> "#{k} #{Enum.join(v, " ")};" end)
+    }
   end
 
   pipeline :api do
@@ -18,6 +71,8 @@ defmodule GuildaWeb.Router do
     pipe_through :browser
 
     live "/", PageLive, :index
+
+    get "/auth/telegram", AuthController, :telegram_callback
   end
 
   # Other scopes may use custom stacks.

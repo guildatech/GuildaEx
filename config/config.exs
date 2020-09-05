@@ -18,6 +18,8 @@ config :guilda, GuildaWeb.Endpoint,
   pubsub_server: Guilda.PubSub,
   live_view: [signing_salt: "E3IrZAj7"]
 
+config :guilda, :auth, telegram_bot_username: "guilda_tech_bot"
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

@@ -7,7 +7,8 @@ defmodule GuildaWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_guilda_key",
-    signing_salt: "JIeS5L0B"
+    signing_salt: "JIeS5L0B",
+    same_site: "Strict"
   ]
 
   socket "/socket", GuildaWeb.UserSocket,
