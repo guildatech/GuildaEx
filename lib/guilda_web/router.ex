@@ -80,6 +80,13 @@ defmodule GuildaWeb.Router do
     delete "/users/log_out", UserSessionController, :delete
   end
 
+  scope "/", GuildaWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    live "/users/settings", UserSettingLive, :edit, as: :user_settings
+    get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", GuildaWeb do
   #   pipe_through :api

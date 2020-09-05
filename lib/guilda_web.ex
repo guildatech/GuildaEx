@@ -92,6 +92,8 @@ defmodule GuildaWeb do
       import GuildaWeb.ErrorHelpers
       import GuildaWeb.Gettext
       import GuildaWeb.ViewHelpers
+
+      alias GuildaWeb.InputHelpers
       alias GuildaWeb.Router.Helpers, as: Routes
     end
   end

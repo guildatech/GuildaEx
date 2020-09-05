@@ -1,13 +1,2 @@
 <%= live_render @socket, GuildaWeb.MenuLive, id: "menu", session: %{"menu" => @menu, "current_user" => @current_user} %>
-<div class="py-10">
-  <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-    <p class="alert alert-info" role="alert"
-      phx-click="lv:clear-flash"
-      phx-value-key="info"><%= live_flash(@flash, :info) %></p>
-
-    <p class="alert alert-danger" role="alert"
-      phx-click="lv:clear-flash"
-      phx-value-key="error"><%= live_flash(@flash, :error) %></p>
-
-  <%= @inner_content %>
-</div>
+<%= @inner_content %>

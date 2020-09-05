@@ -93,6 +93,16 @@ defmodule Guilda.Accounts do
   end
 
   @doc """
+  Emulates that the e-mail will change without actually changing
+  it in the database.
+  """
+  def apply_user_email(user, attrs) do
+    user
+    |> User.email_changeset(attrs)
+    |> Ecto.Changeset.apply_action(:update)
+  end
+
+  @doc """
   Updates the user email using the given token.
 
   If the token matches, the user email is updated and the token is deleted.

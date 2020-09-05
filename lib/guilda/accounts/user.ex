@@ -46,8 +46,14 @@ defmodule Guilda.Accounts.User do
     |> cast(attrs, [:email])
     |> validate_email()
     |> case do
-      %{changes: %{email: _}} = changeset -> changeset
-      %{} = changeset -> add_error(changeset, :email, "did not change")
+      %{errors: [email: {"can't be blank", [validation: :required]}]} = changeset ->
+        changeset
+
+      %{changes: %{email: _}} = changeset ->
+        changeset
+
+      %{} = changeset ->
+        add_error(changeset, :email, "did not change")
     end
   end
 
