@@ -1,4 +1,7 @@
 defmodule GuildaWeb.PageLive do
+  @moduledoc """
+  LiveView to generate static pages.
+  """
   use GuildaWeb, :live_view
 
   @impl true

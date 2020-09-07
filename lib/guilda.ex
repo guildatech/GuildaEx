@@ -8,8 +8,8 @@ defmodule Guilda do
   """
 
   @icon_path Path.relative_to_cwd(Path.join("assets", "icons"))
-  @spec svg_icons() :: [binary()]
-  def svg_icons(), do: recursive(@icon_path)
+  @spec svg_icons :: [binary()]
+  def svg_icons, do: recursive(@icon_path)
 
   defp recursive(path) do
     Enum.reduce(File.ls!(path), [], fn file, acc ->

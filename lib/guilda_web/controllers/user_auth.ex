@@ -1,4 +1,7 @@
 defmodule GuildaWeb.UserAuth do
+  @moduledoc """
+  Functions related to authentication.
+  """
   import Plug.Conn
   import Phoenix.Controller
 

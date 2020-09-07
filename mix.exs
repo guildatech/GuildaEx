@@ -10,7 +10,20 @@ defmodule Guilda.MixProject do
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      dialyzer: [
+        plt_file: {:no_warn, "priv/plts/dialyzer.plt"},
+        ignore_warnings: ".dialyzer_ignore.exs",
+        plt_add_apps: [:ex_unit]
+      ],
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test,
+        quality: :test
+      ]
     ]
   end
 
@@ -34,7 +47,10 @@ defmodule Guilda.MixProject do
   defp deps do
     [
       {:bcrypt_elixir, "~> 2.0"},
+      {:credo, "~> 1.1", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
       {:ecto_sql, "~> 3.4"},
+      {:excoveralls, "~> 0.12"},
       {:floki, "~> 0.28.0"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
@@ -47,6 +63,7 @@ defmodule Guilda.MixProject do
       {:phx_gen_auth, "~> 0.5.0"},
       {:plug_cowboy, "~> 2.0"},
       {:postgrex, ">= 0.0.0"},
+      {:sobelow, "~> 0.9", only: [:dev, :test], runtime: false},
       {:telemetry_metrics, "~> 0.4"},
       {:telemetry_poller, "~> 0.4"}
     ]
@@ -63,7 +80,16 @@ defmodule Guilda.MixProject do
       setup: ["deps.get", "ecto.setup", "cmd npm install --prefix assets"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"]
+      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
+      citest: ["ecto.create --quiet", "ecto.migrate", "run priv/repo/seeds.exs", "test"],
+      quality: [
+        "compile --force --all-warnings --warnings-as-errors",
+        "test",
+        "format",
+        "credo --strict --ignore Credo.Check.Readability.MaxLineLength, Credo.Check.Consistency.SpaceAroundOperators",
+        "sobelow --config",
+        "dialyzer --ignore-exit-status"
+      ]
     ]
   end
 end

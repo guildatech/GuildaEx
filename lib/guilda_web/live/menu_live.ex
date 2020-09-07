@@ -1,4 +1,7 @@
 defmodule GuildaWeb.MenuLive do
+  @moduledoc """
+  LiveView to generate the main navigation.
+  """
   use GuildaWeb, :live_view
 
   @impl true

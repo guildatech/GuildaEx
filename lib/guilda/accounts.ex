@@ -4,8 +4,8 @@ defmodule Guilda.Accounts do
   """
 
   import Ecto.Query, warn: false
+  alias Guilda.Accounts.{User, UserNotifier, UserToken}
   alias Guilda.Repo
-  alias Guilda.Accounts.{User, UserToken, UserNotifier}
 
   ## Database getters
 

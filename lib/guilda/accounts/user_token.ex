@@ -1,4 +1,7 @@
 defmodule Guilda.Accounts.UserToken do
+  @moduledoc """
+  UserToken's schema.
+  """
   use Ecto.Schema
   import Ecto.Query
 

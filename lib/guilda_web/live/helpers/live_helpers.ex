@@ -1,4 +1,7 @@
 defmodule GuildaWeb.Live.LiveHelpers do
+  @moduledoc """
+  Helpers used by LiveViews.
+  """
   import Phoenix.LiveView, only: [assign: 2]
 
   alias Guilda.Accounts

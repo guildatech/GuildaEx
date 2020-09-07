@@ -1,4 +1,7 @@
 defmodule Guilda.Accounts.User do
+  @moduledoc """
+  The User's schema.
+  """
   use Ecto.Schema
   import Ecto.Changeset
 

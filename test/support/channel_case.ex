@@ -17,6 +17,8 @@ defmodule GuildaWeb.ChannelCase do
 
   use ExUnit.CaseTemplate
 
+  alias Ecto.Adapters.SQL.Sandbox
+
   using do
     quote do
       # Import conveniences for testing with channels
@@ -29,10 +31,10 @@ defmodule GuildaWeb.ChannelCase do
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Guilda.Repo)
+    :ok = Sandbox.checkout(Guilda.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Guilda.Repo, {:shared, self()})
+      Sandbox.mode(Guilda.Repo, {:shared, self()})
     end
 
     :ok
