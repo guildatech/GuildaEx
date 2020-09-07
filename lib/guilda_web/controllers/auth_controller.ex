@@ -12,10 +12,11 @@ defmodule GuildaWeb.AuthController do
       "last_name" => Map.get(params, "last_name")
     }
 
-    with {:ok, user} <- Accounts.upsert_user(params) do
-      UserAuth.log_in_user(conn, user)
-    else
-      _ ->
+    case Accounts.upsert_user(params) do
+      {:ok, user} ->
+        UserAuth.log_in_user(conn, user)
+
+      _other ->
         conn
         |> put_flash(:error, gettext("Não foi possivel autenticar. Por favor tente novamente mais tarde."))
         |> redirect(to: Routes.page_path(conn, :index))
