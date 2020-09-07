@@ -1,4 +1,7 @@
 defmodule Guilda.Accounts.UserNotifier do
+  @moduledoc """
+  Module that delivers notifications to users.
+  """
   # For simplicity, this module simply logs messages to the terminal.
   # You should replace it by a proper email or notification tool, such as:
   #

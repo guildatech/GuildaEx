@@ -22,7 +22,7 @@ defmodule GuildaWeb.AuthController do
     end
   end
 
-  def telegram_bot_username() do
+  def telegram_bot_username do
     Application.fetch_env!(:guilda, :auth)[:telegram_bot_username]
   end
 end

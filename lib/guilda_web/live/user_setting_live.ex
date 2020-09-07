@@ -1,4 +1,7 @@
 defmodule GuildaWeb.UserSettingLive do
+  @moduledoc """
+  LiveView to update a user's settings.
+  """
   use GuildaWeb, :live_view
 
   alias Guilda.Accounts
