@@ -47,6 +47,8 @@ defmodule GuildaWeb do
       use Phoenix.LiveView,
         layout: {GuildaWeb.LayoutView, "live.html"}
 
+      import GuildaWeb.Live.LiveHelpers
+
       unquote(view_helpers())
     end
   end
@@ -90,6 +92,8 @@ defmodule GuildaWeb do
       import GuildaWeb.ErrorHelpers
       import GuildaWeb.Gettext
       import GuildaWeb.ViewHelpers
+
+      alias GuildaWeb.InputHelpers
       alias GuildaWeb.Router.Helpers, as: Routes
     end
   end

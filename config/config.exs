@@ -8,7 +8,8 @@
 use Mix.Config
 
 config :guilda,
-  ecto_repos: [Guilda.Repo]
+  ecto_repos: [Guilda.Repo],
+  generators: [binary_id: true]
 
 # Configures the endpoint
 config :guilda, GuildaWeb.Endpoint,
@@ -17,6 +18,16 @@ config :guilda, GuildaWeb.Endpoint,
   render_errors: [view: GuildaWeb.ErrorView, accepts: ~w(html json), layout: false],
   pubsub_server: Guilda.PubSub,
   live_view: [signing_salt: "E3IrZAj7"]
+
+config :guilda, Guidla.Repo,
+  migration_timestamps: [type: :utc_datetime_usec],
+  migration_primary_key: [
+    name: :id,
+    type: :binary_id,
+    autogenerate: false,
+    read_after_writes: true,
+    default: {:fragment, "gen_random_uuid()"}
+  ]
 
 config :guilda, :auth, telegram_bot_username: "guilda_tech_bot"
 

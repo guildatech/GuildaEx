@@ -1,0 +1,33 @@
+.form-control + .form-control {
+  @apply mt-6;
+}
+
+.form-control__label {
+  @apply block text-sm font-medium leading-5 text-gray-700;
+}
+
+.form-control__input {
+  @apply block w-full form-input;
+}
+
+.form-control__input--with-errors {
+  @apply pr-10 text-red-900 border-red-300;
+}
+
+.form-control__input--with-errors:focus {
+  @apply border-red-300 shadow-outline-red;
+}
+
+@screen sm {
+  .form-control__input {
+    @apply text-sm leading-5;
+  }
+}
+
+.form-control__wrapper {
+  @apply relative mt-1 rounded-md shadow-sm;
+}
+
+.invalid-feedback {
+  @apply block mt-2 text-sm text-red-600;
+}

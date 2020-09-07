@@ -1,0 +1,104 @@
+<nav class="bg-white border-b border-gray-200"
+  x-data="{ mobileOpen: false }"
+>
+  <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+    <div class="flex justify-between h-16">
+      <div class="flex">
+        <div class="flex items-center flex-shrink-0">
+          <img class="w-auto h-8" src="<%= Routes.static_path(@socket, "/images/guilda-logo.png") %>" alt="GuildaTech logo" />
+        </div>
+        <div class="hidden space-x-8 sm:-my-px sm:ml-6 sm:flex">
+          <%= if @current_user, do: maybe_active_live_redirect @menu, gettext("Configurações"), :main, GuildaWeb.UserSettingLive, Routes.user_settings_path(@socket, :edit) %>
+          <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
+            <%= link "LiveDashboard", to: Routes.live_dashboard_path(@socket, :home), class: "inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" %>
+          <% end %>
+        </div>
+      </div>
+
+      <%= if @current_user do %>
+        <div class="hidden sm:ml-6 sm:flex sm:items-center">
+          <!-- Profile dropdown -->
+          <div class="relative ml-3"
+            x-data="{ open: false }"
+            @click.away="open = false"
+          >
+            <div>
+              <button
+                class="flex text-sm transition duration-150 ease-in-out border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300"
+                id="user-menu"
+                aria-label="User menu"
+                aria-haspopup="true"
+                @click="open = !open"
+              >
+                <%= svg_icon("user-circle-light", class: "w-8 h-8 rounded-full") %>
+              </button>
+            </div>
+            <!--
+              Profile dropdown panel, show/hide based on dropdown state.
+            -->
+            <div class="absolute right-0 w-48 mt-2 origin-top-right rounded-md shadow-lg"
+              x-show="open"
+              x-transition:enter="transition ease-out duration-100"
+              x-transition:enter-start="transform opacity-0 scale-95"
+              x-transition:enter-end="transform opacity-100 scale-100"
+              x-transition:leave="transition ease-in duration-75"
+              x-transition:leave-start="transform opacity-100 scale-100"
+              x-transition:leave-end="transform opacity-0 scale-95"
+            >
+              <div class="py-1 bg-white rounded-md shadow-xs">
+                <div class="px-4 py-2">
+                  <p class="text-sm leading-5">
+                    <%= gettext("Logado como") %>
+                  </p>
+                  <p class="text-sm font-medium leading-5 text-gray-900">
+                    <%= @current_user.username %>
+                  </p>
+                </div>
+                <div class="border-t border-gray-100"></div>
+                <%= link to: Routes.user_session_path(GuildaWeb.Endpoint, :delete), method: :delete, class: "block px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100" do %>
+                  <%= gettext("Sair") %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="flex items-center -mr-2 sm:hidden">
+        <!-- Mobile menu button -->
+        <button class="inline-flex items-center justify-center p-2 text-gray-400 transition duration-150 ease-in-out rounded-md hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500"
+          @click="mobileOpen = !mobileOpen"
+        >
+          <!-- Menu open: hide, Menu closed: show -->
+          <svg class="w-6 h-6" stroke="currentColor" fill="none" viewBox="0 0 24 24"
+            x-show="!mobileOpen"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <!-- Menu open: show, Menu closed: hide -->
+          <svg class="w-6 h-6" stroke="currentColor" fill="none" viewBox="0 0 24 24"
+            x-show="mobileOpen"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!--
+    Mobile menu, toggle classes based on menu state.
+
+    Open: show, closed: hide
+  -->
+  <div class="sm:hidden"
+    x-show="mobileOpen"
+  >
+    <div class="pt-2 pb-3 space-y-1">
+      <%= if @current_user, do: maybe_active_live_redirect @menu, gettext("Configurações"), :mobile, GuildaWeb.UserSettingLive, Routes.user_settings_path(@socket, :edit) %>
+      <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
+        <%= link "LiveDashboard", to: Routes.live_dashboard_path(@socket, :home), class: "block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition duration-150 ease-in-out" %>
+      <% end %>
+    </div>
+  </div>
+</nav>
