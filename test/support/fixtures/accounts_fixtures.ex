@@ -4,17 +4,20 @@ defmodule Guilda.AccountsFixtures do
   entities via the `Guilda.Accounts` context.
   """
 
+  def unique_user_telegram_id, do: System.unique_integer() |> Integer.to_string()
   def unique_user_email, do: "user#{System.unique_integer()}@example.com"
-  def valid_user_password, do: "hello world!"
 
   def user_fixture(attrs \\ %{}) do
     {:ok, user} =
       attrs
       |> Enum.into(%{
-        email: unique_user_email(),
-        password: valid_user_password()
+        telegram_id: unique_user_telegram_id(),
+        username: "username",
+        first_name: "First Name",
+        last_name: "Last Name",
+        email: nil
       })
-      |> Guilda.Accounts.register_user()
+      |> Guilda.Accounts.upsert_user()
 
     user
   end

@@ -25,6 +25,8 @@ defmodule Guilda.Accounts do
     Repo.get_by(User, telegram_id: telegram_id)
   end
 
+  def get_user_by_telegram_id(_other), do: nil
+
   @doc """
   Gets a single user.
 

@@ -14,6 +14,7 @@ defmodule Guilda.Repo.Migrations.CreateUsersAuthTables do
     end
 
     create unique_index(:users, [:telegram_id])
+    create unique_index(:users, [:email])
 
     create table(:users_tokens, primary_key: false) do
       add :id, :binary_id, primary_key: true
