@@ -13,7 +13,7 @@ defmodule GuildaWeb.AuthController do
     }
 
     with {:ok, user} <- Accounts.upsert_user(params) do
-      UserAuth.log_in_user(conn, user, params)
+      UserAuth.log_in_user(conn, user)
     else
       _ ->
         conn
