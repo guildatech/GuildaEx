@@ -30,6 +30,14 @@ config :guilda, GuildaWeb.Endpoint,
   ],
   secret_key_base: secret_key_base
 
+telegram_bot_username =
+  System.get_env("TELEGRAM_BOT_USERNAME") ||
+    raise """
+    environment variable TELEGRAM_BOT_USERNAME is missing.
+    """
+
+config :guilda, :auth, telegram_bot_username: telegram_bot_username
+
 # ## Using releases (Elixir v1.9+)
 #
 # If you are doing OTP releases, you need to instruct Phoenix

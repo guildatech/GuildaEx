@@ -13,8 +13,6 @@ config :guilda, GuildaWeb.Endpoint,
   url: [host: "example.com", port: 80],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
-config :guilda, :auth, telegram_bot_username: System.fetch_env!("TELEGRAM_BOT_USERNAME")
-
 # Do not print debug messages in production
 config :logger, level: :info
 
