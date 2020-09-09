@@ -10,7 +10,10 @@ use Mix.Config
 # which you should run after static files are built and
 # before starting your production server.
 config :guilda, GuildaWeb.Endpoint,
-  url: [host: "example.com", port: 80],
+  load_from_system_env: true,
+  version: Mix.Project.config()[:version],
+  server: true,
+  url: [host: "guildatech.gigalixirapp.com", port: 443],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
 # Do not print debug messages in production
