@@ -16,6 +16,8 @@ config :guilda, GuildaWeb.Endpoint,
 # Do not print debug messages in production
 config :logger, level: :info
 
+config :guilda, GuildaWeb.Endpoint, force_ssl: [rewrite_on: [:x_forwarded_proto]]
+
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key
