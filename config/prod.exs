@@ -10,13 +10,16 @@ use Mix.Config
 # which you should run after static files are built and
 # before starting your production server.
 config :guilda, GuildaWeb.Endpoint,
-  url: [host: "example.com", port: 80],
+  load_from_system_env: true,
+  version: Mix.Project.config()[:version],
+  server: true,
+  url: [host: "guildatech.gigalixirapp.com", port: 443],
   cache_static_manifest: "priv/static/cache_manifest.json"
-
-config :guilda, :auth, telegram_bot_username: System.fetch_env!("TELEGRAM_BOT_USERNAME")
 
 # Do not print debug messages in production
 config :logger, level: :info
+
+config :guilda, GuildaWeb.Endpoint, force_ssl: [rewrite_on: [:x_forwarded_proto]]
 
 # ## SSL Support
 #

@@ -15,6 +15,14 @@ defmodule GuildaWeb.Router do
       wss://guildatech.dev:*
       http://guildatech.dev:*
       https://guildatech.dev:*
+      http://guildatech.gigalixirapp.com
+      https://guildatech.gigalixirapp.com
+      ws://guildatech.gigalixirapp.com
+      wss://guildatech.gigalixirapp.com
+      http://guildatech.com
+      https://guildatech.com
+      ws://guildatech.com
+      wss://guildatech.com
     ],
     "img-src" => ~w[
       'self'
