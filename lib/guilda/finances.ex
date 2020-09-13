@@ -18,7 +18,7 @@ defmodule Guilda.Finances do
 
   """
   def list_transactions do
-    Repo.all(Transaction)
+    Repo.all(from t in Transaction, order_by: [desc: t.inserted_at])
   end
 
   @doc """
@@ -53,6 +53,7 @@ defmodule Guilda.Finances do
     %Transaction{}
     |> Transaction.changeset(attrs)
     |> Repo.insert()
+    |> broadcast(:transaction_created)
   end
 
   @doc """
@@ -71,6 +72,7 @@ defmodule Guilda.Finances do
     transaction
     |> Transaction.changeset(attrs)
     |> Repo.update()
+    |> broadcast(:transaction_updated)
   end
 
   @doc """
@@ -100,5 +102,16 @@ defmodule Guilda.Finances do
   """
   def change_transaction(%Transaction{} = transaction, attrs \\ %{}) do
     Transaction.changeset(transaction, attrs)
+  end
+
+  def subscribe do
+    Phoenix.PubSub.subscribe(Guilda.PubSub, "transactions")
+  end
+
+  defp broadcast({:error, _reason} = error, _event), do: error
+
+  defp broadcast({:ok, transaction}, event) do
+    Phoenix.PubSub.broadcast(Guilda.PubSub, "transactions", {event, transaction})
+    {:ok, transaction}
   end
 end

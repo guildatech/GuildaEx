@@ -1,0 +1,47 @@
+<header class="pt-10">
+  <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8 sm:flex sm:items-center sm:justify-between">
+    <div class="flex-1 min-w-0">
+      <h1 class="text-3xl font-bold leading-tight text-gray-900">
+        <%= gettext("Finanças") %>
+      </h1>
+    </div>
+    <div class="flex mt-4 sm:mt-0 sm:ml-4">
+      <span class="order-1 sm:order-0">
+        <%= live_patch gettext("Nova Transação"), to: Routes.finance_index_path(@socket, :new), class: "Button" %>
+      </span>
+    </div>
+  </div>
+</header>
+
+<!-- Main wrapper start -->
+<main class="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
+
+  <%= if @live_action in [:new, :edit] do %>
+    <%= live_modal @socket, GuildaWeb.FinanceLive.FormComponent,
+      id: @transaction.id || :new,
+      title: @page_title,
+      action: @live_action,
+      transaction: @transaction,
+      return_to: Routes.finance_index_path(@socket, :index) %>
+  <% end %>
+
+  <div class="shadow sm:rounded-md sm:overflow-hidden">
+    <table class="Table">
+      <thead>
+        <tr>
+          <th class="Table__th"><%= gettext("Data") %></th>
+          <th class="Table__th"><%= gettext("Beneficiário") %></th>
+          <th class="Table__th"><%= gettext("Nota") %></th>
+          <th class="text-right Table__th"><%= gettext("Valor") %></th>
+        </tr>
+      </thead>
+      <tbody id="transactions" phx-update="prepend" class="Table__body">
+        <%= for transaction <- @transactions do %>
+          <%= live_component @socket, GuildaWeb.FinanceLive.TransactionComponent, id: transaction.id, transaction: transaction %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+</main>
+<!-- Main wrapper end -->

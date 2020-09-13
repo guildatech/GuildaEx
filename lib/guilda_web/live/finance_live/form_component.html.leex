@@ -1,0 +1,17 @@
+<%= f = form_for @changeset, "#",
+  id: "transaction-form",
+  phx_target: @myself,
+  phx_change: "validate",
+  phx_submit: "save" %>
+
+  <div class="Modal__content">
+    <%= InputHelpers.input f, :payee, label: gettext("Beneficiário") %>
+    <%= InputHelpers.input f, :amount, label: gettext("Valor") %>
+    <%= InputHelpers.input f, :date, label: gettext("Data") %>
+    <%= InputHelpers.input f, :note, label: gettext("Nota") %>
+  </div>
+  <div class="Modal__footer">
+    <%= submit gettext("Salvar"), phx_disable_with: gettext("Salvando..."), class: "Button Button--primary" %>
+  </div>
+
+</form>
