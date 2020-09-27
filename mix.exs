@@ -51,9 +51,11 @@ defmodule Guilda.MixProject do
       {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
       {:ecto_sql, "~> 3.4"},
       {:excoveralls, "~> 0.12"},
+      {:ex_machina, "~> 2.4"},
       {:floki, "~> 0.28.0"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
+      {:norm, git: "https://github.com/keathley/norm.git"},
       {:phoenix_ecto, "~> 4.1"},
       {:phoenix_html, "~> 2.11"},
       {:phoenix_live_dashboard, "~> 0.2.0"},
@@ -64,8 +66,10 @@ defmodule Guilda.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:postgrex, ">= 0.0.0"},
       {:sobelow, "~> 0.9", only: [:dev, :test], runtime: false},
+      {:stream_data, "~> 0.5.0"},
       {:telemetry_metrics, "~> 0.4"},
-      {:telemetry_poller, "~> 0.4"}
+      {:telemetry_poller, "~> 0.4"},
+      {:timex, "~> 3.6"}
     ]
   end
 

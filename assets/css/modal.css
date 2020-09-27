@@ -11,5 +11,5 @@
 }
 
 .Modal__footer {
-  @apply px-4 py-3 bg-gray-50 sm:px-6 sm:flex sm:flex-row-reverse;
+  @apply px-4 py-3 space-x-2 bg-gray-50 sm:px-6 sm:flex;
 }

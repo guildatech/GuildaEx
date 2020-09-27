@@ -11,6 +11,7 @@
     <%= InputHelpers.input f, :note, label: gettext("Nota") %>
   </div>
   <div class="Modal__footer">
+    <%= live_patch gettext("Cancelar"), to: Routes.finance_index_path(@socket, :index), class: "Button Button--secondary sm:ml-auto" %>
     <%= submit gettext("Salvar"), phx_disable_with: gettext("Salvando..."), class: "Button Button--primary" %>
   </div>
 
