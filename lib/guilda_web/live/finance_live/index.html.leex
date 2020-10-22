@@ -33,10 +33,15 @@
           <th class="Table__th"><%= gettext("Beneficiário") %></th>
           <th class="Table__th"><%= gettext("Nota") %></th>
           <th class="text-right Table__th"><%= gettext("Valor") %></th>
-          <th></th>
+          <th class="Table__th"></th>
         </tr>
       </thead>
       <tbody id="transactions" phx-update="prepend" class="Table__body">
+        <%= if @transactions == [] do %>
+          <tr id="empty-transactions">
+            <td colspan=5 class="Table__td"><%= gettext("Não existem transações para serem exibidas.") %></td>
+          </tr>
+        <% end %>
         <%= for transaction <- @transactions do %>
           <%= live_component @socket, GuildaWeb.FinanceLive.TransactionComponent, id: transaction.id, transaction: transaction %>
         <% end %>

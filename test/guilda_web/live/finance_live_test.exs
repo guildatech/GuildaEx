@@ -1,4 +1,4 @@
-defmodule GuildaWeb.PageLiveTest do
+defmodule GuildaWeb.FinanceLiveTest do
   use GuildaWeb.ConnCase
 
   import Phoenix.LiveViewTest
@@ -134,7 +134,7 @@ defmodule GuildaWeb.PageLiveTest do
 
       refute html =~ "can&apos;t be blank"
 
-      assert view |> form("form[phx-submit=save]") |> render_submit(%{"transaction" => %{"amount" => ""}}) =~
+      assert view |> form("form[phx-submit=save]") |> render_submit(%{"transaction" => %{"date" => ""}}) =~
                "can&apos;t be blank"
     end
 

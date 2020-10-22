@@ -18,8 +18,36 @@ import "alpinejs"
 import {Socket} from "phoenix"
 import NProgress from "nprogress"
 import {LiveSocket} from "phoenix_live_view"
+import { toCurrency } from "./currency-conversion"
+import flatpickr from "flatpickr"
 
 let Hooks = {}
+
+Hooks.CurrencyMask = {
+  beforeUpdate() {
+    this.el.value = toCurrency(this.el.value);
+  },
+};
+
+Hooks.DatePicker = {
+  mounted() {
+    this.setupDatePicker(this.el);
+  },
+
+  updated() {
+    this.setupDatePicker(this.el);
+  },
+
+  setupDatePicker(el) {
+    flatpickr(el, {
+      altInput: true,
+      altFormat: "d/m/Y",
+      dateFormat: "Y-m-d",
+      defaultDate: el.getAttribute("value"),
+      enableTime: false,
+    })
+  }
+}
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {

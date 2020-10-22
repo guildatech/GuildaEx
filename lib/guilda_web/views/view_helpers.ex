@@ -1,4 +1,8 @@
 defmodule GuildaWeb.ViewHelpers do
+  @moduledoc """
+  View Helpers used across the app.
+  """
+
   def svg_icon(match, opts \\ [])
 
   for file <- Guilda.svg_icons() do

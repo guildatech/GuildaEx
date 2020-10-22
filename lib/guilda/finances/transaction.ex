@@ -10,13 +10,15 @@ defmodule Guilda.Finances.Transaction do
     field :note, :string
     field :payee, :string
 
+    field :toggle, :boolean, default: false, virtual: true
+
     timestamps()
   end
 
   @doc false
   def changeset(transaction, attrs) do
     transaction
-    |> cast(attrs, [:date, :amount, :payee, :note])
+    |> cast(attrs, [:date, :toggle, :amount, :payee, :note])
     |> validate_required([:date, :amount, :payee])
   end
 end

@@ -18,7 +18,7 @@ defmodule Guilda.Finances do
 
   """
   def list_transactions do
-    Repo.all(from t in Transaction, order_by: [desc: t.inserted_at])
+    Repo.all(from t in Transaction, order_by: [desc: t.date])
   end
 
   @doc """
