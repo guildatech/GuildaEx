@@ -1,0 +1,50 @@
+version: '3'
+
+# Networks
+networks:
+  # Internal network
+  internal:
+    driver: bridge
+
+# Volumes
+volumes:
+  # Postgres data volume
+  guilda-postgres_data:
+    driver: local
+
+# IaC
+services:
+
+  # Elixir
+  guilda-elixir:
+    # https://hub.docker.com/r/bitwalker/alpine-elixir-phoenix/tags
+    # waiting for 1.11 tag
+    image: bitwalker/alpine-elixir-phoenix:latest
+    container_name: guilda-elixir
+    networks:
+      - internal
+    # /opt/app is the WORKING_DIR of the image "bitwalker/alpine-elixir-phoenix"
+    volumes:
+      - .:/opt/app
+    working_dir: /opt/app
+    ports:
+      - 4000:4000
+    # run bash file to start container
+    command: bash /opt/app/docker-compose.sh
+
+  # Database
+  guilda-database:
+    image: postgres:13.1
+    container_name: guilda-database
+    networks:
+      - internal
+    volumes:
+      - .:/var/www/app
+      - guilda-postgres_data:/var/lib/postgresql/data
+    working_dir: /var/www/app
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=guilda
+    ports:
+      - 5432:5432
