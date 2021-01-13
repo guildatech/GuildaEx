@@ -93,6 +93,10 @@ defmodule GuildaWeb.Router do
 
     live "/users/settings", UserSettingLive, :edit, as: :user_settings
     get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+
+    live "/finances", FinanceLive.Index, :index
+    live "/finances/new", FinanceLive.Index, :new
+    live "/finances/:id/edit", FinanceLive.Index, :edit
   end
 
   # Other scopes may use custom stacks.

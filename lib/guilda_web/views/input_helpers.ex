@@ -6,32 +6,43 @@ defmodule GuildaWeb.InputHelpers do
   alias GuildaWeb.ErrorHelpers
   alias Phoenix.HTML.Form
 
-  def input(form, field, opts) when is_list(opts), do: input(form, field, nil, opts)
+  def input(form, field, nil, opts), do: input(form, field, input_opts: opts)
 
-  def input(form, field, label_text \\ nil, input_opts \\ []) do
-    label_opts = [class: "form-control__label"]
+  def input(form, field, opts \\ [])
+  def input(form, field, label) when not is_list(label), do: input(form, field, label: label)
 
-    label =
-      if label_text do
-        label(form, field, label_text, label_opts)
-      else
-        label(form, field, label_opts)
-      end
+  def input(form, field, opts) do
+    input_opts = Keyword.merge([class: form_input_classes(form, field)], Keyword.get(opts, :input_opts, []))
 
-    type = Form.input_type(form, field)
-    input_opts = Keyword.merge([class: form_input_classes(form, field)], input_opts)
+    type = Keyword.get(opts, :type) || Form.input_type(form, field)
     input = [apply(Form, type, [form, field, input_opts])]
 
-    error = ErrorHelpers.error_tag(form, field)
-    error_icon = ErrorHelpers.error_icon(form, field)
-
-    content_tag :div, class: "form-control" do
+    content_tag :div, class: "form-control space-y-1" do
       [
-        label,
+        build_label(form, field, opts),
         content_tag :div, class: "form-control__wrapper" do
-          [input, error_icon]
+          [input, ErrorHelpers.error_icon(form, field)]
         end,
-        error
+        ErrorHelpers.error_tag(form, field)
+      ]
+    end
+  end
+
+  # sobelow_skip ["XSS.Raw"]
+  def select_input(form, field, opts) do
+    input_opts =
+      Keyword.merge(
+        [class: form_input_classes(form, field) <> " form-select"],
+        Keyword.get(opts, :input_opts, [])
+      )
+
+    input = [Form.select(form, field, Keyword.fetch!(opts, :entries), input_opts)]
+
+    content_tag :div, class: "form-control space-y-1" do
+      [
+        build_label(form, field, opts),
+        input,
+        ErrorHelpers.error_tag(form, field)
       ]
     end
   end
@@ -44,6 +55,17 @@ defmodule GuildaWeb.InputHelpers do
       "form-control__input form-control__input--with-errors"
     else
       "form-control__input"
+    end
+  end
+
+  defp build_label(form, field, opts) do
+    label_text = Keyword.get(opts, :label)
+    label_opts = Keyword.merge([class: "form-control__label"], Keyword.get(opts, :label_opts, []))
+
+    if label_text do
+      label(form, field, label_text, label_opts)
+    else
+      label(form, field, label_opts)
     end
   end
 end

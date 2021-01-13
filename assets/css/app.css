@@ -1,15 +1,40 @@
 /* This file is for your main application css. */
+@import "../node_modules/flatpickr/dist/flatpickr.min.css";
 @import "../node_modules/nprogress/nprogress.css";
 
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 
+@import "variables.css";
+
+@import "buttons.css";
 @import "forms.css";
+@import "modal.css";
+@import "table.css";
 
 @import "tailwindcss/utilities";
 
-:root {
-  --color-primary: #e9b625;
+html {
+  background: var(--color-bg--main);
+  color: var(--color-txt);
+  font-family: var(--font-family);
+  line-height: 1.4;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+}
+
+html,
+body {
+  position: absolute;
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  font-size: 1rem;
+  line-height: 1.25;
 }
 
 /* LiveView specific classes for your customizations */
