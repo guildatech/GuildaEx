@@ -57,4 +57,13 @@ config :guilda, GuildaWeb.Endpoint, force_ssl: [rewrite_on: [:x_forwarded_proto]
 
 # Finally import the config/prod.secret.exs which loads secrets
 # and configuration from environment variables.
+
+telegram_bot_token =
+  System.get_env("TELEGRAM_BOT_TOKEN") ||
+    raise """
+    environment variable TELEGRAM_BOT_TOKEN is missing.
+    """
+
+config :guilda, :auth, telegram_bot_token: telegram_bot_token
+
 import_config "prod.secret.exs"
