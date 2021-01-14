@@ -11,10 +11,6 @@ defmodule GuildaWeb.Router do
       ws://localhost:*
       wss://localhost:*
       http://localhost:*
-      ws://guildatech.dev:*
-      wss://guildatech.dev:*
-      http://guildatech.dev:*
-      https://guildatech.dev:*
       http://guildatech.gigalixirapp.com
       https://guildatech.gigalixirapp.com
       ws://guildatech.gigalixirapp.com

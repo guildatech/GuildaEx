@@ -16,14 +16,7 @@ config :guilda, Guilda.Repo,
 # watchers to your application. For example, we use it
 # with webpack to recompile .js and .css sources.
 config :guilda, GuildaWeb.Endpoint,
-  url: [host: "guildatech.dev"],
-  http: [port: 4010],
-  https: [
-    port: 443,
-    cipher_suite: :strong,
-    certfile: "priv/cert/guildatech.dev.crt",
-    keyfile: "priv/cert/guildatech.dev.key"
-  ],
+  http: [port: 4000],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
