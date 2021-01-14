@@ -66,4 +66,6 @@ telegram_bot_token =
 
 config :guilda, :auth, telegram_bot_token: telegram_bot_token
 
+config :guilda, :environment, :prod
+
 import_config "prod.secret.exs"

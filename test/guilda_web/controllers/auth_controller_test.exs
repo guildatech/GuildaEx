@@ -1,4 +1,4 @@
-defmodule GuildaWeb.UserSessionControllerTest do
+defmodule GuildaWeb.AuthControllerTest do
   use GuildaWeb.ConnCase, async: true
 
   alias GuildaWeb.AuthController
