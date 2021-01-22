@@ -1,0 +1,13 @@
+<%= f = form_for @changeset, "#",
+  id: "episode-form",
+  phx_target: @myself,
+  phx_submit: "save" %>
+
+  <div class="Modal__content">
+    <%= InputHelpers.input f, :cover %>
+    <%= InputHelpers.input f, :path %>
+  </div>
+  <div class="Modal__footer">
+    <%= submit gettext("Salvar"), class: "Button Button--primary" %>
+  </div>
+</form>

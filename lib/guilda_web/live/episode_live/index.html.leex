@@ -1,0 +1,55 @@
+<header class="pt-10">
+  <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8 sm:flex sm:items-center sm:justify-between">
+    <div class="flex-1 min-w-0">
+      <h1 class="text-3xl font-bold leading-tight text-gray-900">
+        <%= gettext("Lista de episódios") %>
+      </h1>
+    </div>
+    <div class="flex mt-4 sm:mt-0 sm:ml-4">
+      <span class="order-1 sm:order-0">
+        <%= live_patch gettext("Novo Episódio"), to: Routes.podcast_episode_index_path(@socket, :new), class: "Button" %>
+      </span>
+    </div>
+  </div>
+</header>
+
+<!-- Main wrapper start -->
+<main class="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
+
+  <%= if @live_action == :new, do: live_modal @socket, GuildaWeb.Podcasts.PodcastEpisodeLive.FormComponent,
+    id: :new,
+    action: @live_action,
+    title: @page_title,
+    episode: @episode,
+    return_to: Routes.podcast_episode_index_path(@socket, :index) %>
+
+  <div class="shadow sm:rounded-md sm:overflow-hidden">
+    <table class="Table">
+      <thead>
+        <tr>
+          <th class="Table__th"><%= gettext("Capa") %></th>
+          <th class="Table__th"><%= gettext("Link") %></th>
+          <th class="Table__th"><%= gettext("Tempo") %></th>
+          <th class="Table__th"><%= gettext("Visualizações") %></th>
+        </tr>
+      </thead>
+      <tbody id="podcast_episodes" class="Table__body">
+        <%= if @podcast_episodes == [] do %>
+          <tr id="empty-podcast_episodes">
+            <td colspan=5 class="Table__td"><%= gettext("Nenhum episódio encontrado.") %></td>
+          </tr>
+        <% end %>
+        <%= for episode <- @podcast_episodes do %>
+          <tr>
+            <td><%= episode.cover %></td>
+            <td><%= episode.path %></td>
+            <td><%= episode.length %></td>
+            <td><%= episode.play_count %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+</main>
+<!-- Main wrapper end -->
