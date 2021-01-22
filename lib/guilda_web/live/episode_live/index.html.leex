@@ -16,8 +16,8 @@
 <!-- Main wrapper start -->
 <main class="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
 
-  <%= if @live_action == :new, do: live_modal @socket, GuildaWeb.Podcasts.PodcastEpisodeLive.FormComponent,
-    id: :new,
+  <%= if @live_action in [:new, :edit], do: live_modal @socket, GuildaWeb.Podcasts.PodcastEpisodeLive.FormComponent,
+    id: @episode.id || :new,
     action: @live_action,
     title: @page_title,
     episode: @episode,
@@ -40,12 +40,7 @@
           </tr>
         <% end %>
         <%= for episode <- @podcast_episodes do %>
-          <tr>
-            <td><%= episode.cover %></td>
-            <td><%= episode.path %></td>
-            <td><%= episode.length %></td>
-            <td><%= episode.play_count %></td>
-          </tr>
+          <%= live_component @socket, GuildaWeb.PodcastEpisodeLive.EpisodeComponent, id: episode.id, episode: episode %>
         <% end %>
       </tbody>
     </table>

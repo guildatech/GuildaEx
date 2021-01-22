@@ -28,6 +28,12 @@ defmodule GuildaWeb.PodcastEpisodeLive.Index do
     |> assign(:episode, %Episode{})
   end
 
+  defp apply_action(socket, :edit, %{"id" => id}) do
+    socket
+    |> assign(:page_title, gettext("Editar episódio"))
+    |> assign(:episode, Podcasts.get_episode!(id))
+  end
+
   defp list_podcast_episodes do
     Podcasts.list_podcast_episodes()
   end

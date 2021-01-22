@@ -1,6 +1,7 @@
 <%= f = form_for @changeset, "#",
   id: "episode-form",
   phx_target: @myself,
+  phx_change: "validate",
   phx_submit: "save" %>
 
   <div class="Modal__content">
@@ -8,6 +9,7 @@
     <%= InputHelpers.input f, :path %>
   </div>
   <div class="Modal__footer">
+    <%= live_patch gettext("Cancelar"), to: Routes.podcast_episode_index_path(@socket, :index), class: "Button Button--secondary sm:ml-auto" %>
     <%= submit gettext("Salvar"), class: "Button Button--primary" %>
   </div>
 </form>
