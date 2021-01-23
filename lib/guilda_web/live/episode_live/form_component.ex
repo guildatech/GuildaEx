@@ -44,12 +44,12 @@ defmodule GuildaWeb.Podcasts.PodcastEpisodeLive.FormComponent do
   end
 
   defp save_episode(socket, :new, episode_params) do
-    episode =
-      socket.assigns.episode
-      |> put_cover(socket)
-      |> put_file(socket)
+    episode_params =
+      episode_params
+      |> put_cover_params(socket)
+      |> put_file_params(socket)
 
-    case Podcasts.create_episode(episode, episode_params, &consume_files(socket, &1)) do
+    case Podcasts.create_episode(episode_params, &consume_files(socket, &1)) do
       {:ok, _episode} ->
         {:noreply,
          socket
@@ -62,12 +62,12 @@ defmodule GuildaWeb.Podcasts.PodcastEpisodeLive.FormComponent do
   end
 
   defp save_episode(socket, :edit, episode_params) do
-    episode =
-      socket.assigns.episode
-      |> put_cover(socket)
-      |> put_file(socket)
+    episode_params =
+      episode_params
+      |> put_cover_params(socket)
+      |> put_file_params(socket)
 
-    case Podcasts.update_episode(episode, episode_params, &consume_files(socket, &1)) do
+    case Podcasts.update_episode(socket.assigns.episode, episode_params, &consume_files(socket, &1)) do
       {:ok, _episode} ->
         {:noreply,
          socket
@@ -79,90 +79,75 @@ defmodule GuildaWeb.Podcasts.PodcastEpisodeLive.FormComponent do
     end
   end
 
-  defp s3_key(entry), do: "public/#{entry.uuid}.#{ext(entry)}"
+  defp s3_key(entry), do: "public/#{entry.client_name}"
   defp s3_host, do: "//#{bucket()}.s3.amazonaws.com"
   defp bucket, do: System.fetch_env!("S3_BUCKET")
 
-  defp ext(entry) do
-    [ext | _] = MIME.extensions(entry.client_type)
-    ext
+  defp signed_fields(entry, max_file_size) do
+    GuildaWeb.SimpleS3Upload.sign_form_upload(config(), bucket(),
+      key: s3_key(entry),
+      content_type: entry.client_type,
+      max_file_size: max_file_size,
+      expires_in: :timer.hours(1)
+    )
+  end
+
+  defp config do
+    %{
+      region: System.fetch_env!("AWS_REGION"),
+      access_key_id: System.fetch_env!("AWS_ACCESS_KEY_ID"),
+      secret_access_key: System.fetch_env!("AWS_SECRET_ACCESS_KEY")
+    }
   end
 
   defp presign_cover(entry, socket) do
-    uploads = socket.assigns.uploads
-
-    config = %{
-      region: System.fetch_env!("AWS_REGION"),
-      access_key_id: System.fetch_env!("AWS_ACCESS_KEY_ID"),
-      secret_access_key: System.fetch_env!("AWS_SECRET_ACCESS_KEY")
-    }
-
-    {:ok, fields} =
-      GuildaWeb.SimpleS3Upload.sign_form_upload(config, bucket(),
-        key: s3_key(entry),
-        content_type: entry.client_type,
-        max_file_size: uploads.cover.max_file_size,
-        expires_in: :timer.hours(1)
-      )
-
-    meta = %{uploader: "S3", key: s3_key(entry), url: s3_host(), fields: fields}
-    {:ok, meta, socket}
+    presign_entry(entry, socket.assigns.uploads.cover.max_file_size, socket)
   end
 
   defp presign_file(entry, socket) do
-    uploads = socket.assigns.uploads
+    presign_entry(entry, socket.assigns.uploads.file.max_file_size, socket)
+  end
 
-    config = %{
-      region: System.fetch_env!("AWS_REGION"),
-      access_key_id: System.fetch_env!("AWS_ACCESS_KEY_ID"),
-      secret_access_key: System.fetch_env!("AWS_SECRET_ACCESS_KEY")
-    }
-
-    {:ok, fields} =
-      GuildaWeb.SimpleS3Upload.sign_form_upload(config, bucket(),
-        key: s3_key(entry),
-        content_type: entry.client_type,
-        max_file_size: uploads.file.max_file_size,
-        expires_in: :timer.hours(1)
-      )
+  defp presign_entry(entry, max_file_size, socket) do
+    {:ok, fields} = signed_fields(entry, max_file_size)
 
     meta = %{uploader: "S3", key: s3_key(entry), url: s3_host(), fields: fields}
     {:ok, meta, socket}
   end
 
-  defp put_cover(episode, socket) do
+  defp put_cover_params(params, socket) do
     case uploaded_entries(socket, :cover) do
       {[entry], []} ->
-        url = Path.join(s3_host(), s3_key(entry))
-
-        %{
-          episode
-          | cover_url: url,
-            cover_name: entry.client_name,
-            cover_size: entry.client_size,
-            cover_type: entry.client_type
-        }
+        Map.merge(
+          params,
+          %{
+            "cover_url" => Path.join(s3_host(), s3_key(entry)),
+            "cover_name" => entry.client_name,
+            "cover_size" => entry.client_size,
+            "cover_type" => entry.client_type
+          }
+        )
 
       _ ->
-        episode
+        params
     end
   end
 
-  defp put_file(episode, socket) do
+  defp put_file_params(params, socket) do
     case uploaded_entries(socket, :file) do
       {[entry], []} ->
-        url = Path.join(s3_host(), s3_key(entry))
-
-        %{
-          episode
-          | file_url: url,
-            file_name: entry.client_name,
-            file_size: entry.client_size,
-            file_type: entry.client_type
-        }
+        Map.merge(
+          params,
+          %{
+            "file_url" => Path.join(s3_host(), s3_key(entry)),
+            "file_name" => entry.client_name,
+            "file_size" => entry.client_size,
+            "file_type" => entry.client_type
+          }
+        )
 
       _ ->
-        episode
+        params
     end
   end
 

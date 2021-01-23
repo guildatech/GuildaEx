@@ -17,11 +17,11 @@ defmodule Guilda.PodcastsTest do
     end
 
     test "create_episode/1 with valid adata creates an episode" do
-      assert {:ok, %Episode{}} = Podcasts.create_episode(%Episode{}, params_for(:episode))
+      assert {:ok, %Episode{}} = Podcasts.create_episode(params_for(:episode))
     end
 
     test "create_episode/1 with invalid data returns an error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Podcasts.create_episode(%Episode{}, params_for(:episode, %{title: ""}))
+      assert {:error, %Ecto.Changeset{}} = Podcasts.create_episode(params_for(:episode, %{title: ""}))
     end
 
     test "update_episode/2 with invalid data returns error changeset" do
