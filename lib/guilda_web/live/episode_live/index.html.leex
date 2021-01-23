@@ -28,15 +28,17 @@
       <thead>
         <tr>
           <th class="Table__th"><%= gettext("Capa") %></th>
-          <th class="Table__th"><%= gettext("Link") %></th>
-          <th class="Table__th"><%= gettext("Tempo") %></th>
+          <th class="Table__th"><%= gettext("Arquivo") %></th>
+          <th class="Table__th"><%= gettext("Título") %></th>
+          <th class="Table__th"><%= gettext("Duração") %></th>
           <th class="Table__th"><%= gettext("Visualizações") %></th>
+          <th class="Table__th"></th>
         </tr>
       </thead>
       <tbody id="podcast_episodes" class="Table__body">
         <%= if @podcast_episodes == [] do %>
           <tr id="empty-podcast_episodes">
-            <td colspan=5 class="Table__td"><%= gettext("Nenhum episódio encontrado.") %></td>
+            <td colspan=7 class="Table__td"><%= gettext("Nenhum episódio encontrado.") %></td>
           </tr>
         <% end %>
         <%= for episode <- @podcast_episodes do %>
