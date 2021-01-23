@@ -11,15 +11,21 @@
 
     <div class="mb-5 sm:col-span-6">
       <label class="block text-sm font-medium text-gray-700">
-        Cover photo
+        <%= gettext("Imagem de capa") %>
       </label>
 
       <%= for entry <- @uploads.cover.entries do %>
         <div class="flex flex-col items-center justify-center mt-1 space-y-2">
           <%= live_img_preview entry, width: 150 %>
-          <p class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-            <%= entry.progress %>%
-          </p>
+          <%= if err = Enum.find(@uploads.cover.errors, fn {ref, _msg} -> ref == entry.ref end) do %>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-800">
+              <%= Phoenix.Naming.humanize(elem(err, 1)) %>
+            </span>
+          <% else %>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+              <%= entry.progress %>%
+            </span>
+          <% end %>
           <button type="button" class="AttachmentList__file-action" phx-click="cancel-cover-entry" phx-value-ref="<%= entry.ref%>" phx-target="<%= @myself %>"><%= gettext("Remover") %></button>
         </div>
       <% end %>
@@ -43,14 +49,11 @@
         </div>
       <% end %>
 
-      <%= for {_ref, msg} <- @uploads.cover.errors do  %>
-        <p><%= Phoenix.Naming.humanize(msg) %></p>
-      <% end %>
     </div>
 
     <div class="mb-5 sm:col-span-6">
       <label class="block text-sm font-medium text-gray-700">
-        File
+        <%= gettext("Arquivo") %>
       </label>
 
       <ul class="AttachmentList"><!-- do not remove this comment, it is necessary to hide the element if there are no attachments
@@ -62,13 +65,13 @@
                 <%= entry.client_name %>
               </span>
               <%= if err = Enum.find(@uploads.file.errors, fn {ref, _msg} -> ref == entry.ref end) do %>
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-800">
-                <%= Phoenix.Naming.humanize(elem(err, 1)) %>
-              </span>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-800">
+                  <%= Phoenix.Naming.humanize(elem(err, 1)) %>
+                </span>
               <% else %>
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                <%= entry.progress %>%
-              </span>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                  <%= entry.progress %>%
+                </span>
               <% end %>
             </div>
             <div class="AttachmentList__file-action-wrapper">
@@ -101,9 +104,9 @@
 
     </div>
 
-    <%= InputHelpers.input f, :title %>
-    <%= InputHelpers.input f, :slug %>
-    <%= InputHelpers.input f, :length %>
+    <%= InputHelpers.input f, :title, label: gettext("Título") %>
+    <%= InputHelpers.input f, :slug, label: gettext("Slug") %>
+    <%= InputHelpers.input f, :length, label: gettext("Duração") %>
   </div>
   <div class="Modal__footer">
     <%= live_patch gettext("Cancelar"), to: Routes.podcast_episode_index_path(@socket, :index), class: "Button Button--secondary sm:ml-auto" %>
