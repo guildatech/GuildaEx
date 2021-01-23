@@ -1,7 +1,7 @@
-<main class="mt-8 sm:mt-16 md:mt-20 lg:mt-24">
-  <div class="max-w-screen-xl mx-auto">
+<main class="md:mt-16 lg:mt-24">
+  <div class="px-4 mx-auto max-w-7xl lg:px-8">
     <div class="lg:grid lg:grid-cols-12 lg:gap-8">
-      <div class="px-4 sm:px-6 sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left lg:flex lg:items-center">
+      <div class="py-4 sm:py-6 sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left lg:flex lg:items-center">
         <div>
           <h2 class="mt-4 text-4xl font-extrabold leading-10 tracking-tight sm:mt-5 sm:leading-none sm:text-6xl lg:mt-6 lg:text-5xl xl:text-6xl">
             Boas vindas à
@@ -33,7 +33,7 @@
           </div>
         </div>
       </div>
-      <div class="mt-12 sm:mt-16 lg:mt-0 lg:col-span-6">
+      <div class="lg:col-span-6">
         <div class="sm:max-w-md sm:w-full sm:mx-auto sm:rounded-lg sm:overflow-hidden">
           <div class="px-4 py-8 sm:px-10">
             <div class="flex justify-center">
@@ -47,7 +47,7 @@
                 </div>
               <% else %>
                 <div id="telegram-login-button" class="flex items-center justify-center mt-6" phx-update="ignore">
-                  <%= link gettext("Login local"), to: Routes.auth_path(@socket, :telegram_callback, %{username: "guilda", first_name: "Guilda", last_name: "Tech", id: "123456"}) %>
+                  <%= link gettext("Login local"), to: Routes.auth_path(@socket, :telegram_callback, %{username: "guilda", first_name: "Guilda", last_name: "Tech", id: "123456"}), class: "Button" %>
                 </div>
               <% end %>
             <% end %>

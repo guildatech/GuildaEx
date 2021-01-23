@@ -1,2 +1,18 @@
 <%= live_render @socket, GuildaWeb.MenuLive, id: "menu", session: %{"menu" => @menu, "current_user" => @current_user} %>
+<!-- Flash messages start -->
+<%= if msg = live_flash(@flash, :info) do %>
+  <div class="alert alert-info" role="alert" phx-click="lv:clear-flash" phx-value-key="info">
+    <div class="px-2 mx-auto max-w-7xl sm:px-4 lg:px-8">
+      <%= msg %>
+    </div>
+  </div>
+<% end %>
+<%= if msg = live_flash(@flash, :error) do %>
+  <div class="alert alert-danger" role="alert" phx-click="lv:clear-flash" phx-value-key="error">
+    <div class="px-2 mx-auto max-w-7xl sm:px-4 lg:px-8">
+      <%= msg %>
+    </div>
+  </div>
+<% end %>
+<!-- Flash messages end -->
 <%= @inner_content %>
