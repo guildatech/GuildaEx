@@ -7,15 +7,15 @@
 }
 
 .form-control__input {
-  @apply block w-full form-input;
+  @apply shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md hover:border-blue-500;
 }
 
 .form-control__input--with-errors {
-  @apply pr-10 text-red-900 border-red-300;
+  @apply pr-10 border-red-300 text-red-900;
 }
 
 .form-control__input--with-errors:focus {
-  @apply border-red-300 shadow-outline-red;
+  @apply border-blue-500 ring-blue-500;
 }
 
 @screen sm {
@@ -25,7 +25,7 @@
 }
 
 .form-control__wrapper {
-  @apply relative mt-1 rounded-md shadow-sm;
+  @apply relative rounded-md;
 }
 
 .invalid-feedback {
@@ -45,5 +45,5 @@ input:checked ~ .toggle__line {
 }
 
 input:checked ~ .toggle__dot {
-  @apply translate-x-full !important;
+  @apply translate-x-full;
 }
