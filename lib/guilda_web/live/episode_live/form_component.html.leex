@@ -49,6 +49,7 @@
         </div>
       <% end %>
 
+      <%= error_tag(f, :cover_url) %>
     </div>
 
     <div class="mb-5 sm:col-span-6">
@@ -102,6 +103,7 @@
         </div>
       <% end %>
 
+      <%= error_tag(f, :file_url) %>
     </div>
 
     <%= InputHelpers.input f, :title, label: gettext("Título") %>
@@ -110,6 +112,6 @@
   </div>
   <div class="Modal__footer">
     <%= live_patch gettext("Cancelar"), to: Routes.podcast_episode_index_path(@socket, :index), class: "Button Button--secondary sm:ml-auto" %>
-    <%= submit gettext("Salvar"), class: "Button Button--primary" %>
+    <%= submit gettext("Salvar"), class: "Button Button--primary", phx_disable_with: gettext("Salvando...") %>
   </div>
 </form>

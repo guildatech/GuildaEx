@@ -7,7 +7,7 @@ defmodule GuildaWeb.Podcasts.PodcastEpisodeLive.FormComponent do
   def mount(socket) do
     {:ok,
      socket
-     |> allow_upload(:cover, accept: ~w(.jpg .jpeg .png), external: &presign_cover/2)
+     |> allow_upload(:cover, accept: ~w(.jpg .jpeg .png), max_file_size: 1, external: &presign_cover/2)
      |> allow_upload(:file, accept: ~w(.mp3), max_file_size: 70_000_000, external: &presign_file/2)}
   end
 
@@ -134,10 +134,10 @@ defmodule GuildaWeb.Podcasts.PodcastEpisodeLive.FormComponent do
     url =
       case uploaded_entries(socket, :cover) do
         {[entry], []} ->
-          url = Path.join(s3_host(), s3_key(entry))
+          Path.join(s3_host(), s3_key(entry))
 
         _ ->
-          nil
+          episode.cover_url
       end
 
     %{episode | cover_url: url}
@@ -147,10 +147,10 @@ defmodule GuildaWeb.Podcasts.PodcastEpisodeLive.FormComponent do
     url =
       case uploaded_entries(socket, :file) do
         {[entry], []} ->
-          url = Path.join(s3_host(), s3_key(entry))
+          Path.join(s3_host(), s3_key(entry))
 
         _ ->
-          nil
+          episode.file_url
       end
 
     %{episode | file_url: url}
