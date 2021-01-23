@@ -7,7 +7,7 @@ defmodule GuildaWeb.Podcasts.PodcastEpisodeLive.FormComponent do
   def mount(socket) do
     {:ok,
      socket
-     |> allow_upload(:cover, accept: ~w(.jpg .jpeg .png), max_file_size: 1, external: &presign_cover/2)
+     |> allow_upload(:cover, accept: ~w(.jpg .jpeg .png), external: &presign_cover/2)
      |> allow_upload(:file, accept: ~w(.mp3), max_file_size: 70_000_000, external: &presign_file/2)}
   end
 
@@ -131,29 +131,39 @@ defmodule GuildaWeb.Podcasts.PodcastEpisodeLive.FormComponent do
   end
 
   defp put_cover(episode, socket) do
-    url =
-      case uploaded_entries(socket, :cover) do
-        {[entry], []} ->
-          Path.join(s3_host(), s3_key(entry))
+    case uploaded_entries(socket, :cover) do
+      {[entry], []} ->
+        url = Path.join(s3_host(), s3_key(entry))
 
-        _ ->
-          episode.cover_url
-      end
+        %{
+          episode
+          | cover_url: url,
+            cover_name: entry.client_name,
+            cover_size: entry.client_size,
+            cover_type: entry.client_type
+        }
 
-    %{episode | cover_url: url}
+      _ ->
+        episode
+    end
   end
 
   defp put_file(episode, socket) do
-    url =
-      case uploaded_entries(socket, :file) do
-        {[entry], []} ->
-          Path.join(s3_host(), s3_key(entry))
+    case uploaded_entries(socket, :file) do
+      {[entry], []} ->
+        url = Path.join(s3_host(), s3_key(entry))
 
-        _ ->
-          episode.file_url
-      end
+        %{
+          episode
+          | file_url: url,
+            file_name: entry.client_name,
+            file_size: entry.client_size,
+            file_type: entry.client_type
+        }
 
-    %{episode | file_url: url}
+      _ ->
+        episode
+    end
   end
 
   def consume_files(socket, episode) do

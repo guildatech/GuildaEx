@@ -10,8 +10,14 @@ defmodule Guilda.PodcastsFixtures do
     %Guilda.Podcasts.Episode{
       title: "some title",
       slug: "some slug",
-      cover_url: "some cover",
-      file_url: "some path",
+      cover_url: "some cover url",
+      cover_name: "some cover name",
+      cover_type: "some cover type",
+      cover_size: 42,
+      file_url: "some file url",
+      file_name: "some file name",
+      file_type: "some file type",
+      file_size: 42,
       length: 42,
       play_count: 42
     }

@@ -14,6 +14,13 @@
         <%= gettext("Imagem de capa") %>
       </label>
 
+      <%= if @episode.cover_url do %>
+        <div class="flex flex-col items-center justify-center mt-1 space-y-2">
+          <img src="<%= @episode.cover_url %>" width="150">
+          <button type="button" class="AttachmentList__file-action" phx-click="remove-cover" phx-target="<%= @myself %>"><%= gettext("Remover") %></button>
+        </div>
+      <% end %>
+
       <%= for entry <- @uploads.cover.entries do %>
         <div class="flex flex-col items-center justify-center mt-1 space-y-2">
           <%= live_img_preview entry, width: 150 %>
@@ -30,7 +37,7 @@
         </div>
       <% end %>
 
-      <%= if @uploads.cover.entries == [] do %>
+      <%= if @uploads.cover.entries == [] && !@episode.cover_url do %>
         <div phx-drop-target="<%= @uploads.cover.ref %>" class="flex justify-center px-6 pt-5 pb-6 mt-2 border-2 border-gray-300 border-dashed rounded-md">
           <div class="space-y-1 text-center">
             <svg class="w-12 h-12 mx-auto text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
@@ -58,7 +65,22 @@
       </label>
 
       <ul class="AttachmentList"><!-- do not remove this comment, it is necessary to hide the element if there are no attachments
-     --><%= for entry <- @uploads.file.entries do %>
+     --><%= if @episode.file_url do %>
+          <li class="AttachmentList__item">
+            <div class="AttachmentList__wrapper">
+              <svg class="flex-shrink-0 w-5 h-5 text-gray-400" x-description="Heroicon name: paper-clip" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"> <path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd"></path></svg>
+              <span class="AttachmentList__file-name" title="<%= @episode.id %>">
+                <%= @episode.id %>
+              </span>
+            </div>
+            <div class="AttachmentList__file-action-wrapper">
+              <button type="button" class="AttachmentList__file-action" phx-click="remove-file" phx-target="<%= @myself %>" data-confirm="<%= gettext("Excluir arquivo: %{filename}?", filename: @episode.id) %>">
+                <%= gettext("Remover") %>
+              </button>
+            </div>
+          </li>
+        <% end %>
+        <%= for entry <- @uploads.file.entries do %>
           <li class="AttachmentList__item">
             <div class="AttachmentList__wrapper">
               <svg class="flex-shrink-0 w-5 h-5 text-gray-400" x-description="Heroicon name: paper-clip" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"> <path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd"></path></svg>
@@ -84,7 +106,7 @@
         <% end %><!-- do not remove this comment, it is necessary to hide the element if there are no attachments
    --></ul>
 
-      <%= if @uploads.file.entries == [] do %>
+      <%= if @uploads.file.entries == [] && !@episode.file_url do %>
         <div phx-drop-target="<%= @uploads.file.ref %>" class="flex justify-center px-6 pt-5 pb-6 mt-2 border-2 border-gray-300 border-dashed rounded-md">
           <div class="space-y-1 text-center">
             <svg class="w-12 h-12 mx-auto text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
