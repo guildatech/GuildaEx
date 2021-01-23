@@ -5,23 +5,19 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 
-@import "variables.css";
-
-@import "attachment-list.css";
-@import "buttons.css";
-@import "forms.css";
-@import "modal.css";
-@import "table.css";
+@import "attachment-list.scss";
+@import "buttons.scss";
+@import "forms.scss";
+@import "modal.scss";
+@import "table.scss";
 
 @import "tailwindcss/utilities";
 
 html {
-  background: var(--color-bg--main);
-  color: var(--color-txt);
-  font-family: var(--font-family);
   line-height: 1.4;
   -webkit-text-size-adjust: 100%;
   overflow-x: hidden;
+  @apply bg-gray-100;
 }
 
 html,
