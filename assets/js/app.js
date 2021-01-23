@@ -1,7 +1,7 @@
 // We need to import the CSS so that webpack will load it.
 // The MiniCssExtractPlugin is used to separate it out into
 // its own CSS file.
-import "../css/app.css"
+import "../css/app.css";
 
 // webpack automatically bundles all modules in your
 // entry points. Those entry points can be configured
@@ -12,16 +12,40 @@ import "../css/app.css"
 //     import {Socket} from "phoenix"
 //     import socket from "./socket"
 //
-import "phoenix_html"
-import "alpinejs"
+import "phoenix_html";
+import "alpinejs";
 
-import {Socket} from "phoenix"
-import NProgress from "nprogress"
-import {LiveSocket} from "phoenix_live_view"
-import { toCurrency } from "./currency-conversion"
-import flatpickr from "flatpickr"
+import { Socket } from "phoenix";
+import NProgress from "nprogress";
+import { LiveSocket } from "phoenix_live_view";
+import { toCurrency } from "./currency-conversion";
+import flatpickr from "flatpickr";
 
-let Hooks = {}
+let Uploaders = {};
+
+Uploaders.S3 = function (entries, onViewError) {
+  entries.forEach((entry) => {
+    let formData = new FormData();
+    let { url, fields } = entry.meta;
+    Object.entries(fields).forEach(([key, val]) => formData.append(key, val));
+    formData.append("file", entry.file);
+    let xhr = new XMLHttpRequest();
+    onViewError(() => xhr.abort());
+    xhr.onload = () => xhr.status === 204 || entry.error();
+    xhr.onerror = () => entry.error();
+    xhr.upload.addEventListener("progress", (event) => {
+      if (event.lengthComputable) {
+        let percent = Math.round((event.loaded / event.total) * 100);
+        entry.progress(percent);
+      }
+    });
+
+    xhr.open("POST", url, true);
+    xhr.send(formData);
+  });
+};
+
+let Hooks = {};
 
 Hooks.CurrencyMask = {
   beforeUpdate() {
@@ -45,33 +69,34 @@ Hooks.DatePicker = {
       dateFormat: "Y-m-d",
       defaultDate: el.getAttribute("value"),
       enableTime: false,
-    })
-  }
-}
+    });
+  },
+};
 
-let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
+let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content");
 let liveSocket = new LiveSocket("/live", Socket, {
   params: {
-    _csrf_token: csrfToken
+    _csrf_token: csrfToken,
   },
+  uploaders: Uploaders,
   hooks: Hooks,
   dom: {
     onBeforeElUpdated(from, to) {
       if (from.__x) {
         window.Alpine.clone(from.__x, to);
       }
-    }
-  }
+    },
+  },
 });
 
 // Show progress bar on live navigation and form submits
-window.addEventListener("phx:page-loading-start", info => NProgress.start())
-window.addEventListener("phx:page-loading-stop", info => NProgress.done())
+window.addEventListener("phx:page-loading-start", (info) => NProgress.start());
+window.addEventListener("phx:page-loading-stop", (info) => NProgress.done());
 
 // connect if there are any LiveViews on the page
-liveSocket.connect()
+liveSocket.connect();
 
 // expose liveSocket on window for web console debug logs and latency simulation:
 // >> liveSocket.enableDebug()
 // >> liveSocket.enableLatencySim(1000)
-window.liveSocket = liveSocket
+window.liveSocket = liveSocket;

@@ -8,11 +8,12 @@ defmodule Guilda.PodcastsFixtures do
 
   def episode_factory do
     %Guilda.Podcasts.Episode{
-      cover: "some cover",
-      path: "some path",
+      title: "some title",
+      slug: "some slug",
+      cover_url: "some cover",
+      file_url: "some path",
       length: 42,
-      play_count: 42,
-      tags: []
+      play_count: 42
     }
   end
 end

@@ -37,7 +37,7 @@ defmodule GuildaWeb.Live.LiveHelpers do
   end
 
   defp assign_menu(socket) do
-    assign(socket, menu: %{action: socket.assigns.live_action, module: socket.assigns.live_module})
+    assign(socket, menu: %{action: socket.assigns.live_action, module: socket.view})
   end
 
   defp assign_default(socket, :current_user, %{"user_token" => user_token}) do

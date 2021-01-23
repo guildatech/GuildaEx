@@ -49,11 +49,18 @@ defmodule Guilda.Podcasts do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_episode(attrs \\ %{}) do
-    %Episode{}
+  def create_episode(%Episode{} = episode, attrs, after_save \\ &{:ok, &1}) do
+    episode
     |> Episode.changeset(attrs)
     |> Repo.insert()
+    |> after_save(after_save)
   end
+
+  defp after_save({:ok, episode}, func) do
+    {:ok, _episode} = func.(episode)
+  end
+
+  defp after_save(error, _func), do: error
 
   @doc """
   Updates a episode.
@@ -67,10 +74,11 @@ defmodule Guilda.Podcasts do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_episode(%Episode{} = episode, attrs) do
+  def update_episode(%Episode{} = episode, attrs, after_save \\ &{:ok, &1}) do
     episode
     |> Episode.changeset(attrs)
     |> Repo.update()
+    |> after_save(after_save)
   end
 
   @doc """

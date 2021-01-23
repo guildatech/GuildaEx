@@ -7,8 +7,10 @@ defmodule GuildaWeb.PodcastEpisodeLive.EpisodeComponent do
   def render(assigns) do
     ~L"""
     <tr id="<% @id %>">
-      <td class="Table__td"><%= @episode.cover %></td>
-      <td class="Table__td"><%= @episode.path %></td>
+      <td class="Table__td"><%= @episode.slug %></td>
+      <td class="Table__td"><%= @episode.title %></td>
+      <td class="Table__td"><%= @episode.cover_url %></td>
+      <td class="Table__td"><%= @episode.file_url %></td>
       <td align="right" class="Table__td"><%= @episode.length %></td>
       <td align="right" class="Table__td">
         <%= live_patch gettext("Editar"), to: Routes.podcast_episode_index_path(@socket, :edit, @episode) %> | <button type="button" phx-click="delete" phx-target="<%= @myself %>" phx-value-id="<%= @episode.id %>" data-confirm="Tem certeza?"><%= gettext("Excluir") %></button>

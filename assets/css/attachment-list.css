@@ -1,0 +1,26 @@
+.AttachmentList {
+  @apply mb-3 border border-gray-200 divide-y divide-gray-200 rounded-md;
+}
+.AttachmentList:empty {
+  display: none;
+}
+
+.AttachmentList__item {
+  @apply flex items-center justify-between py-3 pl-3 pr-4 text-sm;
+}
+
+.AttachmentList__wrapper {
+  @apply flex items-center flex-1 w-0;
+}
+
+.AttachmentList__file-name {
+  @apply flex-1 w-0 ml-2 truncate;
+}
+
+.AttachmentList__file-action-wrapper {
+  @apply flex-shrink-0 ml-4;
+}
+
+.AttachmentList__file-action {
+  @apply font-medium text-blue-600 hover:text-blue-500;
+}

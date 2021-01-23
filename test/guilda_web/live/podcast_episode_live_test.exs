@@ -28,7 +28,7 @@ defmodule GuildaWeb.PodcastEpisodeLiveTest do
       {:ok, _live, html} = live(conn, path(:index, opts))
 
       assert html =~ "Lista de episódios"
-      assert html =~ episode.cover
+      assert html =~ episode.title
     end
 
     test "displays a button to add a new episode", %{conn: conn} = opts do
@@ -57,7 +57,7 @@ defmodule GuildaWeb.PodcastEpisodeLiveTest do
     test "displays the form", %{conn: conn} do
       {:ok, view, _html} = live(conn, Routes.podcast_episode_index_path(conn, :new))
       assert has_element?(view, "form[id=episode-form]")
-      assert has_element?(view, "input[name='episode[cover]']")
+      assert has_element?(view, "input[name='episode[title]']")
     end
 
     test "saves and redirects with valid data", %{conn: conn} do
@@ -65,16 +65,15 @@ defmodule GuildaWeb.PodcastEpisodeLiveTest do
 
       {:ok, _view, html} =
         view
-        |> form(
-          "form[phx-submit=save",
-          %{
-            "episode" => %{
-              "cover" => "a new episode",
-              "path" => "some episode"
-            }
+        |> form("form[phx-submit=save")
+        |> render_submit(%{
+          "episode" => %{
+            "title" => "a new episode",
+            "slug" => "some episode",
+            "cover_url" => "some episode",
+            "file_url" => "some episode"
           }
-        )
-        |> render_submit()
+        })
         |> follow_redirect(conn)
 
       assert html =~ "a new episode"
@@ -90,7 +89,7 @@ defmodule GuildaWeb.PodcastEpisodeLiveTest do
       {:ok, view, _html} = live(conn, Routes.podcast_episode_index_path(conn, :new))
 
       refute has_element?(view, "#episode-form", "can't be blank")
-      view |> form("form[phx-submit=save]", %{"episode" => %{"path" => ""}}) |> render_submit()
+      view |> form("form[phx-submit=save]", %{"episode" => %{"title" => ""}}) |> render_submit()
       assert has_element?(view, "#episode-form", "can't be blank")
     end
   end
@@ -106,10 +105,10 @@ defmodule GuildaWeb.PodcastEpisodeLiveTest do
 
     test "displays a form", %{conn: conn, episode: episode} = opts do
       {:ok, view, html} = live(conn, path(:edit, episode, opts))
-      assert html =~ episode.cover
-      assert html =~ episode.path
+      assert html =~ episode.title
+      assert html =~ episode.slug
       assert has_element?(view, "form[id=episode-form]")
-      assert has_element?(view, "input[name='episode[path]']")
+      assert has_element?(view, "input[name='episode[title]']")
     end
 
     test "displays a link to return to the episodes list", %{conn: conn, episode: episode} = opts do
@@ -122,7 +121,7 @@ defmodule GuildaWeb.PodcastEpisodeLiveTest do
       {:ok, view, _html} = live(conn, path(:edit, episode, opts))
 
       refute has_element?(view, "#episode-form", "can't be blank")
-      view |> form("form[phx-submit=save]", %{"episode" => %{"path" => ""}}) |> render_submit()
+      view |> form("form[phx-submit=save]", %{"episode" => %{"title" => ""}}) |> render_submit()
       assert has_element?(view, "#episode-form", "can't be blank")
     end
 
@@ -131,15 +130,12 @@ defmodule GuildaWeb.PodcastEpisodeLiveTest do
 
       {:ok, _view, html} =
         view
-        |> form(
-          "form[phx-submit=save]",
-          %{
-            "episode" => %{
-              "path" => "some updated episode"
-            }
+        |> form("form[phx-submit=save]")
+        |> render_submit(%{
+          "episode" => %{
+            "title" => "some updated episode"
           }
-        )
-        |> render_submit()
+        })
         |> follow_redirect(conn)
 
       assert html =~ "some updated episode"
@@ -152,7 +148,7 @@ defmodule GuildaWeb.PodcastEpisodeLiveTest do
     test "removes the episode and redirects", %{conn: conn, episode: episode} = opts do
       {:ok, view, _html} = live(conn, path(:index, opts))
 
-      assert render(view) =~ episode.path
+      assert render(view) =~ episode.title
 
       {:ok, view, _html} =
         view
@@ -160,7 +156,7 @@ defmodule GuildaWeb.PodcastEpisodeLiveTest do
         |> render_click()
         |> follow_redirect(conn, path(:index, opts))
 
-      refute render(view) =~ episode.path
+      refute render(view) =~ episode.title
     end
   end
 end

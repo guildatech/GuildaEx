@@ -4,11 +4,12 @@ defmodule Guilda.Repo.Migrations.CreatePodcastEpisodes do
   def change do
     create table(:podcast_episodes, primary_key: false) do
       add :id, :binary_id, primary_key: true
-      add :cover, :string
-      add :path, :string
-      add :length, :integer
-      add :play_count, :integer
-      add :tags, {:array, :string}
+      add :title, :string, null: false
+      add :slug, :string, null: false
+      add :cover_url, :string, null: false
+      add :file_url, :string, null: false
+      add :length, :integer, default: 0
+      add :play_count, :integer, default: 0
 
       timestamps()
     end

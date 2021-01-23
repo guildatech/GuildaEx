@@ -19,6 +19,8 @@ defmodule GuildaWeb.Router do
       https://guildatech.com
       ws://guildatech.com
       wss://guildatech.com
+      http://guilda-tech.s3.amazonaws.com
+      https://guilda-tech.s3.amazonaws.com
     ],
     "img-src" => ~w[
       'self'

@@ -3,22 +3,42 @@ defmodule Guilda.PodcastsTest do
 
   alias Guilda.Podcasts
   alias Guilda.Podcasts.Episode
+  import Guilda.PodcastsFixtures
 
   describe "episodes" do
-    @valid_attrs %{cover: "some cover", path: "some path", length: 42, play_count: 42, tags: []}
-    @invalid_attrs %{cover: nil, path: nil, length: nil, play_count: nil, tags: []}
+    test "list_episodes/0 returns all episodes" do
+      episode = insert(:episode)
+      assert Podcasts.list_podcast_episodes() == [episode]
+    end
+
+    test "get_episode!/1 returns the episode with given id" do
+      episode = insert(:episode)
+      assert Podcasts.get_episode!(episode.id) == episode
+    end
 
     test "create_episode/1 with valid adata creates an episode" do
-      assert {:ok, %Episode{} = episode} = Podcasts.create_episode(@valid_attrs)
-      assert episode.cover == "some cover"
-      assert episode.path == "some path"
-      assert episode.length == 42
-      assert episode.play_count == 42
-      assert episode.tags == []
+      assert {:ok, %Episode{}} = Podcasts.create_episode(%Episode{}, params_for(:episode))
     end
 
     test "create_episode/1 with invalid data returns an error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Podcasts.create_episode(@invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Podcasts.create_episode(%Episode{}, params_for(:episode, %{title: ""}))
+    end
+
+    test "update_episode/2 with invalid data returns error changeset" do
+      episode = insert(:episode)
+      assert {:error, %Ecto.Changeset{}} = Podcasts.update_episode(episode, params_for(:episode, %{title: ""}))
+      assert episode == Podcasts.get_episode!(episode.id)
+    end
+
+    test "delete_episode/1 deletes the episode" do
+      episode = insert(:episode)
+      assert {:ok, %Episode{}} = Podcasts.delete_episode(episode)
+      assert_raise Ecto.NoResultsError, fn -> Podcasts.get_episode!(episode.id) end
+    end
+
+    test "change_episode/1 returns a episode changeset" do
+      episode = insert(:episode)
+      assert %Ecto.Changeset{} = Podcasts.change_episode(episode)
     end
   end
 end
