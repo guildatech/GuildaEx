@@ -1,4 +1,7 @@
 defmodule GuildaWeb.PodcastEpisodeLive.EpisodeComponent do
+  @moduledoc """
+  LiveView Component to display a podcast episode.
+  """
   use GuildaWeb, :live_component
 
   alias Guilda.Podcasts

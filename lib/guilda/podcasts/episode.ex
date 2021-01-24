@@ -1,4 +1,7 @@
 defmodule Guilda.Podcasts.Episode do
+  @moduledoc """
+  Podcasts Episode schema.
+  """
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -24,7 +27,8 @@ defmodule Guilda.Podcasts.Episode do
     timestamps()
   end
 
-  @changeset_attrs ~w(aired_date title description hosts slug cover_url cover_name cover_type cover_size file_url file_name file_type file_size length)a
+  @changeset_attrs ~w(aired_date title description hosts slug cover_url cover_name cover_type cover_size file_url
+    file_name file_type file_size length)a
 
   def changeset(episode, attrs) do
     episode
