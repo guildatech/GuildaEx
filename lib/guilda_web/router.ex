@@ -81,9 +81,9 @@ defmodule GuildaWeb.Router do
 
     live "/", PageLive, :index
 
-    live "/podcasts", PodcastEpisodeLive.Index, :index
-    live "/podcasts/new", PodcastEpisodeLive.Index, :new
-    live "/podcasts/:id/edit", PodcastEpisodeLive.Index, :edit
+    live "/podcast", PodcastEpisodeLive.Index, :index
+    live "/podcast/new", PodcastEpisodeLive.Index, :new
+    live "/podcast/:id/edit", PodcastEpisodeLive.Index, :edit
 
     ## Authentication routes
     get "/auth/telegram", AuthController, :telegram_callback
