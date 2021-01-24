@@ -66,20 +66,7 @@ defmodule GuildaWeb.PodcastEpisodeLiveTest do
       {:ok, _view, html} =
         view
         |> form("form[phx-submit=save")
-        |> render_submit(%{
-          "episode" => %{
-            "title" => "a new episode",
-            "slug" => "some episode",
-            "cover_url" => "some episode",
-            "cover_name" => "some episode",
-            "cover_type" => "some episode",
-            "cover_size" => "42",
-            "file_url" => "some episode",
-            "file_name" => "some episode",
-            "file_type" => "some episode",
-            "file_size" => "42"
-          }
-        })
+        |> render_submit(%{"episode" => string_params_for(:episode, title: "a new episode")})
         |> follow_redirect(conn)
 
       assert html =~ "a new episode"

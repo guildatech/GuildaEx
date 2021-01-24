@@ -7,6 +7,9 @@ defmodule Guilda.Podcasts.Episode do
   schema "podcast_episodes" do
     field :title, :string
     field :slug, :string
+    field :description, :string
+    field :hosts, :string
+    field :aired_date, :date
     field :cover_url, :string
     field :cover_name, :string
     field :cover_type, :string
@@ -21,7 +24,7 @@ defmodule Guilda.Podcasts.Episode do
     timestamps()
   end
 
-  @changeset_attrs ~w(title slug cover_url cover_name cover_type cover_size file_url file_name file_type file_size length)a
+  @changeset_attrs ~w(aired_date title description hosts slug cover_url cover_name cover_type cover_size file_url file_name file_type file_size length)a
 
   def changeset(episode, attrs) do
     episode

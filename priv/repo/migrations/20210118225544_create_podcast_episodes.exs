@@ -6,6 +6,9 @@ defmodule Guilda.Repo.Migrations.CreatePodcastEpisodes do
       add :id, :binary_id, primary_key: true
       add :title, :string, null: false
       add :slug, :string, null: false
+      add :description, :text, null: false
+      add :aired_date, :date, null: false
+      add :hosts, :string, null: false
       add :cover_url, :string, null: false
       add :cover_name, :string, null: false
       add :cover_type, :string, null: false

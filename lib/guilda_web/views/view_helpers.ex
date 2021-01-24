@@ -3,6 +3,11 @@ defmodule GuildaWeb.ViewHelpers do
   View Helpers used across the app.
   """
 
+  @spec format_date(Timex.Types.valid_datetime()) :: String.t() | no_return()
+  def format_date(date) do
+    Timex.format!(date, "{0D}/{0M}/{YYYY}")
+  end
+
   def svg_icon(match, opts \\ [])
 
   for file <- Guilda.svg_icons() do

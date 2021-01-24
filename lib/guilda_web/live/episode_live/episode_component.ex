@@ -17,23 +17,23 @@ defmodule GuildaWeb.PodcastEpisodeLive.EpisodeComponent do
               <%= @episode.title %>
             </p>
             <p class="mt-3 text-base text-gray-500">
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ipsa libero labore natus atque, ducimus sed.
+              <%= @episode.description %>
             </p>
           </a>
         </div>
         <div class="flex flex-col mt-6">
           <p class="text-sm text-gray-900">
-            Com <span class="font-medium">Duran, o anão</span> e <span class="font-medium">Will Correa</span>
+            <%= @episode.hosts %>
           </p>
           <div class="flex space-x-1 text-sm text-gray-500">
             <time datetime="2020-03-16">
-              <%= @episode.inserted_at %>
+              <%= format_date @episode.aired_date %>
             </time>
             <span aria-hidden="true">
               &middot;
             </span>
             <span>
-              <%= @episode.length %>
+              <%= format_seconds @episode.length %>
             </span>
           </div>
         </div>
@@ -57,5 +57,10 @@ defmodule GuildaWeb.PodcastEpisodeLive.EpisodeComponent do
     {:ok, _} = Podcasts.delete_episode(episode)
 
     {:noreply, push_redirect(socket, to: Routes.podcast_episode_index_path(socket, :index))}
+  end
+
+  # View Helpers
+  def format_seconds(seconds) do
+    seconds |> Timex.Duration.from_seconds() |> Timex.Duration.to_time!()
   end
 end

@@ -10,6 +10,9 @@ defmodule Guilda.PodcastsFixtures do
     %Guilda.Podcasts.Episode{
       title: "some title",
       slug: "some slug",
+      description: "some description",
+      hosts: "some hosts",
+      aired_date: "2020-01-01",
       cover_url: "some cover url",
       cover_name: "some cover name",
       cover_type: "some cover type",

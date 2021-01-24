@@ -49,7 +49,7 @@
         </div>
       <% end %>
 
-      <%= error_tag(f, :cover_url) %>
+      <%= if @uploads.cover.entries == [], do: error_tag(f, :cover_url) %>
     </div>
 
     <div class="mb-5 sm:col-span-6">
@@ -103,11 +103,14 @@
         </div>
       <% end %>
 
-      <%= error_tag(f, :file_url) %>
+      <%= if @uploads.file.entries == [], do: error_tag(f, :file_url) %>
     </div>
 
-    <%= InputHelpers.input f, :title, label: gettext("Título") %>
     <%= InputHelpers.input f, :slug, label: gettext("Slug") %>
+    <%= InputHelpers.input f, :title, label: gettext("Título") %>
+    <%= InputHelpers.input f, :description, type: :textarea, label: gettext("Descrição") %>
+    <%= InputHelpers.input f, :hosts, label: gettext("Apresentadores") %>
+    <%= InputHelpers.input f, :aired_date, label: gettext("Data de exibição"), type: :text_input, input_opts: [phx_hook: "DatePicker"] %>
     <%= InputHelpers.input f, :length, label: gettext("Duração") %>
   </div>
   <div class="Modal__footer">
