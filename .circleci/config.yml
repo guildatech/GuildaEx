@@ -6,7 +6,7 @@ version: 2
 defaults: &defaults
   working_directory: ~/guildatech
   docker:
-    - image: circleci/elixir:1.10.1
+    - image: cimg/elixir:1.11.3
       environment:
         MIX_ENV: test
 
@@ -47,7 +47,7 @@ jobs:
     environment:
       MIX_ENV: test
     docker:
-      - image: circleci/elixir:1.10.1
+      - image: cimg/elixir:1.11.3
       - image: circleci/postgres:11.5-alpine
     parallelism: 1
     steps:
