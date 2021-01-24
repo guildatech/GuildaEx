@@ -111,7 +111,7 @@
     <%= InputHelpers.input f, :description, type: :textarea, label: gettext("Descrição") %>
     <%= InputHelpers.input f, :hosts, label: gettext("Apresentadores") %>
     <%= InputHelpers.input f, :aired_date, label: gettext("Data de exibição"), type: :text_input, input_opts: [phx_hook: "DatePicker"] %>
-    <%= InputHelpers.input f, :length, label: gettext("Duração") %>
+    <%= InputHelpers.input f, :length, label: gettext("Duração"), hint: gettext("Em segundos") %>
   </div>
   <div class="Modal__footer">
     <%= live_patch gettext("Cancelar"), to: Routes.podcast_episode_index_path(@socket, :index), class: "Button Button--secondary sm:ml-auto" %>
