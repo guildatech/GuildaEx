@@ -6,20 +6,48 @@ defmodule GuildaWeb.PodcastEpisodeLive.EpisodeComponent do
   @impl Phoenix.LiveComponent
   def render(assigns) do
     ~L"""
-    <tr id="<% @id %>">
-      <td class="Table__td">
-        <img src="<%= @episode.cover_url %>" width="150" alt="<%= gettext("Capa do episódio %{episode_name}", episode_name: @episode.title) %>">
-      </td>
-      <td class="Table__td">
-        <%= link @episode.file_name, to: @episode.file_url %>
-      </td>
-      <td class="Table__td"><%= @episode.title %></td>
-      <td align="right" class="Table__td"><%= @episode.length %></td>
-      <td align="right" class="Table__td"><%= @episode.play_count %></td>
-      <td align="right" class="Table__td">
-        <%= live_patch gettext("Editar"), to: Routes.podcast_episode_index_path(@socket, :edit, @episode) %> | <button type="button" phx-click="delete" phx-target="<%= @myself %>" phx-value-id="<%= @episode.id %>" data-confirm="Tem certeza?"><%= gettext("Excluir") %></button>
-      </td>
-    </tr>
+    <div id="<%= @id %>" class="flex flex-col overflow-hidden rounded-lg shadow-lg">
+      <div class="flex-shrink-0">
+        <img class="object-cover w-full h-50" src="<%= @episode.cover_url %>" alt="<%= gettext("Capa do episódio %{episode_name}", episode_name: @episode.title) %>">
+      </div>
+      <div class="flex flex-col justify-between flex-1 p-6 bg-white">
+        <div class="flex-1">
+          <a href="#" class="block mt-2">
+            <p class="text-xl font-semibold text-gray-900">
+              <%= @episode.title %>
+            </p>
+            <p class="mt-3 text-base text-gray-500">
+              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ipsa libero labore natus atque, ducimus sed.
+            </p>
+          </a>
+        </div>
+        <div class="flex flex-col mt-6">
+          <p class="text-sm text-gray-900">
+            Com <span class="font-medium">Duran, o anão</span> e <span class="font-medium">Will Correa</span>
+          </p>
+          <div class="flex space-x-1 text-sm text-gray-500">
+            <time datetime="2020-03-16">
+              <%= @episode.inserted_at %>
+            </time>
+            <span aria-hidden="true">
+              &middot;
+            </span>
+            <span>
+              <%= @episode.length %>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="flex -mt-px bg-white border-t divide-x divide-gray-200 border-t-gray-200">
+          <div class="flex flex-1 w-0">
+            <%= live_patch gettext("Editar"), to: Routes.podcast_episode_index_path(@socket, :edit, @episode), class: "relative -mr-px w-0 flex-1 inline-flex items-center justify-center py-4 text-sm text-gray-700 font-medium border border-transparent rounded-bl-lg hover:text-gray-500" %>
+          </div>
+          <div class="flex flex-1 w-0 -ml-px">
+            <button type="button" phx-click="delete" phx-target="<%= @myself %>" phx-value-id="<%= @episode.id %>" data-confirm="Tem certeza?" class="relative inline-flex items-center justify-center flex-1 w-0 py-4 -mr-px text-sm font-medium text-gray-700 border border-transparent rounded-bl-lg hover:text-gray-500"><%= gettext("Excluir") %></button>
+          </div>
+        </div>
+      </div>
     """
   end
 

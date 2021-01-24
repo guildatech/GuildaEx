@@ -27,7 +27,7 @@ defmodule GuildaWeb.PodcastEpisodeLiveTest do
     test "list all podcast episodes", %{conn: conn, episode: episode} = opts do
       {:ok, _live, html} = live(conn, path(:index, opts))
 
-      assert html =~ "Lista de episódios"
+      assert html =~ "Quem Programa?, o podcast da Guilda"
       assert html =~ episode.title
     end
 

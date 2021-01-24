@@ -115,3 +115,7 @@ body {
 .alert:empty {
   display: none;
 }
+
+*[hidden] {
+  display: none;
+}

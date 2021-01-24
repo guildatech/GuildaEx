@@ -18,7 +18,7 @@ defmodule GuildaWeb.PodcastEpisodeLive.Index do
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Lista de episódios")
+    |> assign(:page_title, "Quem Programa?")
     |> assign(:episode, nil)
   end
 
