@@ -160,9 +160,4 @@ defmodule GuildaWeb.Podcasts.PodcastEpisodeLive.FormComponent do
 
     {:ok, episode}
   end
-
-  # View Helpers
-  def bytes_to_mb(bytes) do
-    bytes / 1000
-  end
 end
