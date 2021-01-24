@@ -15,7 +15,7 @@
     <p class="max-w-2xl mx-auto mt-3 text-xl text-gray-500 sm:mt-4">
       Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ipsa libero labore natus atque, ducimus sed.
     </p>
-    <%= live_patch gettext("Novo Episódio"), to: Routes.podcast_episode_index_path(@socket, :new), class: "Button mt-6" %>
+    <%= live_patch gettext("Novo episódio"), to: Routes.podcast_episode_index_path(@socket, :new), class: "Button mt-6" %>
   </div>
   <%= if @podcast_episodes == [] do %>
     <div class="flex flex-col items-center mt-10">

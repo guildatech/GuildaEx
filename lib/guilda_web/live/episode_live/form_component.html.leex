@@ -43,7 +43,7 @@
               <p class="pl-1"><%= gettext("ou arraste e solte") %></p>
             </div>
             <p class="text-xs text-gray-500">
-              <%= gettext("Tamanho até 8MB") %>
+              <%= gettext("Tamanho até %{size}", size: Sizeable.filesize(@uploads.cover.max_file_size, base: 3)) %>
             </p>
           </div>
         </div>
@@ -97,7 +97,7 @@
               <p class="pl-1"><%= gettext("ou arraste e solte") %></p>
             </div>
             <p class="text-xs text-gray-500">
-              <%= gettext("Tamanho até 8MB") %>
+              <%= gettext("Tamanho até %{size}", size: Sizeable.filesize(@uploads.file.max_file_size, base: 3)) %>
             </p>
           </div>
         </div>

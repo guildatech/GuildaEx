@@ -8,7 +8,7 @@ defmodule GuildaWeb.Podcasts.PodcastEpisodeLive.FormComponent do
     {:ok,
      socket
      |> allow_upload(:cover, accept: ~w(.jpg .jpeg .png), external: &presign_cover/2)
-     |> allow_upload(:file, accept: ~w(.mp3), max_file_size: 70_000_000, external: &presign_file/2)}
+     |> allow_upload(:file, accept: ~w(.mp3), max_file_size: 100_000_000, external: &presign_file/2)}
   end
 
   @impl true
@@ -53,7 +53,7 @@ defmodule GuildaWeb.Podcasts.PodcastEpisodeLive.FormComponent do
       {:ok, _episode} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Episódio salvo com sucesso.")
+         |> put_flash(:info, gettext("Episódio salvo com sucesso."))
          |> push_redirect(to: socket.assigns.return_to)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -71,7 +71,7 @@ defmodule GuildaWeb.Podcasts.PodcastEpisodeLive.FormComponent do
       {:ok, _episode} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Episódio atualizado com sucesso.")
+         |> put_flash(:info, gettext("Episódio atualizado com sucesso."))
          |> push_redirect(to: socket.assigns.return_to)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -156,5 +156,10 @@ defmodule GuildaWeb.Podcasts.PodcastEpisodeLive.FormComponent do
     consume_uploaded_entries(socket, :file, fn _meta, _entry -> :ok end)
 
     {:ok, episode}
+  end
+
+  # View Helpers
+  def bytes_to_mb(bytes) do
+    bytes / 1000
   end
 end
