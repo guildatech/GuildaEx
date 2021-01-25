@@ -82,7 +82,7 @@ defmodule GuildaWeb.Podcasts.PodcastEpisodeLive.FormComponent do
     end
   end
 
-  defp s3_key(entry), do: "public/#{entry.client_name}"
+  defp s3_key(entry), do: "#{Application.get_env(:guilda, :environment)}/#{entry.client_name}"
   defp s3_host, do: "//#{bucket()}.s3.amazonaws.com"
   defp bucket, do: System.fetch_env!("S3_BUCKET")
 
