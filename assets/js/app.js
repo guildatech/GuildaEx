@@ -53,7 +53,7 @@ Hooks.PodcastPlayer = {
 
     this.el.addEventListener("timeupdate", (event) => {
       var currentTime = Math.round(event.target.currentTime);
-      if (currentTime != this._lastSecond && !event.target.paused) {
+      if (currentTime !== this._lastSecond && !event.target.paused) {
         this._lastSecond = currentTime;
         this.pushEventTo(`#${this.el.dataset.target}`, "play-second-elapsed", {
           time: currentTime,
