@@ -117,4 +117,22 @@ defmodule Guilda.Podcasts do
     from(e in Episode, update: [inc: [play_count: 1]], where: e.id == ^episode.id)
     |> Repo.update_all([])
   end
+
+  @doc """
+  Indicates if an episode should be marked as viewed.
+
+  If the seconds played are equal or greater than 20% of the episode length it returns true.
+  Returns false otherwise.
+
+  ## Examples
+
+      iex> should_mark_as_viewed(%Episode{length: 10}, 2)
+      true
+
+      iex> should_mark_as_viewed(%Episode{length: 10}, 1)
+      false
+  """
+  def should_mark_as_viewed?(%Episode{length: length}, seconds_played_so_far) do
+    seconds_played_so_far / length >= 0.2
+  end
 end

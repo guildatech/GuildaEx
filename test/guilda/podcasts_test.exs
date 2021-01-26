@@ -46,5 +46,12 @@ defmodule Guilda.PodcastsTest do
       assert {1, nil} = Podcasts.increase_play_count(episode)
       assert Podcasts.get_episode!(episode.id).play_count == episode.play_count + 1
     end
+
+    test "should_mark_as_viewed?/2" do
+      assert Podcasts.should_mark_as_viewed?(%Episode{length: 10}, 3)
+      assert Podcasts.should_mark_as_viewed?(%Episode{length: 10}, 2)
+      refute Podcasts.should_mark_as_viewed?(%Episode{length: 10}, 1)
+      refute Podcasts.should_mark_as_viewed?(%Episode{length: 10}, 0)
+    end
   end
 end

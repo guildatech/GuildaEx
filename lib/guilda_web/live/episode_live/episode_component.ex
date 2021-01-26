@@ -76,7 +76,7 @@ defmodule GuildaWeb.PodcastEpisodeLive.EpisodeComponent do
     seconds_played = socket.assigns.seconds_played + 1
 
     socket =
-      if mark_as_viewed?(seconds_played, episode.length) do
+      if Podcasts.should_mark_as_viewed?(episode, seconds_played) do
         Podcasts.increase_play_count(episode)
         assign(socket, viewed: true)
       else
@@ -88,10 +88,6 @@ defmodule GuildaWeb.PodcastEpisodeLive.EpisodeComponent do
 
   def handle_event("play-second-elapsed", %{"time" => _time}, socket) do
     {:noreply, socket}
-  end
-
-  defp mark_as_viewed?(seconds_so_far, length) do
-    seconds_so_far / length >= 0.20
   end
 
   # View Helpers
