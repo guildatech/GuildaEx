@@ -109,4 +109,12 @@ defmodule Guilda.Podcasts do
   def change_episode(%Episode{} = episode, attrs \\ %{}) do
     Episode.changeset(episode, attrs)
   end
+
+  @doc """
+  Increases the play count for an episode.
+  """
+  def increase_play_count(%Episode{} = episode) do
+    from(e in Episode, update: [inc: [play_count: 1]], where: e.id == ^episode.id)
+    |> Repo.update_all([])
+  end
 end

@@ -2,7 +2,7 @@ defmodule GuildaWeb.Live.LiveHelpers do
   @moduledoc """
   Helpers used by LiveViews.
   """
-  import Phoenix.LiveView, only: [assign: 2]
+  import Phoenix.LiveView, only: [assign: 2, assign_new: 3]
   import Phoenix.LiveView.Helpers
 
   alias Guilda.Accounts
@@ -41,8 +41,9 @@ defmodule GuildaWeb.Live.LiveHelpers do
   end
 
   defp assign_default(socket, :current_user, %{"user_token" => user_token}) do
-    user = Accounts.get_user_by_session_token(user_token)
-    assign(socket, current_user: user)
+    socket
+    |> assign_new(:user_token, fn -> user_token end)
+    |> assign_new(:current_user, fn -> Accounts.get_user_by_session_token(user_token) end)
   end
 
   defp assign_default(socket, :current_user, _) do

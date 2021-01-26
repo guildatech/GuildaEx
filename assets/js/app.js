@@ -47,6 +47,22 @@ Uploaders.S3 = function (entries, onViewError) {
 
 let Hooks = {};
 
+Hooks.PodcastPlayer = {
+  mounted() {
+    this._lastSecond = 0;
+
+    this.el.addEventListener("timeupdate", (event) => {
+      var currentTime = Math.round(event.target.currentTime);
+      if (currentTime != this._lastSecond && !event.target.paused) {
+        this._lastSecond = currentTime;
+        this.pushEventTo(`#${this.el.dataset.target}`, "play-second-elapsed", {
+          time: currentTime,
+        });
+      }
+    });
+  },
+};
+
 Hooks.CurrencyMask = {
   beforeUpdate() {
     this.el.value = toCurrency(this.el.value);

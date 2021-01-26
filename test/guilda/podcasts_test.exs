@@ -40,5 +40,11 @@ defmodule Guilda.PodcastsTest do
       episode = insert(:episode)
       assert %Ecto.Changeset{} = Podcasts.change_episode(episode)
     end
+
+    test "increase_play_count/1" do
+      episode = insert(:episode)
+      assert {1, nil} = Podcasts.increase_play_count(episode)
+      assert Podcasts.get_episode!(episode.id).play_count == episode.play_count + 1
+    end
   end
 end

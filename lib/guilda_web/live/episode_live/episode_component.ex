@@ -7,6 +7,16 @@ defmodule GuildaWeb.PodcastEpisodeLive.EpisodeComponent do
   alias Guilda.Podcasts
 
   @impl Phoenix.LiveComponent
+  def update(assigns, socket) do
+    socket =
+      socket
+      |> assign(assigns)
+      |> assign(seconds_played: 0, viewed: false)
+
+    {:ok, socket}
+  end
+
+  @impl Phoenix.LiveComponent
   def render(assigns) do
     ~L"""
     <div id="<%= @id %>" class="flex flex-col overflow-hidden rounded-lg shadow-lg">
@@ -43,6 +53,11 @@ defmodule GuildaWeb.PodcastEpisodeLive.EpisodeComponent do
       </div>
       <div>
         <div class="flex -mt-px bg-white border-t divide-x divide-gray-200 border-t-gray-200">
+          <audio id="player-<%= @episode.id %>" phx-hook="PodcastPlayer" data-target="<%= @id %>" class="w-full" src="<%= @episode.file_url %>" type="<%= @episode.file_type %>" controls></audio>
+        </div>
+      </div>
+      <div>
+        <div class="flex -mt-px bg-white border-t divide-x divide-gray-200 border-t-gray-200">
           <div class="flex flex-1 w-0">
             <%= live_patch gettext("Editar"), to: Routes.podcast_episode_index_path(@socket, :edit, @episode), class: "relative -mr-px w-0 flex-1 inline-flex items-center justify-center py-4 text-sm text-gray-700 font-medium border border-transparent rounded-bl-lg hover:text-gray-500" %>
           </div>
@@ -60,6 +75,28 @@ defmodule GuildaWeb.PodcastEpisodeLive.EpisodeComponent do
     {:ok, _} = Podcasts.delete_episode(episode)
 
     {:noreply, push_redirect(socket, to: Routes.podcast_episode_index_path(socket, :index))}
+  end
+
+  def handle_event("play-second-elapsed", %{"time" => _time}, %{assigns: %{episode: episode, viewed: false}} = socket) do
+    seconds_played = socket.assigns.seconds_played + 1
+
+    socket =
+      if mark_as_viewed?(seconds_played, episode.length) do
+        Podcasts.increase_play_count(episode)
+        assign(socket, viewed: true)
+      else
+        assign(socket, seconds_played: seconds_played)
+      end
+
+    {:noreply, socket}
+  end
+
+  def handle_event("play-second-elapsed", %{"time" => _time}, socket) do
+    {:noreply, socket}
+  end
+
+  defp mark_as_viewed?(seconds_so_far, length) do
+    seconds_so_far / length >= 0.20
   end
 
   # View Helpers

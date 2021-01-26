@@ -11,7 +11,7 @@ defmodule GuildaWeb.PodcastEpisodeLive.Index do
   def mount(params, session, socket) do
     socket = assign_defaults(socket, params, session)
 
-    {:ok, assign(socket, :podcast_episodes, list_podcast_episodes())}
+    {:ok, assign(socket, podcast_episodes: list_podcast_episodes())}
   end
 
   @impl true
