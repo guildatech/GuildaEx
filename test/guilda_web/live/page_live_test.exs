@@ -1,5 +1,5 @@
 defmodule GuildaWeb.PageLiveTest do
-  use GuildaWeb.ConnCase
+  use GuildaWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
 

@@ -21,7 +21,47 @@ import { LiveSocket } from "phoenix_live_view";
 import { toCurrency } from "./currency-conversion";
 import flatpickr from "flatpickr";
 
+let Uploaders = {};
+
+Uploaders.S3 = function (entries, onViewError) {
+  entries.forEach((entry) => {
+    let formData = new FormData();
+    let { url, fields } = entry.meta;
+    Object.entries(fields).forEach(([key, val]) => formData.append(key, val));
+    formData.append("file", entry.file);
+    let xhr = new XMLHttpRequest();
+    onViewError(() => xhr.abort());
+    xhr.onload = () => xhr.status === 204 || entry.error();
+    xhr.onerror = () => entry.error();
+    xhr.upload.addEventListener("progress", (event) => {
+      if (event.lengthComputable) {
+        let percent = Math.round((event.loaded / event.total) * 100);
+        entry.progress(percent);
+      }
+    });
+
+    xhr.open("POST", url, true);
+    xhr.send(formData);
+  });
+};
+
 let Hooks = {};
+
+Hooks.PodcastPlayer = {
+  mounted() {
+    this._lastSecond = 0;
+
+    this.el.addEventListener("timeupdate", (event) => {
+      var currentTime = Math.round(event.target.currentTime);
+      if (currentTime !== this._lastSecond && !event.target.paused) {
+        this._lastSecond = currentTime;
+        this.pushEventTo(`#${this.el.dataset.target}`, "play-second-elapsed", {
+          time: currentTime,
+        });
+      }
+    });
+  },
+};
 
 Hooks.CurrencyMask = {
   beforeUpdate() {
@@ -54,6 +94,7 @@ let liveSocket = new LiveSocket("/live", Socket, {
   params: {
     _csrf_token: csrfToken,
   },
+  uploaders: Uploaders,
   hooks: Hooks,
   dom: {
     onBeforeElUpdated(from, to) {

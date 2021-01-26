@@ -1,4 +1,7 @@
 defmodule GuildaWeb.ModalComponent do
+  @moduledoc """
+  LiveView Component to render another component within a modal.
+  """
   use GuildaWeb, :live_component
 
   @impl true

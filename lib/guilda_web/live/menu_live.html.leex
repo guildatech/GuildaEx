@@ -11,6 +11,7 @@
           <% end %>
         </div>
         <div class="hidden space-x-8 sm:-my-px sm:ml-6 sm:flex">
+          <%= maybe_active_live_redirect @menu, gettext("Podcast"), :main, GuildaWeb.PodcastEpisodeLive.Index, Routes.podcast_episode_index_path(@socket, :index) %>
           <%= if @current_user, do: maybe_active_live_redirect @menu, gettext("Finanças"), :main, GuildaWeb.FinanceLive.Index, Routes.finance_index_path(@socket, :index) %>
           <%= if @current_user, do: maybe_active_live_redirect @menu, gettext("Configurações"), :main, GuildaWeb.UserSettingLive, Routes.user_settings_path(@socket, :edit) %>
           <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>

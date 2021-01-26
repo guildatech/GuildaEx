@@ -5,6 +5,7 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 
+@import "attachment-list.scss";
 @import "buttons.scss";
 @import "forms.scss";
 @import "modal.scss";
@@ -112,5 +113,9 @@ body {
   margin-bottom: 0;
 }
 .alert:empty {
+  display: none;
+}
+
+*[hidden] {
   display: none;
 }

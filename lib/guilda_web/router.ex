@@ -19,6 +19,8 @@ defmodule GuildaWeb.Router do
       https://guildatech.com
       ws://guildatech.com
       wss://guildatech.com
+      http://guilda-tech.s3.amazonaws.com
+      https://guilda-tech.s3.amazonaws.com
     ],
     "img-src" => ~w[
       'self'
@@ -78,6 +80,10 @@ defmodule GuildaWeb.Router do
     pipe_through [:browser]
 
     live "/", PageLive, :index
+
+    live "/podcast", PodcastEpisodeLive.Index, :index
+    live "/podcast/new", PodcastEpisodeLive.Index, :new
+    live "/podcast/:id/edit", PodcastEpisodeLive.Index, :edit
 
     ## Authentication routes
     get "/auth/telegram", AuthController, :telegram_callback

@@ -1,4 +1,7 @@
 defmodule GuildaWeb.FinanceLive.FormComponent do
+  @moduledoc """
+  LiveView Component to display a form for a transaction.
+  """
   use GuildaWeb, :live_component
 
   alias Guilda.Finances

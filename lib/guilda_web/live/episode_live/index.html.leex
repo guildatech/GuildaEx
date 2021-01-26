@@ -1,0 +1,39 @@
+<!-- Main wrapper start -->
+<main class="px-4 pt-10 pb-20 mx-auto max-w-7xl sm:px-6 lg:pb-28 lg:px-8">
+
+  <%= if @live_action in [:new, :edit], do: live_modal @socket, GuildaWeb.Podcasts.PodcastEpisodeLive.FormComponent,
+    id: @episode.id || :new,
+    action: @live_action,
+    title: @page_title,
+    episode: @episode,
+    return_to: Routes.podcast_episode_index_path(@socket, :index) %>
+
+  <div class="text-center">
+    <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+      <%= gettext("Quem Programa?, o podcast da Guilda") %>
+    </h2>
+    <p class="max-w-2xl mx-auto mt-3 text-xl text-gray-500 sm:mt-4">
+      <%= gettext("Contribua financeiramente com o podcast da Guilda em") %>
+      <a href="https://apoia.se/guildatech" target=_blank class="inline-flex items-center font-medium text-yellow-500 hover:underline">
+        https://apoia.se/guildatech
+        <svg class="inline w-6 h-6 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+      </a>
+    </p>
+    <%= live_patch gettext("Novo episódio"), to: Routes.podcast_episode_index_path(@socket, :new), class: "Button mt-6" %>
+  </div>
+  <%= if @podcast_episodes == [] do %>
+    <div class="flex flex-col items-center mt-10">
+      <svg class="text-yellow-400 w-28 h-28" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      <p class="text-xl text-gray-700">
+        <%= gettext("Não há episódios cadastrados.") %>
+      </p>
+    </div>
+  <% end %>
+  <div class="grid max-w-lg gap-5 mx-auto mt-12 lg:grid-cols-3 lg:max-w-none">
+    <%= for episode <- @podcast_episodes do %>
+      <%= live_component @socket, GuildaWeb.PodcastEpisodeLive.EpisodeComponent, id: "episode-card-#{episode.id}", episode: episode %>
+    <% end %>
+  </div>
+
+</main>
+<!-- Main wrapper end -->

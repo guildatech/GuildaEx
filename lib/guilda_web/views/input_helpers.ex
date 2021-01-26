@@ -23,6 +23,7 @@ defmodule GuildaWeb.InputHelpers do
         content_tag :div, class: "form-control__wrapper" do
           [input, ErrorHelpers.error_icon(form, field)]
         end,
+        build_hint(opts[:hint]),
         ErrorHelpers.error_tag(form, field)
       ]
     end
@@ -67,5 +68,11 @@ defmodule GuildaWeb.InputHelpers do
     else
       label(form, field, label_opts)
     end
+  end
+
+  defp build_hint(nil), do: []
+
+  defp build_hint(text) do
+    content_tag(:p, text, class: "mt-2 text-sm text-gray-500")
   end
 end
