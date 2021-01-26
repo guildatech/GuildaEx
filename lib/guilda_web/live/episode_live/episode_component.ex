@@ -7,13 +7,8 @@ defmodule GuildaWeb.PodcastEpisodeLive.EpisodeComponent do
   alias Guilda.Podcasts
 
   @impl Phoenix.LiveComponent
-  def update(assigns, socket) do
-    socket =
-      socket
-      |> assign(assigns)
-      |> assign(seconds_played: 0, viewed: false)
-
-    {:ok, socket}
+  def mount(socket) do
+    {:ok, assign(socket, seconds_played: 0, viewed: false)}
   end
 
   @impl Phoenix.LiveComponent
