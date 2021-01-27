@@ -212,4 +212,13 @@ defmodule Guilda.AccountsTest do
       refute Accounts.get_user_by_session_token(token)
     end
   end
+
+  describe "give_admin/1" do
+    test "sets the is_admin flag to true" do
+      user = user_fixture()
+      refute user.is_admin
+      assert {1, nil} = Accounts.give_admin(user)
+      assert %User{is_admin: true} = Accounts.get_user_by_telegram_id(user.telegram_id)
+    end
+  end
 end

@@ -5,6 +5,7 @@
     id: @episode.id || :new,
     action: @live_action,
     title: @page_title,
+    current_user: @current_user,
     episode: @episode,
     return_to: Routes.podcast_episode_index_path(@socket, :index) %>
 
@@ -31,7 +32,7 @@
   <% end %>
   <div class="grid max-w-lg gap-5 mx-auto mt-12 lg:grid-cols-3 lg:max-w-none">
     <%= for episode <- @podcast_episodes do %>
-      <%= live_component @socket, GuildaWeb.PodcastEpisodeLive.EpisodeComponent, id: "episode-card-#{episode.id}", episode: episode %>
+      <%= live_component @socket, GuildaWeb.PodcastEpisodeLive.EpisodeComponent, id: "episode-card-#{episode.id}", episode: episode, current_user: @current_user %>
     <% end %>
   </div>
 

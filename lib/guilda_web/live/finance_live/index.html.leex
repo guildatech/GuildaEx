@@ -21,6 +21,7 @@
       id: @transaction.id || :new,
       title: @page_title,
       action: @live_action,
+      current_user: @current_user,
       transaction: @transaction,
       return_to: Routes.finance_index_path(@socket, :index) %>
   <% end %>
@@ -43,7 +44,7 @@
           </tr>
         <% end %>
         <%= for transaction <- @transactions do %>
-          <%= live_component @socket, GuildaWeb.FinanceLive.TransactionComponent, id: transaction.id, transaction: transaction %>
+          <%= live_component @socket, GuildaWeb.FinanceLive.TransactionComponent, id: transaction.id, transaction: transaction, current_user: @current_user %>
         <% end %>
       </tbody>
     </table>

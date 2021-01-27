@@ -14,6 +14,7 @@ defmodule Guilda.Accounts.User do
     field :last_name, :string
     field :email, :string
     field :confirmed_at, :naive_datetime
+    field :is_admin, :boolean, default: false
 
     timestamps()
   end

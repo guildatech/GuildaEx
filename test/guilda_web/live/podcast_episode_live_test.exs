@@ -5,6 +5,8 @@ defmodule GuildaWeb.PodcastEpisodeLiveTest do
 
   import Guilda.PodcastsFixtures
 
+  setup :register_and_log_in_admin_user
+
   defp create_episode(_) do
     %{episode: insert(:episode)}
   end

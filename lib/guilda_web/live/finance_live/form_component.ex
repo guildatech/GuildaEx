@@ -33,28 +33,44 @@ defmodule GuildaWeb.FinanceLive.FormComponent do
   end
 
   defp save_transaction(socket, :edit, transaction_params) do
-    case Finances.update_transaction(socket.assigns.transaction, toggle_amount_signal(transaction_params)) do
+    case Finances.update_transaction(
+           socket.assigns.current_user,
+           socket.assigns.transaction,
+           toggle_amount_signal(transaction_params)
+         ) do
       {:ok, _transaction} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Transaction updated successfully")
+         |> put_flash(:info, "Transação cadastrada com sucesso.")
          |> push_redirect(to: socket.assigns.return_to)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :changeset, changeset)}
+
+      {:error, error} ->
+        {:noreply,
+         socket
+         |> put_flash(:error, Err.message(error))
+         |> push_redirect(to: Routes.finance_index_path(socket, :index))}
     end
   end
 
   defp save_transaction(socket, :new, transaction_params) do
-    case Finances.create_transaction(toggle_amount_signal(transaction_params)) do
+    case Finances.create_transaction(socket.assigns.current_user, toggle_amount_signal(transaction_params)) do
       {:ok, _transaction} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Transaction created successfully")
+         |> put_flash(:info, "Transação atualizada com sucesso.")
          |> push_redirect(to: socket.assigns.return_to)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset: changeset)}
+
+      {:error, error} ->
+        {:noreply,
+         socket
+         |> put_flash(:error, Err.message(error))
+         |> push_redirect(to: Routes.finance_index_path(socket, :index))}
     end
   end
 

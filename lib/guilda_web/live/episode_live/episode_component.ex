@@ -67,9 +67,20 @@ defmodule GuildaWeb.PodcastEpisodeLive.EpisodeComponent do
   @impl Phoenix.LiveComponent
   def handle_event("delete", %{"id" => id}, socket) do
     episode = Podcasts.get_episode!(id)
-    {:ok, _} = Podcasts.delete_episode(episode)
 
-    {:noreply, push_redirect(socket, to: Routes.podcast_episode_index_path(socket, :index))}
+    case Podcasts.delete_episode(socket.assigns.current_user, episode) do
+      {:ok, _episode} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, gettext("Episódio excluído com sucesso."))
+         |> push_redirect(to: Routes.podcast_episode_index_path(socket, :index))}
+
+      {:error, error} ->
+        {:noreply,
+         socket
+         |> put_flash(:error, Err.message(error))
+         |> push_redirect(to: Routes.podcast_episode_index_path(socket, :index))}
+    end
   end
 
   def handle_event("play-second-elapsed", %{"time" => _time}, %{assigns: %{episode: episode, viewed: false}} = socket) do

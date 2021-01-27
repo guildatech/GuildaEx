@@ -24,8 +24,19 @@ defmodule GuildaWeb.FinanceLive.TransactionComponent do
   @impl Phoenix.LiveComponent
   def handle_event("delete", %{"id" => id}, socket) do
     transaction = Finances.get_transaction!(id)
-    {:ok, _} = Finances.delete_transaction(transaction)
 
-    {:noreply, push_redirect(socket, to: Routes.finance_index_path(socket, :index))}
+    case Finances.delete_transaction(socket.assigns.current_user, transaction) do
+      {:ok, _episode} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, gettext("Transação excluída com sucesso."))
+         |> push_redirect(to: Routes.finance_index_path(socket, :index))}
+
+      {:error, error} ->
+        {:noreply,
+         socket
+         |> put_flash(:error, Err.message(error))
+         |> push_redirect(to: Routes.finance_index_path(socket, :index))}
+    end
   end
 end

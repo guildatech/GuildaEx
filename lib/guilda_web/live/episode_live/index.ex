@@ -26,15 +26,31 @@ defmodule GuildaWeb.PodcastEpisodeLive.Index do
   end
 
   defp apply_action(socket, :new, _params) do
-    socket
-    |> assign(:page_title, gettext("Novo episódio"))
-    |> assign(:episode, %Episode{})
+    case Bodyguard.permit(Podcasts, :create_episode, socket.assigns.current_user) do
+      :ok ->
+        socket
+        |> assign(:page_title, gettext("Novo episódio"))
+        |> assign(:episode, %Episode{})
+
+      {:error, error} ->
+        socket
+        |> put_flash(:error, Err.message(error))
+        |> push_redirect(to: Routes.podcast_episode_index_path(socket, :index))
+    end
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
-    socket
-    |> assign(:page_title, gettext("Editar episódio"))
-    |> assign(:episode, Podcasts.get_episode!(id))
+    case Bodyguard.permit(Podcasts, :update_episode, socket.assigns.current_user) do
+      :ok ->
+        socket
+        |> assign(:page_title, gettext("Editar episódio"))
+        |> assign(:episode, Podcasts.get_episode!(id))
+
+      {:error, error} ->
+        socket
+        |> put_flash(:error, Err.message(error))
+        |> push_redirect(to: Routes.podcast_episode_index_path(socket, :index))
+    end
   end
 
   defp list_podcast_episodes do

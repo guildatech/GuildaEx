@@ -47,9 +47,11 @@ defmodule Guilda.MixProject do
   defp deps do
     [
       {:bcrypt_elixir, "~> 2.0"},
+      {:bodyguard, "~> 2.4"},
       {:credo, "~> 1.1", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
       {:ecto_sql, "~> 3.4"},
+      {:err, "~> 0.1.0"},
       {:ex_aws_s3, "~> 2.0"},
       {:ex_aws, "~> 2.0"},
       {:ex_machina, "~> 2.4"},

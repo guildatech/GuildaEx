@@ -5,7 +5,7 @@ defmodule GuildaWeb.FinanceLiveTest do
 
   import Guilda.FinancesFixtures
 
-  setup :register_and_log_in_user
+  setup :register_and_log_in_admin_user
 
   def create_transaction(_) do
     %{transaction: insert(:transaction)}

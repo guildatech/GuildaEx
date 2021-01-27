@@ -5,6 +5,8 @@ defmodule GuildaWeb.UserAuth do
   import Plug.Conn
   import Phoenix.Controller
 
+  import GuildaWeb.Gettext
+
   alias Guilda.Accounts
   alias GuildaWeb.Router.Helpers, as: Routes
 
@@ -128,4 +130,8 @@ defmodule GuildaWeb.UserAuth do
   defp maybe_store_return_to(conn), do: conn
 
   defp signed_in_path(_conn), do: "/"
+
+  def format_error(:unauthorized) do
+    gettext("Você não possui permissão para realizar esta ação.")
+  end
 end
