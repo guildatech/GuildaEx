@@ -106,7 +106,7 @@ defmodule Guilda.Finances do
   end
 
   @doc """
-  Wraps delete_transaction/2 in a Bodyguard call. Runs the function
+  Wraps delete_transaction/1 in a Bodyguard call. Runs the function
   if the user is authorized to perform the action.
   """
   def delete_transaction(user, %Transaction{} = transaction) do

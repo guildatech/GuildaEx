@@ -112,7 +112,7 @@ defmodule Guilda.Podcasts do
   end
 
   @doc """
-  Wraps delete_episode/2 in a Bodyguard call. Runs the function
+  Wraps delete_episode/1 in a Bodyguard call. Runs the function
   if the user is authorized to perform the action.
   """
   def delete_episode(user, %Episode{} = episode) do
