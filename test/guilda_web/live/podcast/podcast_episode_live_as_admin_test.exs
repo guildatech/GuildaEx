@@ -1,4 +1,4 @@
-defmodule GuildaWeb.PodcastEpisodeLiveTest do
+defmodule GuildaWeb.PodcastEpisodeAsAdminLiveTest do
   use GuildaWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest

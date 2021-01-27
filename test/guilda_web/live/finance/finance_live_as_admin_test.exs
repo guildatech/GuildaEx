@@ -1,4 +1,4 @@
-defmodule GuildaWeb.FinanceLiveTest do
+defmodule GuildaWeb.FinanceLiveAsAdminTest do
   use GuildaWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest

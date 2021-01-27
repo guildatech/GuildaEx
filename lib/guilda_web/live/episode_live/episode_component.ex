@@ -53,12 +53,16 @@ defmodule GuildaWeb.PodcastEpisodeLive.EpisodeComponent do
       </div>
       <div>
         <div class="flex -mt-px bg-white border-t divide-x divide-gray-200 border-t-gray-200">
-          <div class="flex flex-1 w-0">
-            <%= live_patch gettext("Editar"), to: Routes.podcast_episode_index_path(@socket, :edit, @episode), class: "relative -mr-px w-0 flex-1 inline-flex items-center justify-center py-4 text-sm text-gray-700 font-medium border border-transparent rounded-bl-lg hover:text-gray-500" %>
-          </div>
-          <div class="flex flex-1 w-0 -ml-px">
-            <button type="button" phx-click="delete" phx-target="<%= @myself %>" phx-value-id="<%= @episode.id %>" data-confirm="Tem certeza?" class="relative inline-flex items-center justify-center flex-1 w-0 py-4 -mr-px text-sm font-medium text-gray-700 border border-transparent rounded-bl-lg hover:text-gray-500"><%= gettext("Excluir") %></button>
-          </div>
+          <%= if Bodyguard.permit?(Podcasts, :update_episode, @current_user) do %>
+            <div class="flex flex-1 w-0">
+              <%= live_patch gettext("Editar"), to: Routes.podcast_episode_index_path(@socket, :edit, @episode), class: "relative -mr-px w-0 flex-1 inline-flex items-center justify-center py-4 text-sm text-gray-700 font-medium border border-transparent rounded-bl-lg hover:text-gray-500" %>
+            </div>
+          <% end %>
+          <%= if Bodyguard.permit?(Podcasts, :delete_episode, @current_user) do %>
+            <div class="flex flex-1 w-0 -ml-px">
+              <button type="button" phx-click="delete" phx-target="<%= @myself %>" phx-value-id="<%= @episode.id %>" data-confirm="Tem certeza?" class="relative inline-flex items-center justify-center flex-1 w-0 py-4 -mr-px text-sm font-medium text-gray-700 border border-transparent rounded-bl-lg hover:text-gray-500"><%= gettext("Excluir") %></button>
+            </div>
+          <% end %>
         </div>
       </div>
     """

@@ -5,11 +5,13 @@
         <%= gettext("Finanças") %>
       </h1>
     </div>
-    <div class="flex mt-4 sm:mt-0 sm:ml-4">
-      <span class="order-1 sm:order-0">
-        <%= live_patch gettext("Nova Transação"), to: Routes.finance_index_path(@socket, :new), class: "Button" %>
-      </span>
-    </div>
+    <%= if Bodyguard.permit?(Finances, :create_transaction, @current_user) do %>
+      <div class="flex mt-4 sm:mt-0 sm:ml-4">
+        <span class="order-1 sm:order-0">
+          <%= live_patch gettext("Nova Transação"), to: Routes.finance_index_path(@socket, :new), class: "Button" %>
+        </span>
+      </div>
+    <% end %>
   </div>
 </header>
 
@@ -34,7 +36,9 @@
           <th class="Table__th"><%= gettext("Beneficiário") %></th>
           <th class="Table__th"><%= gettext("Nota") %></th>
           <th class="text-right Table__th"><%= gettext("Valor") %></th>
-          <th class="Table__th"></th>
+          <%= if Bodyguard.permit?(Finances, :manage_transaction, @current_user) do %>
+            <th class="Table__th"></th>
+          <% end %>
         </tr>
       </thead>
       <tbody id="transactions" phx-update="prepend" class="Table__body">
