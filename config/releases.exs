@@ -1,4 +1,6 @@
-use Mix.Config
+import Config
+
+config :guilda, :environment, :prod
 
 telegram_bot_username =
   System.get_env("TELEGRAM_BOT_USERNAME") ||

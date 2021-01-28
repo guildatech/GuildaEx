@@ -101,23 +101,17 @@ defmodule GuildaWeb.Podcasts.PodcastEpisodeLive.FormComponent do
 
   defp s3_key(entry), do: "#{Application.get_env(:guilda, :environment)}/#{entry.client_name}"
   defp s3_host, do: "//#{bucket()}.s3.amazonaws.com"
-  defp bucket, do: System.fetch_env!("S3_BUCKET")
+  defp bucket, do: Application.get_env(:guilda, :aws)[:bucket]
 
   defp signed_fields(entry, max_file_size) do
-    GuildaWeb.SimpleS3Upload.sign_form_upload(config(), bucket(),
+    config = Application.get_env(:guilda, :aws) |> Enum.into(%{})
+
+    GuildaWeb.SimpleS3Upload.sign_form_upload(config, bucket(),
       key: s3_key(entry),
       content_type: entry.client_type,
       max_file_size: max_file_size,
       expires_in: :timer.hours(1)
     )
-  end
-
-  defp config do
-    %{
-      region: System.fetch_env!("AWS_REGION"),
-      access_key_id: System.fetch_env!("AWS_ACCESS_KEY_ID"),
-      secret_access_key: System.fetch_env!("AWS_SECRET_ACCESS_KEY")
-    }
   end
 
   defp presign_cover(entry, socket) do

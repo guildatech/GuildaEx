@@ -13,13 +13,16 @@ config :guilda, GuildaWeb.Endpoint,
   load_from_system_env: true,
   version: Mix.Project.config()[:version],
   server: true,
-  url: [host: "guildatech.gigalixirapp.com", port: 443],
   cache_static_manifest: "priv/static/cache_manifest.json"
+
+config :guilda, Guilda.Repo,
+  load_from_system_env: true,
+  pool_size: 10
 
 # Do not print debug messages in production
 config :logger, level: :info
 
-config :guilda, GuildaWeb.Endpoint, force_ssl: [rewrite_on: [:x_forwarded_proto]]
+# config :guilda, GuildaWeb.Endpoint, force_ssl: [rewrite_on: [:x_forwarded_proto]]
 
 # ## SSL Support
 #
@@ -58,14 +61,8 @@ config :guilda, GuildaWeb.Endpoint, force_ssl: [rewrite_on: [:x_forwarded_proto]
 # Finally import the config/prod.secret.exs which loads secrets
 # and configuration from environment variables.
 
-telegram_bot_token =
-  System.get_env("TELEGRAM_BOT_TOKEN") ||
-    raise """
-    environment variable TELEGRAM_BOT_TOKEN is missing.
-    """
-
-config :guilda, :auth, telegram_bot_token: telegram_bot_token
-
 config :guilda, :environment, :prod
 
+# Finally import the config/prod.secret.exs which should be versioned
+# separately.
 import_config "prod.secret.exs"
