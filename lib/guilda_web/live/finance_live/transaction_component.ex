@@ -14,9 +14,14 @@ defmodule GuildaWeb.FinanceLive.TransactionComponent do
       <td class="Table__td"><%= @transaction.payee %></td>
       <td class="Table__td"><%= @transaction.note %></td>
       <td align="right" class="Table__td"><%= @transaction.amount %></td>
-      <td align="right" class="Table__td">
-        <%= live_patch gettext("Editar"), to: Routes.finance_index_path(@socket, :edit, @transaction) %> | <button type="button" phx-click="delete" phx-target="<%= @myself %>" phx-value-id="<%= @transaction.id %>" data-confirm="Tem certeza?"><%= gettext("Excluir") %></button>
-      </td>
+      <%= if Bodyguard.permit?(Finances, :manage_transaction, @current_user) do %>
+        <td align="right" class="space-x-1 Table__td">
+          <%= if Bodyguard.permit?(Finances, :update_transaction, @current_user), do: live_patch gettext("Editar"), to: Routes.finance_index_path(@socket, :edit, @transaction), class: "TableAction--edit" %>
+          <%= if Bodyguard.permit?(Finances, :delete_transaction, @current_user) do %>
+            <button type="button" class="TableAction--delete" phx-click="delete" phx-target="<%= @myself %>" phx-value-id="<%= @transaction.id %>" data-confirm="<%= gettext("Tem certeza?") %>"><%= gettext("Excluir") %></button>
+          <% end %>
+        </td>
+      <% end %>
     </tr>
     """
   end
@@ -24,8 +29,19 @@ defmodule GuildaWeb.FinanceLive.TransactionComponent do
   @impl Phoenix.LiveComponent
   def handle_event("delete", %{"id" => id}, socket) do
     transaction = Finances.get_transaction!(id)
-    {:ok, _} = Finances.delete_transaction(transaction)
 
-    {:noreply, push_redirect(socket, to: Routes.finance_index_path(socket, :index))}
+    case Finances.delete_transaction(socket.assigns.current_user, transaction) do
+      {:ok, _episode} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, gettext("Transação excluída com sucesso."))
+         |> push_redirect(to: Routes.finance_index_path(socket, :index))}
+
+      {:error, error} ->
+        {:noreply,
+         socket
+         |> put_flash(:error, Err.message(error))
+         |> push_redirect(to: Routes.finance_index_path(socket, :index))}
+    end
   end
 end

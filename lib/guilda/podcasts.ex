@@ -8,6 +8,8 @@ defmodule Guilda.Podcasts do
 
   alias Guilda.Podcasts.Episode
 
+  defdelegate authorize(action, user, params), to: Guilda.Podcasts.Policy
+
   @doc """
   Returns the list of podcast_episodes.
 
@@ -38,6 +40,20 @@ defmodule Guilda.Podcasts do
   def get_episode!(id), do: Repo.get!(Episode, id)
 
   @doc """
+  Wraps create_episode/2 in a Bodyguard call. Runs the function
+  if the user is authorized to perform the action.
+  """
+  def create_episode(user, attrs, after_save) do
+    case Bodyguard.permit(__MODULE__, :create_episode, user) do
+      :ok ->
+        create_episode(attrs, after_save)
+
+      other ->
+        other
+    end
+  end
+
+  @doc """
   Creates a episode.
 
   ## Examples
@@ -63,6 +79,20 @@ defmodule Guilda.Podcasts do
   defp after_save(error, _func), do: error
 
   @doc """
+  Wraps update_episode/3 in a Bodyguard call. Runs the function
+  if the user is authorized to perform the action.
+  """
+  def update_episode(user, %Episode{} = episode, attrs, after_save) do
+    case Bodyguard.permit(__MODULE__, :update_episode, user) do
+      :ok ->
+        update_episode(episode, attrs, after_save)
+
+      other ->
+        other
+    end
+  end
+
+  @doc """
   Updates a episode.
 
   ## Examples
@@ -79,6 +109,20 @@ defmodule Guilda.Podcasts do
     |> Episode.changeset(attrs)
     |> Repo.update()
     |> after_save(after_save)
+  end
+
+  @doc """
+  Wraps delete_episode/1 in a Bodyguard call. Runs the function
+  if the user is authorized to perform the action.
+  """
+  def delete_episode(user, %Episode{} = episode) do
+    case Bodyguard.permit(__MODULE__, :delete_episode, user) do
+      :ok ->
+        delete_episode(episode)
+
+      other ->
+        other
+    end
   end
 
   @doc """

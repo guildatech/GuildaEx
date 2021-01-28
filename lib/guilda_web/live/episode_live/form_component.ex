@@ -52,7 +52,7 @@ defmodule GuildaWeb.Podcasts.PodcastEpisodeLive.FormComponent do
       |> put_cover_params(socket)
       |> put_file_params(socket)
 
-    case Podcasts.create_episode(episode_params, &consume_files(socket, &1)) do
+    case Podcasts.create_episode(socket.assigns.current_user, episode_params, &consume_files(socket, &1)) do
       {:ok, _episode} ->
         {:noreply,
          socket
@@ -61,6 +61,12 @@ defmodule GuildaWeb.Podcasts.PodcastEpisodeLive.FormComponent do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :changeset, changeset)}
+
+      {:error, error} ->
+        {:noreply,
+         socket
+         |> put_flash(:error, Err.message(error))
+         |> push_redirect(to: Routes.podcast_episode_index_path(socket, :index))}
     end
   end
 
@@ -70,7 +76,12 @@ defmodule GuildaWeb.Podcasts.PodcastEpisodeLive.FormComponent do
       |> put_cover_params(socket)
       |> put_file_params(socket)
 
-    case Podcasts.update_episode(socket.assigns.episode, episode_params, &consume_files(socket, &1)) do
+    case Podcasts.update_episode(
+           socket.assigns.current_user,
+           socket.assigns.episode,
+           episode_params,
+           &consume_files(socket, &1)
+         ) do
       {:ok, _episode} ->
         {:noreply,
          socket
@@ -79,6 +90,12 @@ defmodule GuildaWeb.Podcasts.PodcastEpisodeLive.FormComponent do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :changeset, changeset)}
+
+      {:error, error} ->
+        {:noreply,
+         socket
+         |> put_flash(:error, Err.message(error))
+         |> push_redirect(to: Routes.podcast_episode_index_path(socket, :index))}
     end
   end
 

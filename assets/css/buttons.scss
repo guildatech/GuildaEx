@@ -21,3 +21,11 @@
 .Button--primary {
   @apply border-yellow-400 bg-yellow-400 text-yellow-900 hover:bg-yellow-300 hover:text-yellow-900;
 }
+
+.TableAction--edit {
+  @apply inline-flex items-center shadow-sm px-2.5 py-0.5 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50;
+}
+
+.TableAction--delete {
+  @apply inline-flex items-center shadow-sm px-2.5 py-0.5 border border-red-300 text-sm leading-5 font-medium rounded-full text-red-700 bg-white hover:bg-gray-50;
+}

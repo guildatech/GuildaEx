@@ -57,6 +57,21 @@ defmodule GuildaWeb.ConnCase do
   end
 
   @doc """
+  Setup helper that registers and logs in an admin user.
+
+      setup :register_and_log_in_admin_user
+
+  It stores an updated connection and a registered user in the
+  test context.
+  """
+  def register_and_log_in_admin_user(%{conn: conn}) do
+    user = Guilda.AccountsFixtures.user_fixture()
+    Guilda.Accounts.give_admin(user)
+
+    %{conn: log_in_user(conn, user), user: user}
+  end
+
+  @doc """
   Logs the given `user` into the `conn`.
 
   It returns an updated `conn`.

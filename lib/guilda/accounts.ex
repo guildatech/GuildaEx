@@ -173,4 +173,12 @@ defmodule Guilda.Accounts do
     Repo.delete_all(UserToken.token_and_context_query(token, "session"))
     :ok
   end
+
+  @doc """
+  Sets the user's admin flag to true.
+  """
+  def give_admin(%User{} = user) do
+    from(u in User, where: u.id == ^user.id)
+    |> Repo.update_all(set: [is_admin: true])
+  end
 end

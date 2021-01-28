@@ -105,7 +105,7 @@ defmodule GuildaWeb.UserAuthTest do
       conn = conn |> fetch_flash() |> UserAuth.require_authenticated_user([])
       assert conn.halted
       assert redirected_to(conn) == Routes.page_path(conn, :index)
-      assert get_flash(conn, :error) == "You must log in to access this page."
+      assert get_flash(conn, :error) == "Você deve estar logado para acessar esta página."
     end
 
     test "stores the path to redirect to on GET", %{conn: conn} do

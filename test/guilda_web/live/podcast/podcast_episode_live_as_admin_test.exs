@@ -1,9 +1,11 @@
-defmodule GuildaWeb.PodcastEpisodeLiveTest do
+defmodule GuildaWeb.PodcastEpisodeAsAdminLiveTest do
   use GuildaWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
 
   import Guilda.PodcastsFixtures
+
+  setup :register_and_log_in_admin_user
 
   defp create_episode(_) do
     %{episode: insert(:episode)}

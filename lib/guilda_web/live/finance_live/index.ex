@@ -22,15 +22,31 @@ defmodule GuildaWeb.FinanceLive.Index do
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
-    socket
-    |> assign(:page_title, gettext("Editar Transação"))
-    |> assign(:transaction, Finances.get_transaction!(id))
+    case Bodyguard.permit(Finances, :update_transaction, socket.assigns.current_user) do
+      :ok ->
+        socket
+        |> assign(:page_title, gettext("Editar Transação"))
+        |> assign(:transaction, Finances.get_transaction!(id))
+
+      {:error, error} ->
+        socket
+        |> put_flash(:error, Err.message(error))
+        |> push_redirect(to: Routes.finance_index_path(socket, :index))
+    end
   end
 
   defp apply_action(socket, :new, _params) do
-    socket
-    |> assign(:page_title, gettext("Nova Transação"))
-    |> assign(:transaction, %Transaction{})
+    case Bodyguard.permit(Finances, :create_transaction, socket.assigns.current_user) do
+      :ok ->
+        socket
+        |> assign(:page_title, gettext("Nova Transação"))
+        |> assign(:transaction, %Transaction{})
+
+      {:error, error} ->
+        socket
+        |> put_flash(:error, Err.message(error))
+        |> push_redirect(to: Routes.finance_index_path(socket, :index))
+    end
   end
 
   defp apply_action(socket, :index, _params) do

@@ -8,6 +8,8 @@ defmodule Guilda.Finances do
 
   alias Guilda.Finances.Transaction
 
+  defdelegate authorize(action, user, params), to: Guilda.Finances.Policy
+
   @doc """
   Returns the list of transactions.
 
@@ -38,6 +40,20 @@ defmodule Guilda.Finances do
   def get_transaction!(id), do: Repo.get!(Transaction, id)
 
   @doc """
+  Wraps create_transaction/1 in a Bodyguard call. Runs the function
+  if the user is authorized to perform the action.
+  """
+  def create_transaction(user, attrs) do
+    case Bodyguard.permit(__MODULE__, :create_transaction, user) do
+      :ok ->
+        create_transaction(attrs)
+
+      other ->
+        other
+    end
+  end
+
+  @doc """
   Creates a transaction.
 
   ## Examples
@@ -57,6 +73,20 @@ defmodule Guilda.Finances do
   end
 
   @doc """
+  Wraps update_transaction/2 in a Bodyguard call. Runs the function
+  if the user is authorized to perform the action.
+  """
+  def update_transaction(user, %Transaction{} = transaction, attrs) do
+    case Bodyguard.permit(__MODULE__, :update_transaction, user) do
+      :ok ->
+        update_transaction(transaction, attrs)
+
+      other ->
+        other
+    end
+  end
+
+  @doc """
   Updates a transaction.
 
   ## Examples
@@ -73,6 +103,20 @@ defmodule Guilda.Finances do
     |> Transaction.changeset(attrs)
     |> Repo.update()
     |> broadcast(:transaction_updated)
+  end
+
+  @doc """
+  Wraps delete_transaction/1 in a Bodyguard call. Runs the function
+  if the user is authorized to perform the action.
+  """
+  def delete_transaction(user, %Transaction{} = transaction) do
+    case Bodyguard.permit(__MODULE__, :delete_transaction, user) do
+      :ok ->
+        delete_transaction(transaction)
+
+      other ->
+        other
+    end
   end
 
   @doc """
