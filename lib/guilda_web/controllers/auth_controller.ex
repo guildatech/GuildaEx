@@ -26,32 +26,23 @@ defmodule GuildaWeb.AuthController do
 
   if Application.get_env(:guilda, :environment) == :dev do
     def verify_telegram_data(params) do
-      {:ok, Map.put(params, "telegram_id", Map.get(params, "id"))}
+      {:ok, Map.put(params, "telegram_id", params["id"])}
     end
   else
     def verify_telegram_data(params) do
-      params = %{
-        auth_date: Map.get(params, "auth_date"),
-        first_name: Map.get(params, "first_name"),
-        id: Map.get(params, "id"),
-        hash: Map.get(params, "hash"),
-        last_name: Map.get(params, "last_name"),
-        photo_url: Map.get(params, "photo_url"),
-        username: Map.get(params, "username")
-      }
+      {hash, params} = Map.pop(params, "hash")
 
       secret_key = :crypto.hash(:sha256, telegram_bot_token())
 
       data_check_string =
         params
-        |> Map.drop([:hash])
         |> Enum.map(fn {k, v} -> "#{k}=#{v}" end)
         |> Enum.join("\n")
 
       hmac = :crypto.hmac(:sha256, secret_key, data_check_string) |> Base.encode16(case: :lower)
 
-      if hmac == params.hash do
-        {:ok, Map.put(params, :telegram_id, params.id)}
+      if hmac == hash do
+        {:ok, Map.put(params, "telegram_id", params["id"])}
       else
         {:error, :invalid_telegram_data}
       end
