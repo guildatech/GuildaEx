@@ -39,3 +39,4 @@ npm-debug.log
 # Docker resources
 /.npm/
 /.config/
+.deliver/releases/

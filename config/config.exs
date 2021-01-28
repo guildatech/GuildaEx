@@ -40,10 +40,16 @@ config :logger, :console,
 config :phoenix, :json_library, Jason
 
 config :ex_aws,
-  access_key_id: [{:system, "AWS_ACCESS_KEY_ID"}, :instance_role],
-  secret_access_key: [{:system, "AWS_SECRET_ACCESS_KEY"}, :instance_role],
-  region: {:system, "AWS_REGION"},
+  access_key_id: [System.get_env("AWS_ACCESS_KEY_ID"), :instance_role],
+  secret_access_key: [System.get_env("AWS_SECRET_ACCESS_KEY"), :instance_role],
+  region: System.get_env("AWS_REGION"),
   json_codec: Jason
+
+config :guilda, :aws,
+  bucket: System.get_env("S3_BUCKET"),
+  region: System.get_env("AWS_REGION"),
+  access_key_id: System.get_env("AWS_ACCESS_KEY_ID"),
+  secret_access_key: System.get_env("AWS_SECRET_ACCESS_KEY")
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
