@@ -19,15 +19,16 @@ defmodule Guilda.Accounts.User do
     timestamps()
   end
 
-  @registration_fields ~w(telegram_id username first_name last_name)a
+  @required_registration_fields ~w(telegram_id username first_name)a
+  @optional_registration_fields ~w(last_name)a
 
   @doc """
   A user changeset for registration.
   """
   def registration_changeset(user, attrs) do
     user
-    |> cast(attrs, @registration_fields)
-    |> validate_required(@registration_fields)
+    |> cast(attrs, @required_registration_fields ++ @optional_registration_fields)
+    |> validate_required(@required_registration_fields)
   end
 
   defp validate_email(changeset) do
