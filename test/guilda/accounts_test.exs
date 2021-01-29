@@ -35,7 +35,6 @@ defmodule Guilda.AccountsTest do
 
       assert %{
                first_name: ["can't be blank"],
-               last_name: ["can't be blank"],
                telegram_id: ["can't be blank"],
                username: ["can't be blank"]
              } = errors_on(changeset)
@@ -45,7 +44,7 @@ defmodule Guilda.AccountsTest do
   describe "change_user_registration/2" do
     test "returns a changeset" do
       assert %Ecto.Changeset{} = changeset = Accounts.change_user_registration(%User{})
-      assert changeset.required == [:telegram_id, :username, :first_name, :last_name]
+      assert changeset.required == [:telegram_id, :username, :first_name]
     end
   end
 

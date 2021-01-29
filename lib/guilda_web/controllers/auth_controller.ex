@@ -29,10 +29,10 @@ defmodule GuildaWeb.AuthController do
       {:ok, Map.put(params, "telegram_id", params["id"])}
     end
   else
-    def verify_telegram_data(params) do
+    def verify_telegram_data(params, token \\ nil) do
       {hash, params} = Map.pop(params, "hash")
 
-      secret_key = :crypto.hash(:sha256, telegram_bot_token())
+      secret_key = :crypto.hash(:sha256, token || telegram_bot_token())
 
       data_check_string =
         params
