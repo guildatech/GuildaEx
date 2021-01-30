@@ -6,9 +6,22 @@ defmodule Guilda.PodcastsTest do
   import Guilda.PodcastsFixtures
 
   describe "episodes" do
+    test "most_recent_episode/0 returns the most recent episode" do
+      assert Podcasts.most_recent_episode() == nil
+      _episode_march = insert(:episode, aired_date: "2020-03-03")
+      episode_june = insert(:episode, aired_date: "2020-06-06")
+      assert Podcasts.most_recent_episode() == episode_june
+    end
+
     test "list_episodes/0 returns all episodes" do
       episode = insert(:episode)
       assert Podcasts.list_podcast_episodes() == [episode]
+    end
+
+    test "list_episodes/0 returns a list ordered by aired date" do
+      episode_march = insert(:episode, aired_date: "2020-03-03")
+      episode_june = insert(:episode, aired_date: "2020-06-06")
+      assert Podcasts.list_podcast_episodes() == [episode_june, episode_march]
     end
 
     test "get_episode!/1 returns the episode with given id" do
