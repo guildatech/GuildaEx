@@ -11,6 +11,23 @@ defmodule Guilda.Podcasts do
   defdelegate authorize(action, user, params), to: Guilda.Podcasts.Policy
 
   @doc """
+  Returns the most recent episode.
+
+  ## Examples
+
+      iex> most_recent_episode()
+      %Episode{}
+
+  """
+  def most_recent_episode do
+    from(e in Episode,
+      order_by: [desc: :aired_date],
+      limit: 1
+    )
+    |> Repo.one()
+  end
+
+  @doc """
   Returns the list of podcast_episodes.
 
   ## Examples
@@ -20,7 +37,10 @@ defmodule Guilda.Podcasts do
 
   """
   def list_podcast_episodes do
-    Repo.all(Episode)
+    from(e in Episode,
+      order_by: [desc: :aired_date]
+    )
+    |> Repo.all()
   end
 
   @doc """
