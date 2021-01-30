@@ -6,6 +6,8 @@ defmodule GuildaWeb.Router do
   @content_security_policy %{
     "default-src" => ~w[
       'self'
+      http://guilda-tech.s3.amazonaws.com
+      https://guilda-tech.s3.amazonaws.com
     ],
     "connect-src" => ~w[
       ws://localhost:*
@@ -21,6 +23,8 @@ defmodule GuildaWeb.Router do
     "img-src" => ~w[
       'self'
       data:
+      http://guilda-tech.s3.amazonaws.com
+      https://guilda-tech.s3.amazonaws.com
     ],
     "script-src" => ~w[
       'self'
