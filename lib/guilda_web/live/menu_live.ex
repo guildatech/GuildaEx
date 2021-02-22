@@ -6,19 +6,64 @@ defmodule GuildaWeb.MenuLive do
 
   @impl true
   def mount(_params, %{"menu" => menu, "current_user" => current_user}, socket) do
-    {:ok, assign(socket, menu: menu, current_user: current_user)}
+    {:ok,
+     assign(socket,
+       menu: menu,
+       current_user: current_user,
+       entries: menu_entries(socket, menu, current_user)
+     ), layout: {GuildaWeb.LayoutView, "navbar.html"}}
   end
 
+  def main_menu_entries(entries) do
+    Enum.filter(entries, fn entry -> entry.show && entry.position == :main end)
+  end
+
+  def secondary_menu_entries(entries) do
+    Enum.filter(entries, fn entry -> entry.show && entry.position == :secondary end)
+  end
+
+  def menu_entries(socket, menu, current_user) do
+    [
+      %{
+        menu: menu,
+        text: gettext("Podcast"),
+        module: GuildaWeb.PodcastEpisodeLive,
+        to: Routes.podcast_episode_index_path(socket, :index),
+        show: true,
+        position: :main
+      },
+      %{
+        menu: menu,
+        text: gettext("Finanças"),
+        module: GuildaWeb.FinanceLive,
+        to: Routes.finance_index_path(socket, :index),
+        show: logged_in?(current_user),
+        position: :main
+      },
+      %{
+        menu: menu,
+        text: gettext("Configurações"),
+        module: GuildaWeb.UserSettingLive,
+        to: Routes.user_settings_path(socket, :edit),
+        show: logged_in?(current_user),
+        position: :main
+      }
+    ]
+  end
+
+  defp logged_in?(nil), do: false
+  defp logged_in?(_user), do: true
+
   # Template helpers
-  def maybe_active_live_redirect(menu, text, context, module, route) do
-    if menu.module == module do
-      content_tag(:div, text, class: active_class(context))
-    else
-      live_redirect(text,
-        to: route,
-        class: inactive_class(context)
-      )
-    end
+  def maybe_active_live_redirect(%{menu: menu, text: text, module: module, to: route}, context) do
+    classes =
+      if to_string(menu.module) =~ to_string(module) do
+        active_class(context)
+      else
+        inactive_class(context)
+      end
+
+    live_redirect(text, to: route, class: classes)
   end
 
   defp active_class(:main) do
