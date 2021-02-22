@@ -2,7 +2,7 @@ defmodule GuildaWeb.PageLive do
   @moduledoc """
   LiveView to generate static pages.
   """
-  use GuildaWeb, :live_view
+  use GuildaWeb, {:live_view, container: {:div, class: "flex flex-col flex-grow"}}
 
   @impl true
   def mount(params, session, socket) do
