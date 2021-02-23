@@ -75,14 +75,14 @@ defmodule GuildaWeb.FinanceLiveAsAdminTest do
 
       {:ok, _view, html} =
         view
-        |> form("form[phx-submit=save]")
-        |> render_submit(%{
+        |> form("form[phx-submit=save]", %{
           "transaction" => %{
             "amount" => "10",
-            "date" => %{"day" => "02", "month" => "02", "year" => "2020"},
+            "date" => "2020-02-02",
             "payee" => "a new payee"
           }
         })
+        |> render_submit()
         |> follow_redirect(conn)
 
       assert html =~ "a new payee"
@@ -97,10 +97,11 @@ defmodule GuildaWeb.FinanceLiveAsAdminTest do
     end
 
     test "displays erros when submitting invalid values", %{conn: conn} = opts do
-      {:ok, view, html} = live(conn, path(:new, opts))
+      {:ok, view, _html} = live(conn, path(:new, opts))
 
-      refute html =~ "can&apos;t be blank"
-      assert view |> form("form[phx-submit=save]") |> render_submit() =~ "can&apos;t be blank"
+      refute has_element?(view, "form[phx-submit=save]", "can't be blank")
+      view |> form("form[phx-submit=save]") |> render_submit()
+      assert has_element?(view, "form[phx-submit=save]", "can't be blank")
     end
   end
 
@@ -130,12 +131,15 @@ defmodule GuildaWeb.FinanceLiveAsAdminTest do
     end
 
     test "displays erros when submitting invalid values", %{conn: conn, transaction: transaction} = opts do
-      {:ok, view, html} = live(conn, path(:edit, transaction, opts))
+      {:ok, view, _html} = live(conn, path(:edit, transaction, opts))
 
-      refute html =~ "can&apos;t be blank"
+      refute has_element?(view, "form[phx-submit=save]", "can't be blank")
 
-      assert view |> form("form[phx-submit=save]") |> render_submit(%{"transaction" => %{"date" => ""}}) =~
-               "can&apos;t be blank"
+      view
+      |> form("form[phx-submit=save]", %{"transaction" => %{"date" => ""}})
+      |> render_submit()
+
+      assert has_element?(view, "form[phx-submit=save]", "can't be blank")
     end
 
     test "redirects when submitting valid values", %{conn: conn, transaction: transaction} = opts do
@@ -143,12 +147,12 @@ defmodule GuildaWeb.FinanceLiveAsAdminTest do
 
       {:ok, _view, html} =
         view
-        |> form("form[phx-submit=save]")
-        |> render_submit(%{
+        |> form("form[phx-submit=save]", %{
           "transaction" => %{
             "payee" => "some updated transaction"
           }
         })
+        |> render_submit()
         |> follow_redirect(conn)
 
       assert html =~ "some updated transaction"

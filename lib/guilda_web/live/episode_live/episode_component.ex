@@ -48,7 +48,16 @@ defmodule GuildaWeb.PodcastEpisodeLive.EpisodeComponent do
       </div>
       <div>
         <div class="flex -mt-px bg-white border-t divide-x divide-gray-200 border-t-gray-200">
-          <audio id="player-<%= @episode.id %>" phx-hook="PodcastPlayer" data-target="<%= @id %>" class="w-full" src="<%= @episode.file_url %>" type="<%= @episode.file_type %>" controls></audio>
+          <audio
+            id="player-<%= @episode.id %>"
+            class="w-full"
+            src="<%= @episode.file_url %>"
+            type="<%= @episode.file_type %>"
+            phx-hook="PodcastPlayer"
+            data-target="<%= @id %>"
+            data-episode-id="<%= @episode.id %>"
+            data-episode-slug="<%= @episode.slug %>"
+            controls></audio>
         </div>
       </div>
       <div>
@@ -93,7 +102,10 @@ defmodule GuildaWeb.PodcastEpisodeLive.EpisodeComponent do
     socket =
       if Podcasts.should_mark_as_viewed?(episode, seconds_played) do
         Podcasts.increase_play_count(episode)
-        assign(socket, viewed: true)
+
+        socket
+        |> assign(viewed: true)
+        |> push_event("episode-viewed", %{id: episode.id, slug: episode.slug})
       else
         assign(socket, seconds_played: seconds_played)
       end

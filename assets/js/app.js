@@ -18,8 +18,7 @@ import "alpinejs";
 import { Socket } from "phoenix";
 import NProgress from "nprogress";
 import { LiveSocket } from "phoenix_live_view";
-import { toCurrency } from "./currency-conversion";
-import flatpickr from "flatpickr";
+import Hooks from "./hooks";
 
 let Uploaders = {};
 
@@ -43,50 +42,6 @@ Uploaders.S3 = function (entries, onViewError) {
     xhr.open("POST", url, true);
     xhr.send(formData);
   });
-};
-
-let Hooks = {};
-
-Hooks.PodcastPlayer = {
-  mounted() {
-    this._lastSecond = 0;
-
-    this.el.addEventListener("timeupdate", (event) => {
-      var currentTime = Math.round(event.target.currentTime);
-      if (currentTime !== this._lastSecond && !event.target.paused) {
-        this._lastSecond = currentTime;
-        this.pushEventTo(`#${this.el.dataset.target}`, "play-second-elapsed", {
-          time: currentTime,
-        });
-      }
-    });
-  },
-};
-
-Hooks.CurrencyMask = {
-  beforeUpdate() {
-    this.el.value = toCurrency(this.el.value);
-  },
-};
-
-Hooks.DatePicker = {
-  mounted() {
-    this.setupDatePicker(this.el);
-  },
-
-  updated() {
-    this.setupDatePicker(this.el);
-  },
-
-  setupDatePicker(el) {
-    flatpickr(el, {
-      altInput: true,
-      altFormat: "d/m/Y",
-      dateFormat: "Y-m-d",
-      defaultDate: el.getAttribute("value"),
-      enableTime: false,
-    });
-  },
 };
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content");
