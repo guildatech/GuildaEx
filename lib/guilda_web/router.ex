@@ -8,6 +8,8 @@ defmodule GuildaWeb.Router do
       'self'
       http://guilda-tech.s3.amazonaws.com
       https://guilda-tech.s3.amazonaws.com
+      https://telegram.org
+      https://oauth.telegram.org
     ],
     "connect-src" => ~w[
       ws://localhost:*
@@ -19,18 +21,16 @@ defmodule GuildaWeb.Router do
       wss://guildatech.com
       http://guilda-tech.s3.amazonaws.com
       https://guilda-tech.s3.amazonaws.com
-    ],
-    "img-src" => ~w[
-      'self'
-      data:
-      http://guilda-tech.s3.amazonaws.com
-      https://guilda-tech.s3.amazonaws.com
+      *.plausible.io
+      plausible.io
     ],
     "script-src" => ~w[
       'self'
       'unsafe-inline'
       'unsafe-eval'
       https://telegram.org
+      *.plausible.io
+      plausible.io
     ],
     "style-src" => ~w[
       'self'
@@ -40,21 +40,6 @@ defmodule GuildaWeb.Router do
     "font-src" => ~w[
       'self'
       https://rsms.me
-    ],
-    "object-src" => ~w[
-      'none'
-    ],
-    "frame-src" => ~w[
-      'self'
-      https://oauth.telegram.org
-    ],
-    "frame-ancestors" => ~w[
-      'self'
-      https://oauth.telegram.org
-    ],
-    "child-src" => ~w[
-      'self'
-      https://oauth.telegram.org
     ]
   }
 
