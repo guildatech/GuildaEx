@@ -98,7 +98,7 @@ defmodule Guilda.MixProject do
         "compile --force --all-warnings --warnings-as-errors",
         "test",
         "format",
-        "credo --strict --ignore Credo.Check.Readability.MaxLineLength, Credo.Check.Consistency.SpaceAroundOperators",
+        "credo --strict",
         "sobelow --config",
         "dialyzer --ignore-exit-status"
       ]
