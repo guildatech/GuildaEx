@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">
+<channel>
+  <title>Quem Programa?</title>
+  <link>https://www.guildatech.com/podcast</link>
+  <language>pt-br</language>
+  <itunes:subtitle>O podcast da GuildaTech</itunes:subtitle>
+  <itunes:author>Author name</itunes:author>
+  <itunes:summary>Description of podcast.</itunes:summary>
+  <description>Description of podcast.</description>
+  <itunes:owner>
+      <itunes:name>Owner Name</itunes:name>
+      <itunes:email>me@example.com</itunes:email>
+  </itunes:owner>
+  <itunes:explicit>no</itunes:explicit>
+  <itunes:image href="https://www.guildatech.com/podcast-icon.jpg" />
+  <itunes:category text="Category Name"/>
+
+  <%= for episode <- @episodes do %>
+    <item>
+        <title><%= episode.title %></title>
+        <itunes:summary><%= episode.description %></itunes:summary>
+        <description><%= episode.description %></description>
+        <link><%= Routes.podcast_episode_index_url(@conn, :index) %></link>
+        <enclosure url="https:<%= episode.file_url %>" type="<%= episode.file_type %>" length="<%= episode.length %>"></enclosure>
+        <pubDate><%= episode.aired_date %></pubDate>
+        <itunes:author><%= episode.hosts %></itunes:author>
+        <itunes:duration><%= format_seconds(episode.length) %></itunes:duration>
+        <itunes:explicit>no</itunes:explicit>
+        <guid><%= episode.id %></guid>
+    </item> 
+  <% end %>
+</channel>
+</rss>
