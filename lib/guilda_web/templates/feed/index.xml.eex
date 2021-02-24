@@ -10,7 +10,7 @@
   <itunes:author>GuildaTech</itunes:author>
   <itunes:owner>
     <itunes:name>GuildaTech</itunes:name>
-    <itunes:email>me@example.com</itunes:email>
+    <itunes:email>podcast@guildatech.com</itunes:email>
   </itunes:owner>
   <itunes:explicit>false</itunes:explicit>
   <itunes:image href="https://www.guildatech.com/podcast-icon.jpg" />
