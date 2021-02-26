@@ -13,7 +13,7 @@
     <itunes:email>podcast@guildatech.com</itunes:email>
   </itunes:owner>
   <itunes:explicit>false</itunes:explicit>
-  <itunes:image href="https://www.guildatech.com/podcast-icon.jpg" />
+  <itunes:image href="<%= Routes.static_url(@conn, "/images/guildacast.png") %>" />
   <itunes:category text="Technology" />
 
   <%= for episode <- @episodes do %>
