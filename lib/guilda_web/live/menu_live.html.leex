@@ -3,7 +3,7 @@
     <div class="flex justify-between h-16">
       <div class="flex">
         <div class="flex items-center flex-shrink-0">
-          <%= live_redirect to: Routes.page_path(@socket, :index), title: gettext("Página inicial") do %>
+          <%= link to: Routes.page_path(@socket, :index), title: gettext("Página inicial") do %>
             <img class="w-auto h-11" src="<%= Routes.static_path(@socket, "/images/guilda-logo.png") %>" alt="GuildaTech logo" />
           <% end %>
         </div>

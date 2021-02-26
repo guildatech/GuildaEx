@@ -116,9 +116,4 @@ defmodule GuildaWeb.PodcastEpisodeLive.EpisodeComponent do
   def handle_event("play-second-elapsed", %{"time" => _time}, socket) do
     {:noreply, socket}
   end
-
-  # View Helpers
-  def format_seconds(seconds) do
-    seconds |> Timex.Duration.from_seconds() |> Timex.Duration.to_time!()
-  end
 end

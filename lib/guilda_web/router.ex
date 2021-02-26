@@ -61,6 +61,16 @@ defmodule GuildaWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :xml do
+    plug :accepts, ["xml"]
+    plug :put_layout, {GuildaWeb.LayoutView, :none}
+    plug :put_resp_content_type, "application/xml"
+  end
+
+  scope "/", GuildaWeb do
+    get "/podcast/feed.xml", FeedController, :index
+  end
+
   scope "/", GuildaWeb do
     pipe_through [:browser]
 

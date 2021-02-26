@@ -8,6 +8,13 @@ defmodule GuildaWeb.ViewHelpers do
     Timex.format!(date, "{0D}/{0M}/{YYYY}")
   end
 
+  @doc """
+  Format the given number of seconds in hh:mm:ss.
+  """
+  def format_seconds(seconds) do
+    seconds |> Timex.Duration.from_seconds() |> Timex.Duration.to_time!()
+  end
+
   def svg_icon(match, opts \\ [])
 
   for file <- Guilda.svg_icons() do
