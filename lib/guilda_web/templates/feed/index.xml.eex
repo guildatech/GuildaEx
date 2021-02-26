@@ -16,7 +16,6 @@
   <itunes:image href="<%= Routes.static_url(@conn, "/images/guildacast.png") %>" />
   <itunes:category text="Technology" />
   <itunes:category text="Society &amp; Culture" />
-  <itunes:category text="Society &amp; Culture" />
   <itunes:category text="Comedy" />
 
   <%= for episode <- @episodes do %>
