@@ -5,7 +5,7 @@
   <link>https://www.guildatech.com/podcast</link>
   <language>pt-br</language>
   <copyright>&#169; 2021 GuildaTech</copyright>
-  <description>Description of podcast.</description>
+  <description>O podcast que falar da vida na TI sem ser complicado, mostrando a trajetória das pessoas por trás da tecnologia.</description>
   <itunes:subtitle>O podcast da GuildaTech</itunes:subtitle>
   <itunes:author>GuildaTech</itunes:author>
   <itunes:owner>
@@ -15,6 +15,9 @@
   <itunes:explicit>false</itunes:explicit>
   <itunes:image href="<%= Routes.static_url(@conn, "/images/guildacast.png") %>" />
   <itunes:category text="Technology" />
+  <itunes:category text="Society &amp; Culture" />
+  <itunes:category text="Society &amp; Culture" />
+  <itunes:category text="Comedy" />
 
   <%= for episode <- @episodes do %>
     <item>
