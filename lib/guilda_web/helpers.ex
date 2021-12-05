@@ -1,4 +1,7 @@
 defmodule GuildaWeb.Helpers do
+  @moduledoc """
+  General helpers used through the app.
+  """
   use Phoenix.Component
 
   import GuildaWeb.Gettext

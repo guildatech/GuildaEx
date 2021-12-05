@@ -34,10 +34,7 @@ defmodule GuildaWeb.AuthController do
 
       secret_key = :crypto.hash(:sha256, token || telegram_bot_token())
 
-      data_check_string =
-        params
-        |> Enum.map(fn {k, v} -> "#{k}=#{v}" end)
-        |> Enum.join("\n")
+      data_check_string = Enum.map_join(params, "\n", fn {k, v} -> "#{k}=#{v}" end)
 
       hmac = :crypto.mac(:hmac, :sha256, secret_key, data_check_string) |> Base.encode16(case: :lower)
 

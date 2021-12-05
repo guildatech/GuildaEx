@@ -3,7 +3,6 @@ defmodule GuildaWeb.Live.LiveHelpers do
   Helpers used by LiveViews.
   """
   import Phoenix.LiveView, only: [assign: 2, assign_new: 3]
-  import Phoenix.LiveView.Helpers
 
   alias Guilda.Accounts
 
