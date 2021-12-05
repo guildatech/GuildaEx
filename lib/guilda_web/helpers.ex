@@ -33,8 +33,7 @@ defmodule GuildaWeb.Helpers do
           aria-modal="true"
           tabindex="0"
           autofocus
-          phx-window-keydown={click_modal_close()}
-          phx-click-away={click_modal_close()}
+          phx-keydown={click_modal_close()}
           phx-key="escape">
           <!-- Modal header -->
             <div class="flex items-center justify-between px-4 py-4 space-x-2 border-b-2 rounded-t-lg bg-gray-50 sm:px-6 sm:flex">
@@ -43,7 +42,6 @@ defmodule GuildaWeb.Helpers do
                     class: "flex space-x-1 items-center text-gray-500",
                     aria_label: "close modal",
                     id: "close-modal-button" do %>
-                <span class="text-sm">(esc)</span>
                 <.remix_icon icon="close-line" class="text-2xl" />
               <% end %>
             </div>
