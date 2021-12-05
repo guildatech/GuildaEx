@@ -20,7 +20,7 @@ defmodule GuildaWeb.UserSettingLive do
 
   @impl true
   def handle_params(_params, _url, socket) do
-    {:noreply, socket}
+    {:noreply, assign(socket, :page_title, gettext("Configurações"))}
   end
 
   @impl true
