@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 telegram_bot_username =
   System.get_env("TELEGRAM_BOT_USERNAME") ||

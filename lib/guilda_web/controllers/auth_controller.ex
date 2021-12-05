@@ -39,7 +39,7 @@ defmodule GuildaWeb.AuthController do
         |> Enum.map(fn {k, v} -> "#{k}=#{v}" end)
         |> Enum.join("\n")
 
-      hmac = :crypto.hmac(:sha256, secret_key, data_check_string) |> Base.encode16(case: :lower)
+      hmac = :crypto.mac(:hmac, :sha256, secret_key, data_check_string) |> Base.encode16(case: :lower)
 
       if hmac == hash do
         {:ok, Map.put(params, "telegram_id", params["id"])}
