@@ -1,6 +1,5 @@
 /* This file is for your main application css. */
 @import "../node_modules/flatpickr/dist/flatpickr.min.css";
-@import "../node_modules/nprogress/nprogress.css";
 
 @import "tailwindcss/base";
 @import "tailwindcss/components";
@@ -8,7 +7,6 @@
 @import "attachment-list.scss";
 @import "buttons.scss";
 @import "forms.scss";
-@import "modal.scss";
 @import "table.scss";
 
 @import "tailwindcss/utilities";

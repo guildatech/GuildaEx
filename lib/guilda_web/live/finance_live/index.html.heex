@@ -19,13 +19,14 @@
 <main class="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
 
   <%= if @live_action in [:new, :edit] do %>
-    <%= live_modal @socket, GuildaWeb.FinanceLive.FormComponent,
-      id: @transaction.id || :new,
-      title: @page_title,
-      action: @live_action,
-      current_user: @current_user,
-      transaction: @transaction,
-      return_to: Routes.finance_index_path(@socket, :index) %>
+    <.live_component
+      module={GuildaWeb.FinanceLive.FormComponent}
+      id={@transaction.id || :new}
+      title={@page_title}
+      action={@live_action}
+      current_user={@current_user}
+      transaction={@transaction}
+      return_to={Routes.finance_index_path(@socket, :index)} />
   <% end %>
 
   <div class="shadow sm:rounded-md sm:overflow-hidden">
@@ -44,11 +45,11 @@
       <tbody id="transactions" phx-update="prepend" class="Table__body">
         <%= if @transactions == [] do %>
           <tr id="empty-transactions">
-            <td colspan=5 class="Table__td"><%= gettext("Não existem transações para serem exibidas.") %></td>
+            <td colspan="5" class="Table__td"><%= gettext("Não existem transações para serem exibidas.") %></td>
           </tr>
         <% end %>
         <%= for transaction <- @transactions do %>
-          <%= live_component @socket, GuildaWeb.FinanceLive.TransactionComponent, id: transaction.id, transaction: transaction, current_user: @current_user %>
+          <.live_component module={GuildaWeb.FinanceLive.TransactionComponent} id={transaction.id} transaction={transaction} current_user={@current_user} />
         <% end %>
       </tbody>
     </table>

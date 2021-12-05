@@ -1,10 +1,6 @@
-<%= f = form_for @changeset, "#",
-  id: "transaction-form",
-  phx_target: @myself,
-  phx_change: "validate",
-  phx_submit: "save" %>
-
-  <div class="Modal__content">
+<div>
+<.modal return_to={@return_to} title={@title}>
+  <.form let={f} for={@changeset} id="transaction-form" phx-target={@myself} phx-change="validate" phx-submit="save">
     <%= InputHelpers.input f, :payee, label: gettext("Beneficiário") %>
     <div class="space-y-1 form-control">
       <%= label f, :amount, gettext("Valor"), class: "form-control__label" %>
@@ -15,15 +11,15 @@
           </span>
         </div>
         <input
-          id="<%= input_id f, :amount %>"
+          id={input_id f, :amount}
           name="transaction[amount]"
           phx-hook="CurrencyMask"
-          value="<%= input_value(f, :amount) %>"
+          value={input_value(f, :amount)}
           type="text"
           class="block w-full pr-12 form-control__input pl-7 sm:text-sm sm:leading-5"
           placeholder="10.58"
           inputmode="numeric"/>
-        <label for="<%= input_id f, :toggle %>" class="absolute inset-y-0 right-0 flex items-center mr-2 cursor-pointer">
+        <label for={input_id f, :toggle} class="absolute inset-y-0 right-0 flex items-center mr-2 cursor-pointer">
           <div class="relative">
             <%= checkbox f, :toggle, class: "hidden" %>
             <div class="h-8 rounded shadow-inner toggle__line w-14"></div>
@@ -35,10 +31,10 @@
     </div>
     <%= InputHelpers.input f, :date, label: gettext("Data"), type: :text_input, input_opts: [phx_hook: "DatePicker"] %>
     <%= InputHelpers.input f, :note, label: gettext("Nota") %>
-  </div>
-  <div class="Modal__footer">
-    <%= live_patch gettext("Cancelar"), to: Routes.finance_index_path(@socket, :index), class: "Button Button--secondary sm:ml-auto" %>
-    <%= submit gettext("Salvar"), phx_disable_with: gettext("Salvando..."), class: "Button Button--primary" %>
-  </div>
+  </.form>
 
-</form>
+  <:footer>
+    <%= submit gettext("Salvar"), phx_disable_with: gettext("Salvando..."), form: "transaction-form", class: "Button Button--primary" %>
+  </:footer>
+</.modal>
+</div>

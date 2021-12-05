@@ -92,7 +92,7 @@ defmodule GuildaWeb.FinanceLiveAsAdminTest do
       {:ok, view, _html} = live(conn, path(:new, opts))
 
       assert view
-             |> element("a[href='#{path(:index, opts)}']", "Cancelar")
+             |> element("a[href='#{path(:index, opts)}']")
              |> has_element?
     end
 
@@ -126,7 +126,7 @@ defmodule GuildaWeb.FinanceLiveAsAdminTest do
       {:ok, view, _html} = live(conn, path(:edit, transaction, opts))
 
       assert view
-             |> element("a[href='#{path(:index, opts)}']", "Cancelar")
+             |> element("a[href='#{path(:index, opts)}']")
              |> has_element?
     end
 

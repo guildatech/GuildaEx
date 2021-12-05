@@ -8,8 +8,8 @@ defmodule GuildaWeb.FinanceLive.TransactionComponent do
 
   @impl Phoenix.LiveComponent
   def render(assigns) do
-    ~L"""
-    <tr id="<% @id %>">
+    ~H"""
+    <tr id={@id}>
       <td class="Table__td"><%= @transaction.date %></td>
       <td class="Table__td"><%= @transaction.payee %></td>
       <td class="Table__td"><%= @transaction.note %></td>
@@ -18,7 +18,7 @@ defmodule GuildaWeb.FinanceLive.TransactionComponent do
         <td align="right" class="space-x-1 Table__td">
           <%= if Bodyguard.permit?(Finances, :update_transaction, @current_user), do: live_patch gettext("Editar"), to: Routes.finance_index_path(@socket, :edit, @transaction), class: "TableAction--edit" %>
           <%= if Bodyguard.permit?(Finances, :delete_transaction, @current_user) do %>
-            <button type="button" class="TableAction--delete" phx-click="delete" phx-target="<%= @myself %>" phx-value-id="<%= @transaction.id %>" data-confirm="<%= gettext("Tem certeza?") %>"><%= gettext("Excluir") %></button>
+            <button type="button" class="TableAction--delete" phx-click="delete" phx-target={@myself} phx-value-id={@transaction.id} data-confirm={gettext("Tem certeza?")}><%= gettext("Excluir") %></button>
           <% end %>
         </td>
       <% end %>

@@ -77,7 +77,7 @@ defmodule GuildaWeb.PodcastEpisodeAsAdminLiveTest do
     test "displays a link to return to the episodes list", %{conn: conn} = opts do
       {:ok, view, _html} = live(conn, path(:new, opts))
 
-      assert has_element?(view, "a[href='#{path(:index, opts)}']", "Cancelar")
+      assert has_element?(view, "a[href='#{path(:index, opts)}']")
     end
 
     test "displays errors when submitting invalid values", %{conn: conn} do
@@ -109,7 +109,7 @@ defmodule GuildaWeb.PodcastEpisodeAsAdminLiveTest do
     test "displays a link to return to the episodes list", %{conn: conn, episode: episode} = opts do
       {:ok, view, _html} = live(conn, path(:edit, episode, opts))
 
-      assert has_element?(view, "a[href='#{path(:index, opts)}']", "Cancelar")
+      assert has_element?(view, "a[href='#{path(:index, opts)}']")
     end
 
     test "displays erros when submitting invalid values", %{conn: conn, episode: episode} = opts do

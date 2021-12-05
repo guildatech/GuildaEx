@@ -1,13 +1,16 @@
 <!-- Main wrapper start -->
 <main class="px-4 pt-10 pb-20 mx-auto max-w-7xl sm:px-6 lg:pb-28 lg:px-8">
 
-  <%= if @live_action in [:new, :edit], do: live_modal @socket, GuildaWeb.Podcasts.PodcastEpisodeLive.FormComponent,
-    id: @episode.id || :new,
-    action: @live_action,
-    title: @page_title,
-    current_user: @current_user,
-    episode: @episode,
-    return_to: Routes.podcast_episode_index_path(@socket, :index) %>
+  <%= if @live_action in [:new, :edit] do %>
+    <.live_component
+      module={GuildaWeb.Podcasts.PodcastEpisodeLive.FormComponent}
+      id={@episode.id || :new}
+      title={@page_title}
+      action={@live_action}
+      current_user={@current_user}
+      episode={@episode}
+      return_to={Routes.podcast_episode_index_path(@socket, :index)} />
+  <% end %>
 
   <div class="text-center">
     <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
@@ -15,7 +18,7 @@
     </h2>
     <p class="max-w-2xl mx-auto mt-3 text-xl text-gray-500 sm:mt-4">
       <%= gettext("Contribua financeiramente com o podcast da Guilda em") %>
-      <a href="https://apoia.se/guildatech" target=_blank class="inline-flex items-center font-medium text-yellow-500 hover:underline">
+      <a href="https://apoia.se/guildatech" target="_blank" class="inline-flex items-center font-medium text-yellow-500 hover:underline">
         https://apoia.se/guildatech
         <svg class="inline w-6 h-6 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
       </a>
@@ -32,7 +35,7 @@
   <% end %>
   <div id="podcasts-notifier" phx-hook="PodcastNotifier" class="grid max-w-lg gap-5 mx-auto mt-12 lg:grid-cols-3 lg:max-w-none">
     <%= for episode <- @podcast_episodes do %>
-      <%= live_component @socket, GuildaWeb.PodcastEpisodeLive.EpisodeComponent, id: "episode-card-#{episode.id}", episode: episode, current_user: @current_user %>
+      <.live_component module={GuildaWeb.PodcastEpisodeLive.EpisodeComponent} id={"episode-card-#{episode.id}"} episode={episode} current_user={@current_user} />
     <% end %>
   </div>
 

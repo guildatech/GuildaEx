@@ -71,13 +71,6 @@ defmodule GuildaWeb do
     end
   end
 
-  def channel do
-    quote do
-      use Phoenix.Channel
-      import GuildaWeb.Gettext
-    end
-  end
-
   defp view_helpers do
     quote do
       # Use all HTML functionality (forms, tags, etc)
@@ -92,9 +85,12 @@ defmodule GuildaWeb do
       import GuildaWeb.ErrorHelpers
       import GuildaWeb.Gettext
       import GuildaWeb.ViewHelpers
+      import GuildaWeb.Helpers
 
       alias GuildaWeb.InputHelpers
       alias GuildaWeb.Router.Helpers, as: Routes
+
+      alias Phoenix.LiveView.JS
     end
   end
 

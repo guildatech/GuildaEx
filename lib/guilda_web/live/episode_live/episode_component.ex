@@ -13,10 +13,10 @@ defmodule GuildaWeb.PodcastEpisodeLive.EpisodeComponent do
 
   @impl Phoenix.LiveComponent
   def render(assigns) do
-    ~L"""
-    <div id="<%= @id %>" class="flex flex-col overflow-hidden rounded-lg shadow-lg">
+    ~H"""
+    <div id={@id} class="flex flex-col overflow-hidden rounded-lg shadow-lg">
       <div class="flex-shrink-0">
-        <img class="object-cover w-full h-50" src="<%= @episode.cover_url %>" alt="<%= gettext("Capa do episódio %{episode_name}", episode_name: @episode.title) %>">
+        <img class="object-cover w-full h-50" src={@episode.cover_url} alt={gettext("Capa do episódio %{episode_name}", episode_name: @episode.title)}>
       </div>
       <div class="flex flex-col justify-between flex-1 p-6 bg-white">
         <div class="flex-1">
@@ -49,14 +49,14 @@ defmodule GuildaWeb.PodcastEpisodeLive.EpisodeComponent do
       <div>
         <div class="flex -mt-px bg-white border-t divide-x divide-gray-200 border-t-gray-200">
           <audio
-            id="player-<%= @episode.id %>"
+            id={"player-#{@episode.id}"}
             class="w-full"
-            src="<%= @episode.file_url %>"
-            type="<%= @episode.file_type %>"
+            src={@episode.file_url}
+            type={@episode.file_type}
             phx-hook="PodcastPlayer"
-            data-target="<%= @id %>"
-            data-episode-id="<%= @episode.id %>"
-            data-episode-slug="<%= @episode.slug %>"
+            data-target={@id}
+            data-episode-id={@episode.id}
+            data-episode-slug={@episode.slug}
             controls></audio>
         </div>
       </div>
@@ -69,11 +69,12 @@ defmodule GuildaWeb.PodcastEpisodeLive.EpisodeComponent do
           <% end %>
           <%= if Bodyguard.permit?(Podcasts, :delete_episode, @current_user) do %>
             <div class="flex flex-1 w-0 -ml-px">
-              <button type="button" phx-click="delete" phx-target="<%= @myself %>" phx-value-id="<%= @episode.id %>" data-confirm="Tem certeza?" class="relative inline-flex items-center justify-center flex-1 w-0 py-4 -mr-px text-sm font-medium text-gray-700 border border-transparent rounded-bl-lg hover:text-gray-500"><%= gettext("Excluir") %></button>
+              <button type="button" phx-click="delete" phx-target={@myself} phx-value-id={@episode.id} data-confirm="Tem certeza?" class="relative inline-flex items-center justify-center flex-1 w-0 py-4 -mr-px text-sm font-medium text-gray-700 border border-transparent rounded-bl-lg hover:text-gray-500"><%= gettext("Excluir") %></button>
             </div>
           <% end %>
         </div>
       </div>
+    </div>
     """
   end
 
