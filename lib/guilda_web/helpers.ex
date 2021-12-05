@@ -34,7 +34,7 @@ defmodule GuildaWeb.Helpers do
           phx-click-away={click_modal_close()}
           phx-key="escape">
           <!-- Modal header -->
-            <div class="flex items-center justify-between px-4 py-4 space-x-2 rounded-t-lg bg-gray-50 sm:px-6 sm:flex">
+            <div class="flex items-center justify-between px-4 py-4 space-x-2 border-b-2 rounded-t-lg bg-gray-50 sm:px-6 sm:flex">
               <h2><%= @title %></h2>
               <%= live_patch to: @return_to,
                     class: "flex space-x-1 items-center text-gray-500",
