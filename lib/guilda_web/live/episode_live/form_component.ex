@@ -56,7 +56,7 @@ defmodule GuildaWeb.Podcasts.PodcastEpisodeLive.FormComponent do
       {:ok, _episode} ->
         {:noreply,
          socket
-         |> put_flash(:info, gettext("Episódio salvo com sucesso."))
+         |> put_flash(:info, gettext("Episódio cadastrado com sucesso."))
          |> push_redirect(to: socket.assigns.return_to)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
