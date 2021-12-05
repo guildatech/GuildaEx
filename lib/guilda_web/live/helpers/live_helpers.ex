@@ -22,7 +22,7 @@ defmodule GuildaWeb.Live.LiveHelpers do
     path = Keyword.fetch!(opts, :return_to)
     title = Keyword.fetch!(opts, :title)
     modal_opts = [id: :modal, return_to: path, title: title, component: component, opts: opts]
-    live_component(nil, GuildaWeb.ModalComponent, modal_opts)
+    live_component(GuildaWeb.ModalComponent, modal_opts)
   end
 
   @doc """
