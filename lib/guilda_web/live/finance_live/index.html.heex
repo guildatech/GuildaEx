@@ -30,29 +30,30 @@
   <% end %>
 
   <div class="shadow sm:rounded-md sm:overflow-hidden">
-    <table class="Table">
-      <thead>
-        <tr>
-          <th class="Table__th"><%= gettext("Data") %></th>
-          <th class="Table__th"><%= gettext("Beneficiário") %></th>
-          <th class="Table__th"><%= gettext("Nota") %></th>
-          <th class="text-right Table__th"><%= gettext("Valor") %></th>
-          <%= if Bodyguard.permit?(Finances, :manage_transaction, @current_user) do %>
-            <th class="Table__th"></th>
-          <% end %>
-        </tr>
-      </thead>
-      <tbody id="transactions" phx-update="prepend" class="Table__body">
-        <%= if @transactions == [] do %>
-          <tr id="empty-transactions">
-            <td colspan="5" class="Table__td"><%= gettext("Não existem transações para serem exibidas.") %></td>
-          </tr>
+    <.table rows={@transactions} id="transactions-table">
+      <:col let={transaction} label={gettext("Data")}>
+        <%= transaction.date %>
+      </:col>
+
+      <:col let={transaction} label={gettext("Beneficiário")}>
+        <%= transaction.payee %>
+      </:col>
+
+      <:col let={transaction} label={gettext("Nota")}>
+        <%= transaction.note %>
+      </:col>
+
+      <:col let={transaction} label={gettext("Valor")} align="right">
+        <%= transaction.amount %>
+      </:col>
+
+      <:col let={transaction} label={nil} align="right" show={Bodyguard.permit?(Finances, :manage_transaction, @current_user)}>
+        <%= if Bodyguard.permit?(Finances, :update_transaction, @current_user), do: live_patch gettext("Editar"), to: Routes.finance_index_path(@socket, :edit, transaction), class: "TableAction--edit" %>
+        <%= if Bodyguard.permit?(Finances, :delete_transaction, @current_user) do %>
+          <button type="button" class="TableAction--delete" phx-click="delete" phx-value-id={transaction.id} data-confirm={gettext("Tem certeza?")}><%= gettext("Excluir") %></button>
         <% end %>
-        <%= for transaction <- @transactions do %>
-          <.live_component module={GuildaWeb.FinanceLive.TransactionComponent} id={transaction.id} transaction={transaction} current_user={@current_user} />
-        <% end %>
-      </tbody>
-    </table>
+      </:col>
+    </.table>
   </div>
 
 </main>

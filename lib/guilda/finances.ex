@@ -133,6 +133,7 @@ defmodule Guilda.Finances do
   """
   def delete_transaction(%Transaction{} = transaction) do
     Repo.delete(transaction)
+    |> broadcast(:transaction_deleted)
   end
 
   @doc """

@@ -13,7 +13,7 @@ defmodule GuildaWeb.FinanceLive.Index do
 
     if connected?(socket), do: Finances.subscribe()
 
-    {:ok, assign(socket, :transactions, fetch_transactions()), temporary_assigns: [transactions: []]}
+    {:ok, assign(socket, :transactions, fetch_transactions())}
   end
 
   @impl true
@@ -55,21 +55,36 @@ defmodule GuildaWeb.FinanceLive.Index do
     |> assign(:transaction, nil)
   end
 
-  @impl true
+  @impl Phoenix.LiveView
   def handle_event("delete", %{"id" => id}, socket) do
     transaction = Finances.get_transaction!(id)
-    {:ok, _} = Finances.delete_transaction(transaction)
 
+    case Finances.delete_transaction(socket.assigns.current_user, transaction) do
+      {:ok, _episode} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, gettext("Transação excluída com sucesso."))
+         |> assign(:transactions, fetch_transactions())}
+
+      {:error, error} ->
+        {:noreply,
+         socket
+         |> put_flash(:error, Err.message(error))
+         |> push_patch(to: Routes.finance_index_path(socket, :index))}
+    end
+  end
+
+  @impl true
+  def handle_info({:transaction_created, _transaction}, socket) do
     {:noreply, assign(socket, :transactions, fetch_transactions())}
   end
 
-  @impl true
-  def handle_info({:transaction_created, transaction}, socket) do
-    {:noreply, update(socket, :transactions, fn transactions -> [transaction | transactions] end)}
+  def handle_info({:transaction_updated, _transaction}, socket) do
+    {:noreply, assign(socket, :transactions, fetch_transactions())}
   end
 
-  def handle_info({:transaction_updated, transaction}, socket) do
-    {:noreply, update(socket, :transactions, fn transactions -> [transaction | transactions] end)}
+  def handle_info({:transaction_deleted, _transaction}, socket) do
+    {:noreply, assign(socket, :transactions, fetch_transactions())}
   end
 
   defp fetch_transactions do

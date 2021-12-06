@@ -64,6 +64,47 @@ defmodule GuildaWeb.Helpers do
     JS.dispatch(js, "click", to: "#close-modal-button")
   end
 
+  def table(assigns) do
+    extra = assigns_to_attributes(assigns, [:empty_state, :class, :rows, :col, :tbody_extra])
+
+    assigns =
+      assigns
+      |> assign_new(:empty_state, fn -> gettext("Não há registros para exibir.") end)
+      |> assign_new(:class, fn -> nil end)
+      |> assign_new(:tbody_extra, fn -> [] end)
+      |> assign(:extra, extra)
+
+    ~H"""
+    <table class={"Table #{@class}"} {@extra}>
+      <thead>
+        <tr>
+          <%= for col <- @col do %>
+            <%= if Map.get(col, :show, true) do %>
+              <th class="Table__th" {assigns_to_attributes(col, [:show, :class, :label])}><%= col.label %></th>
+            <% end %>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody class="Table__body" {@tbody_extra}>
+        <%= if @rows == [] do %>
+          <tr>
+            <td colspan={Kernel.length(@col)} class="Table__td"><%= @empty_state %></td>
+          </tr>
+        <% end %>
+        <%= for row <- @rows do %>
+          <tr>
+            <%= for col <- @col do %>
+              <%= if Map.get(col, :show, true) do %>
+                <td class={"Table__td #{Map.get(col, :class)}"} {assigns_to_attributes(col, [:show, :class, :label])}><%= render_slot(col, row) %></td>
+              <% end %>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    """
+  end
+
   @doc """
   Renders [Remix](https://remixicon.com) icon.
 
