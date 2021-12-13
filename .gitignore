@@ -42,3 +42,6 @@ npm-debug.log
 /.npm/
 /.config/
 .deliver/releases/
+
+# Ignore dialyzer
+/priv/plts/

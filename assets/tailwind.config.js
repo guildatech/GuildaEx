@@ -2,10 +2,7 @@
 const defaultTheme = require("tailwindcss/defaultTheme");
 module.exports = {
   mode: "jit",
-  purge: ["../lib/**/*.ex", "../lib/**/*.leex", "../lib/**/*.heex", "../lib/**/*.eex", "./js/**/*.js"],
-  variants: {
-    extend: {},
-  },
+  content: ["../lib/**/*.ex", "../lib/**/*.leex", "../lib/**/*.heex", "../lib/**/*.eex", "./js/**/*.js"],
   plugins: [require("@tailwindcss/forms"), require("@tailwindcss/typography"), require("@tailwindcss/aspect-ratio")],
   theme: {
     extend: {
