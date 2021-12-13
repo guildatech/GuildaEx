@@ -4,7 +4,7 @@ defmodule Guilda.MixProject do
   def project do
     [
       app: :guilda,
-      version: "0.1.0",
+      version: version(),
       elixir: "~> 1.7",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
@@ -23,7 +23,9 @@ defmodule Guilda.MixProject do
         "coveralls.post": :test,
         "coveralls.html": :test,
         quality: :test
-      ]
+      ],
+      homepage_url: "https://guildatech.com",
+      name: "GuildaTech"
     ]
   end
 
@@ -52,7 +54,6 @@ defmodule Guilda.MixProject do
       {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
       {:distillery, "~> 2.0", warn_missing: false},
       {:ecto_sql, "~> 3.4"},
-      {:edeliver, ">= 1.6.0"},
       {:err, "~> 0.1.0"},
       {:ex_aws_s3, "~> 2.0"},
       {:ex_aws, "~> 2.0"},
@@ -104,4 +105,28 @@ defmodule Guilda.MixProject do
       ]
     ]
   end
+
+  defp version do
+    case System.cmd(
+           "git",
+           ~w[describe --dirty=+dirty],
+           stderr_to_stdout: true
+         ) do
+      {version, 0} ->
+        version
+        |> String.replace_prefix("v", "")
+        |> String.trim()
+        |> Version.parse()
+        |> bump_version()
+        |> to_string()
+
+      _ ->
+        "0.0.0-dev"
+    end
+  end
+
+  defp bump_version({:ok, %Version{pre: []} = version}), do: version
+
+  defp bump_version({:ok, %Version{patch: p} = version}),
+    do: struct(version, patch: p + 1)
 end
