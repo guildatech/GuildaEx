@@ -41,7 +41,15 @@ npm-debug.log
 # Docker resources
 /.npm/
 /.config/
-.deliver/releases/
 
 # Ignore dialyzer
 /priv/plts/
+
+# Ignore macOS trash
+.DS_Store
+
+# Ignore direnv file
+.envrc
+
+# Ignore VSCode workspace settings
+.vscode
