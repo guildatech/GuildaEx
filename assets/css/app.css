@@ -4,11 +4,11 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 
-@import "attachment-list.scss";
-@import "buttons.scss";
-@import "forms.scss";
-@import "table.scss";
-@import "utilities.scss";
+@import "attachment-list.css";
+@import "buttons.css";
+@import "forms.css";
+@import "table.css";
+@import "utilities.css";
 
 @import "tailwindcss/utilities";
 
