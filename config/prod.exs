@@ -62,7 +62,3 @@ config :logger, level: :info
 # and configuration from environment variables.
 
 config :guilda, :environment, :prod
-
-# Finally import the config/prod.secret.exs which should be versioned
-# separately.
-import_config "prod.secret.exs"
