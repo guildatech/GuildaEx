@@ -47,8 +47,6 @@ defmodule GuildaWeb do
       opts = Keyword.merge([layout: {GuildaWeb.LayoutView, "live.html"}], unquote(opts))
       use Phoenix.LiveView, opts
 
-      import GuildaWeb.Live.LiveHelpers
-
       unquote(view_helpers())
     end
   end

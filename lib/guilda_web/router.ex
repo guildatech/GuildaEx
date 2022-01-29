@@ -71,29 +71,31 @@ defmodule GuildaWeb.Router do
     get "/podcast/feed.xml", FeedController, :index
   end
 
-  scope "/", GuildaWeb do
-    pipe_through [:browser]
+  live_session :default, on_mount: GuildaWeb.InitAssigns do
+    scope "/", GuildaWeb do
+      pipe_through [:browser]
 
-    live "/", PageLive, :index
+      live "/", PageLive, :index
 
-    live "/podcast", PodcastEpisodeLive.Index, :index
-    live "/podcast/new", PodcastEpisodeLive.Index, :new
-    live "/podcast/:id/edit", PodcastEpisodeLive.Index, :edit
+      live "/podcast", PodcastEpisodeLive.Index, :index
+      live "/podcast/new", PodcastEpisodeLive.Index, :new
+      live "/podcast/:id/edit", PodcastEpisodeLive.Index, :edit
 
-    ## Authentication routes
-    get "/auth/telegram", AuthController, :telegram_callback
-    delete "/users/log_out", UserSessionController, :delete
-  end
+      ## Authentication routes
+      get "/auth/telegram", AuthController, :telegram_callback
+      delete "/users/log_out", UserSessionController, :delete
+    end
 
-  scope "/", GuildaWeb do
-    pipe_through [:browser, :require_authenticated_user]
+    scope "/", GuildaWeb do
+      pipe_through [:browser, :require_authenticated_user]
 
-    live "/users/settings", UserSettingLive, :edit, as: :user_settings
-    get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+      get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
 
-    live "/finances", FinanceLive.Index, :index
-    live "/finances/new", FinanceLive.Index, :new
-    live "/finances/:id/edit", FinanceLive.Index, :edit
+      live "/users/settings", UserSettingLive, :edit, as: :user_settings
+      live "/finances", FinanceLive.Index, :index
+      live "/finances/new", FinanceLive.Index, :new
+      live "/finances/:id/edit", FinanceLive.Index, :edit
+    end
   end
 
   # Other scopes may use custom stacks.

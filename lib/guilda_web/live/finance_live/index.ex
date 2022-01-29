@@ -7,10 +7,10 @@ defmodule GuildaWeb.FinanceLive.Index do
   alias Guilda.Finances
   alias Guilda.Finances.Transaction
 
-  @impl true
-  def mount(params, session, socket) do
-    socket = assign_defaults(socket, params, session)
+  on_mount GuildaWeb.RequireUser
 
+  @impl true
+  def mount(_params, _session, socket) do
     if connected?(socket), do: Finances.subscribe()
 
     {:ok, assign(socket, :transactions, fetch_transactions())}
