@@ -48,7 +48,7 @@ defmodule Guilda.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:bcrypt_elixir, "~> 2.0"},
+      {:bcrypt_elixir, "~> 3.0"},
       {:bodyguard, "~> 2.4"},
       {:credo, "~> 1.1", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
@@ -66,11 +66,11 @@ defmodule Guilda.MixProject do
       {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
       {:norm, git: "https://github.com/keathley/norm.git"},
       {:phoenix_ecto, "~> 4.1"},
-      {:phoenix_html, "~> 3.1.0"},
+      {:phoenix_html, "~> 3.2.0"},
       {:phoenix_live_dashboard, "~> 0.6.1"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_view, "~> 0.17.5"},
-      {:phoenix, "~> 1.6.2", override: true},
+      {:phoenix, "~> 1.6.6", override: true},
       {:plug_cowboy, "~> 2.0"},
       {:postgrex, ">= 0.0.0"},
       {:sobelow, "~> 0.9", only: [:dev, :test], runtime: false},
