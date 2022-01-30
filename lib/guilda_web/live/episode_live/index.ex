@@ -8,9 +8,7 @@ defmodule GuildaWeb.PodcastEpisodeLive.Index do
   alias Guilda.Podcasts.Episode
 
   @impl true
-  def mount(params, session, socket) do
-    socket = assign_defaults(socket, params, session)
-
+  def mount(_params, _session, socket) do
     {:ok, assign(socket, podcast_episodes: list_podcast_episodes())}
   end
 

@@ -4,7 +4,7 @@
       <div class="flex">
         <div class="flex items-center flex-shrink-0">
           <%= link to: Routes.page_path(@socket, :index), title: gettext("Página inicial") do %>
-            <img class="w-auto h-11" src="<%= Routes.static_path(@socket, "/images/guilda-logo.png") %>" alt="GuildaTech logo" />
+            <img class="w-auto h-11" src={Routes.static_path(@socket, "/images/guilda-logo.png")} alt="GuildaTech logo" />
           <% end %>
         </div>
         <div class="hidden space-x-8 sm:-my-px sm:ml-6 sm:flex">

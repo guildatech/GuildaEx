@@ -6,16 +6,11 @@ defmodule GuildaWeb.UserSettingLive do
 
   alias Guilda.Accounts
 
+  on_mount GuildaWeb.RequireUser
+
   @impl true
-  def mount(params, session, socket) do
-    socket = assign_defaults(socket, params, session)
-    user = socket.assigns.current_user
-
-    socket =
-      socket
-      |> assign(:email_changeset, Accounts.change_user_email(user))
-
-    {:ok, socket}
+  def mount(_params, _session, socket) do
+    {:ok, assign(socket, :email_changeset, Accounts.change_user_email(socket.assigns.current_user))}
   end
 
   @impl true
