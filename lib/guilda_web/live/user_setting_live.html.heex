@@ -35,7 +35,7 @@
 
       <!-- Right column -->
       <div class="mt-5 md:mt-0 md:col-span-2">
-        <%= f = form_for @email_changeset, "#", phx_submit: "update-email" %>
+        <.form let={f} for={@email_changeset} phx-submit="update-email">
           <div class="shadow sm:rounded-md sm:overflow-hidden">
             <div class="px-4 py-5 bg-white sm:p-6">
               <%= if @email_changeset.action do %>
@@ -57,7 +57,7 @@
               </span>
             </div>
           </div>
-        </form>
+        </.form>
       </div>
       <!-- Right column end -->
 
