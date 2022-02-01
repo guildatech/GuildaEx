@@ -220,4 +220,30 @@ defmodule Guilda.AccountsTest do
       assert %User{is_admin: true} = Accounts.get_user_by_telegram_id(user.telegram_id)
     end
   end
+
+  describe "location" do
+    test "set_lng_lat/3 saves the coordinates for the user" do
+      user = user_fixture()
+      refute user.geom
+      assert {:ok, user} = Accounts.set_lng_lat(user, 10, 10)
+      assert user.geom
+    end
+
+    test "set_lng_lat/3 adds an error margin to the given coordinates" do
+      user = user_fixture()
+      lat = 10
+      lng = 20
+      {:ok, user} = Accounts.set_lng_lat(user, lng, lat)
+      {new_lng, new_lat} = user.geom.coordinates
+      assert Geocalc.within?(10_000, [lng, lat], [new_lng, new_lat])
+    end
+
+    test "remove_location/1 removes the user's location data" do
+      user = user_fixture()
+      {:ok, user} = Accounts.set_lng_lat(user, 10, 10)
+      assert user.geom
+      assert {:ok, user} = Accounts.remove_location(user)
+      refute user.geom
+    end
+  end
 end

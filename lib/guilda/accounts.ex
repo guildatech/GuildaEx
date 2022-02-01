@@ -4,7 +4,10 @@ defmodule Guilda.Accounts do
   """
 
   import Ecto.Query, warn: false
-  alias Guilda.Accounts.{User, UserNotifier, UserToken}
+
+  alias Guilda.Accounts.User
+  alias Guilda.Accounts.UserNotifier
+  alias Guilda.Accounts.UserToken
   alias Guilda.Repo
 
   ## Database getters
@@ -145,6 +148,21 @@ defmodule Guilda.Accounts do
 
     Repo.insert!(user_token)
     UserNotifier.deliver_update_email_instructions(user, update_email_url_fun.(encoded_token))
+  end
+
+  ## Location
+  def set_lng_lat(%User{} = user, lng, lat) do
+    {new_lng, new_lat} = Guilda.Geo.random_nearby_lng_lat(lng, lat, 10)
+
+    user
+    |> User.location_changeset(%Geo.Point{coordinates: {new_lng, new_lat}, srid: 4326})
+    |> Repo.update()
+  end
+
+  def remove_location(%User{} = user) do
+    user
+    |> User.location_changeset(nil)
+    |> Repo.update()
   end
 
   ## Session

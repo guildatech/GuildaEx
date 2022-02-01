@@ -20,6 +20,7 @@ config :guilda, GuildaWeb.Endpoint,
   live_view: [signing_salt: "E3IrZAj7"]
 
 config :guilda, Guidla.Repo,
+  types: Guilda.PostgresTypes,
   migration_timestamps: [type: :utc_datetime_usec],
   migration_primary_key: [
     name: :id,
@@ -27,7 +28,8 @@ config :guilda, Guidla.Repo,
     autogenerate: false,
     read_after_writes: true,
     default: {:fragment, "gen_random_uuid()"}
-  ]
+  ],
+  migration_foreign_key: [type: :binary_id]
 
 config :guilda, :auth, telegram_bot_username: "guilda_tech_bot"
 

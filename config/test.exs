@@ -9,6 +9,7 @@ config :bcrypt_elixir, :log_rounds, 1
 # to provide built-in test partitioning in CI environment.
 # Run `mix help test` for more information.
 config :guilda, Guilda.Repo,
+  types: Guilda.PostgresTypes,
   username: "postgres",
   password: "postgres",
   database: "guilda_test#{System.get_env("MIX_TEST_PARTITION")}",

@@ -15,6 +15,7 @@ defmodule Guilda.Accounts.User do
     field :email, :string
     field :confirmed_at, :naive_datetime
     field :is_admin, :boolean, default: false
+    field :geom, Geo.PostGIS.Geometry
 
     timestamps()
   end
@@ -38,6 +39,13 @@ defmodule Guilda.Accounts.User do
     |> validate_length(:email, max: 160)
     |> unsafe_validate_unique(:email, Guilda.Repo)
     |> unique_constraint(:email)
+  end
+
+  @doc """
+  Sets the user's location.
+  """
+  def location_changeset(user, geom) do
+    change(user, geom: geom)
   end
 
   @doc """
