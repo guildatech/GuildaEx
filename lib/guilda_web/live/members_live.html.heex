@@ -1,0 +1,9 @@
+<.main_content title={gettext("Mapa de membros")} flash={@flash}>
+  <div class="min-h-[500px]">
+    <leaflet-map lat={@center_lat} lng={@center_lng}>
+      <%= for marker <- @markers do %>
+        <leaflet-marker lat={marker.lat} lng={marker.lng} />
+      <% end %>
+    </leaflet-map>
+  </div>
+</.main_content>

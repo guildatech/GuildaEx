@@ -34,6 +34,14 @@ defmodule GuildaWeb.MenuLive do
       },
       %{
         menu: menu,
+        text: gettext("Membros"),
+        module: GuildaWeb.MapLive,
+        to: Routes.members_path(socket, :show),
+        show: true,
+        position: :main
+      },
+      %{
+        menu: menu,
         text: gettext("Finanças"),
         module: GuildaWeb.FinanceLive,
         to: Routes.finance_index_path(socket, :index),

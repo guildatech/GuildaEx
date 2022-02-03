@@ -61,9 +61,11 @@ defmodule GuildaWeb.Components.LayoutComponents do
       |> assign(:lng, lng)
 
     ~H"""
-    <leaflet-map lat={@lat} lng={@lng}>
-      <leaflet-marker lat={@lat} lng={@lng} />
-    </leaflet-map>
+    <div class="grid grid-cols-1 min-h-[180px]">
+      <leaflet-map lat={@lat} lng={@lng}>
+        <leaflet-marker lat={@lat} lng={@lng} />
+      </leaflet-map>
+    </div>
     """
   end
 
