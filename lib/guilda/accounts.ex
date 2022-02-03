@@ -5,10 +5,23 @@ defmodule Guilda.Accounts do
 
   import Ecto.Query, warn: false
 
+  alias Guilda.Accounts.Events
   alias Guilda.Accounts.User
   alias Guilda.Accounts.UserNotifier
   alias Guilda.Accounts.UserToken
   alias Guilda.Repo
+
+  @pubsub Guilda.PubSub
+
+  def subscribe(user_id) do
+    Phoenix.PubSub.subscribe(@pubsub, topic(user_id))
+  end
+
+  def unsubscribe(user_id) do
+    Phoenix.PubSub.unsubscribe(@pubsub, topic(user_id))
+  end
+
+  defp topic(user_id), do: "user:#{user_id}"
 
   ## Database getters
 
@@ -157,12 +170,36 @@ defmodule Guilda.Accounts do
     user
     |> User.location_changeset(%Geo.Point{coordinates: {new_lng, new_lat}, srid: 4326})
     |> Repo.update()
+    |> case do
+      {:ok, new_user} ->
+        broadcast!(
+          user,
+          %Events.LocationChanged{user: new_user}
+        )
+
+        {:ok, new_user}
+
+      {:error, _} = error ->
+        error
+    end
   end
 
   def remove_location(%User{} = user) do
     user
     |> User.location_changeset(nil)
     |> Repo.update()
+    |> case do
+      {:ok, new_user} ->
+        broadcast!(
+          user,
+          %Events.LocationChanged{user: new_user}
+        )
+
+        {:ok, new_user}
+
+      {:error, _} = error ->
+        error
+    end
   end
 
   ## Session
@@ -198,5 +235,9 @@ defmodule Guilda.Accounts do
   def give_admin(%User{} = user) do
     from(u in User, where: u.id == ^user.id)
     |> Repo.update_all(set: [is_admin: true])
+  end
+
+  defp broadcast!(%User{} = user, msg) do
+    Phoenix.PubSub.broadcast!(@pubsub, topic(user.id), {__MODULE__, msg})
   end
 end

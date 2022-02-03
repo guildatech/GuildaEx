@@ -10,6 +10,10 @@ defmodule GuildaWeb.UserSettingLive do
 
   @impl true
   def mount(_params, _session, socket) do
+    if connected?(socket) do
+      Accounts.subscribe(socket.assigns.current_user.id)
+    end
+
     {:ok, assign(socket, :email_changeset, Accounts.change_user_email(socket.assigns.current_user))}
   end
 
@@ -61,4 +65,11 @@ defmodule GuildaWeb.UserSettingLive do
         {:noreply, put_flash(socket, :error, gettext("Não foi possível remover sua localização."))}
     end
   end
+
+  @impl true
+  def handle_info({Accounts, %Accounts.Events.LocationChanged{} = update}, socket) do
+    {:noreply, assign(socket, current_user: update.user)}
+  end
+
+  def handle_info({Accounts, _}, socket), do: {:noreply, socket}
 end
