@@ -14,7 +14,11 @@ defmodule GuildaWeb.UserSettingLive do
       Accounts.subscribe(socket.assigns.current_user.id)
     end
 
-    {:ok, assign(socket, :email_changeset, Accounts.change_user_email(socket.assigns.current_user))}
+    {:ok,
+     assign(socket,
+       email_changeset: Accounts.change_user_email(socket.assigns.current_user),
+       bot_name: GuildaWeb.AuthController.telegram_bot_username()
+     )}
   end
 
   @impl true

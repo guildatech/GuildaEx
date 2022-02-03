@@ -8,8 +8,7 @@ defmodule GuildaWeb.MembersLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    locations = Accounts.list_users_locations()
-    [lat, lng] = Geocalc.geographic_center(locations)
-    {:ok, assign(socket, markers: locations, center_lat: lat, center_lng: lng)}
+    {:ok,
+     assign(socket, markers: Accounts.list_users_locations(), bot_name: GuildaWeb.AuthController.telegram_bot_username())}
   end
 end

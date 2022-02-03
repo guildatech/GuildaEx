@@ -25,7 +25,7 @@
     </.form>
   </.content_section>
 
-  <.content_section title={gettext("Localização")} subtitle={gettext("Adicionamos uma margem de erro de 10km em todas as localizações compartilhadas.")}}>
+  <.content_section title={gettext("Localização")} subtitle={gettext("Compartilhe sua localização para aparecer no mapa de membros")}}>
     <div class="bg-white shadow sm:rounded-lg">
       <%= if @current_user.geom do %>
         <div class="px-4 py-5 sm:p-6">
@@ -43,7 +43,9 @@
             <%= gettext("Sua localização não está compartilhada com a Guilda") %>
           </h3>
           <div class="mt-2 sm:flex sm:items-start sm:justify-between">
-            <div class="max-w-xl text-sm text-gray-500">
+            <div class="max-w-xl prose text-gray-600">
+              <p><%= raw gettext("Para se registrar no mapa de participantes, envie a sua localização geográfica para o nosso bot (%{link}). O envio de localização depende do uso de GPS, e apenas os clientes mobile do Telegram (Android e iPhone) suportam o envio de coordenadas.", link: safe_to_string(link("@#{@bot_name}", to: "https://t.me/#{@bot_name}"))) %></p>
+              <p><%= raw gettext("É importante enviar uma mensagem privada <strong>diretamente</strong> para o nosso bot %{link} com a sua localização. <strong>Não envie a sua localização para o grupo!</strong>", link: safe_to_string(link("@#{@bot_name}", to: "https://t.me/#{@bot_name}"))) %></p>
               <p><%= gettext("Para garantir sua privacidade, todas as localizações compartilhadas são salvas com uma margem de erro de 10km.") %></p>
             </div>
           </div>
