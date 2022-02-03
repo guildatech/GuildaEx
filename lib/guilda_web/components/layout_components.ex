@@ -13,22 +13,11 @@ defmodule GuildaWeb.Components.LayoutComponents do
 
     <!-- Main wrapper start -->
     <main class="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
-
-      <!-- Flash messages start -->
-      <p class="alert alert-info" role="alert"
-        phx-click="lv:clear-flash"
-        phx-value-key="info"><%= live_flash(@flash, :info) %></p>
-      <p class="alert alert-danger" role="alert"
-        phx-click="lv:clear-flash"
-        phx-value-key="error"><%= live_flash(@flash, :error) %></p>
-      <!-- Flash messages end -->
-
       <!-- Content grid start -->
       <div class="grid grid-cols-1 gap-5">
         <%= render_slot(@inner_block) %>
       </div>
       <!-- Content grid end -->
-
     </main>
     <!-- Main wrapper end -->
     """
@@ -61,5 +50,66 @@ defmodule GuildaWeb.Components.LayoutComponents do
     </div>
     <!-- Section end -->
     """
+  end
+
+  def user_coordinates(assigns) do
+    {lng, lat} = assigns.coordinates
+
+    assigns =
+      assigns
+      |> assign(:lat, lat)
+      |> assign(:lng, lng)
+
+    ~H"""
+    <leaflet-map lat={@lat} lng={@lng}>
+      <leaflet-marker lat={@lat} lng={@lng} />
+    </leaflet-map>
+    """
+  end
+
+  def button(assigns) do
+    assigns =
+      assigns
+      |> assign_new(:variant, fn -> "default" end)
+
+    extra = assigns_to_attributes(assigns, [:text])
+
+    assigns = Phoenix.LiveView.assign(assigns, :extra, extra)
+
+    ~H"""
+    <button type="button" class={button_classes(@variant)} {@extra}>
+      <%= @text %>
+    </button>
+    """
+  end
+
+  def outline_button(assigns) do
+    assigns =
+      assigns
+      |> assign_new(:variant, fn -> "default" end)
+
+    extra = assigns_to_attributes(assigns, [:text, :icon, :variant])
+
+    assigns = Phoenix.LiveView.assign(assigns, :extra, extra)
+
+    ~H"""
+    <button type="button" class={outline_button_classes(@variant)} {@extra}>
+      <%= @text %>
+    </button>
+    """
+  end
+
+  defp button_classes("default") do
+    variant_classes = "bg-white text-gray-700 border-gray-300 hover:bg-gray-50 focus:ring-blue-500"
+    default_button_classes() <> " " <> variant_classes
+  end
+
+  defp outline_button_classes("danger") do
+    variant_classes = "bg-white text-red-700 border-red-300 hover:bg-red-50 focus:ring-red-500"
+    default_button_classes() <> " " <> variant_classes
+  end
+
+  defp default_button_classes do
+    "inline-flex items-center px-3 py-2 text-sm font-medium leading-4 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
   end
 end

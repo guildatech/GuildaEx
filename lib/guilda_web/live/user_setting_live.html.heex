@@ -25,18 +25,26 @@
     </.form>
   </.content_section>
 
-  <.content_section title={gettext("Localização")} subtitle={gettext("")}}>
+  <.content_section title={gettext("Localização")} subtitle={gettext("Adicionamos uma margem de erro de 10km em todas as localizações compartilhadas.")}}>
     <div class="bg-white shadow sm:rounded-lg">
-      <%= if !@current_user.geom do %>
+      <%= if @current_user.geom do %>
+        <div class="px-4 py-5 sm:p-6">
+          <h3 class="mb-5 text-lg font-medium leading-6 text-gray-900">
+            <%= gettext("Você compartilhou sua localização com a Guilda") %>
+          </h3>
+          <.user_coordinates coordinates={@current_user.geom.coordinates} />
+          <div class="flex justify-end mt-5">
+            <.outline_button text={gettext("Remover localização")} phx-click="remove-location" variant="danger" />
+          </div>
+        </div>
+      <%= else %>
         <div class="px-4 py-5 sm:p-6">
           <h3 class="text-lg font-medium leading-6 text-gray-900">
             <%= gettext("Sua localização não está compartilhada com a Guilda") %>
           </h3>
           <div class="mt-2 sm:flex sm:items-start sm:justify-between">
             <div class="max-w-xl text-sm text-gray-500">
-              <p>
-                <%= gettext("Para garantir sua privacidade, todas as localizações compartilhadas são salvas com uma margem de erro de 10km.") %>
-              </p>
+              <p><%= gettext("Para garantir sua privacidade, todas as localizações compartilhadas são salvas com uma margem de erro de 10km.") %></p>
             </div>
           </div>
         </div>

@@ -46,4 +46,19 @@ defmodule GuildaWeb.UserSettingLive do
         {:noreply, assign(socket, email_changeset: changeset)}
     end
   end
+
+  def handle_event("remove-location", _params, socket) do
+    user = socket.assigns.current_user
+
+    case Accounts.remove_location(user) do
+      {:ok, user} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, gettext("Sua localização foi removida com sucesso."))
+         |> assign(:current_user, user)}
+
+      {:error, changeset} ->
+        {:noreply, put_flash(socket, :error, gettext("Não foi possível remover sua localização."))}
+    end
+  end
 end
