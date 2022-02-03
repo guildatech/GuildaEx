@@ -10,18 +10,29 @@ defmodule Guilda.Bot do
   alias Guilda.Accounts
 
   command("start")
-  command("help", description: "Print the bot's help")
+  command("help", description: "Mostra os comandos do bot.")
 
   middleware(ExGram.Middleware.IgnoreUsername)
 
   def bot(), do: @bot
 
   def handle({:command, :start, _msg}, context) do
-    answer(context, "Hi!")
+    answer(context, "Olá!")
   end
 
   def handle({:command, :help, _msg}, context) do
-    answer(context, "Here is your help:")
+    answer(
+      context,
+      """
+      Eu sou o bot da @guildatech!
+
+      Por enquanto eu não respondo a nenhum comando, mas você pode me enviar sua localização para aparecer no nosso mapa de participantes!
+
+      Para isso, basta apenas me enviar sua localização usando o seu celular.
+
+      Para ver quem já compartilhou a localização acesse https://guildatech.com/members.
+      """
+    )
   end
 
   def handle({:location, %{latitude: lat, longitude: lng}}, context) do
@@ -29,7 +40,7 @@ defmodule Guilda.Bot do
 
     with {:user, {:ok, user}} <- {:user, Accounts.upsert_user(Map.put(from, :telegram_id, Kernel.to_string(from.id)))},
          {:location, {:ok, user}} <- {:location, Accounts.set_lng_lat(user, lng, lat)} do
-      answer(context, gettext("Sua localização foi salva com sucesso!"))
+      answer(context, gettext("Sua localização foi salva com sucesso! Veja o mapa em https://guildatech.com/members."))
     else
       {:user, {:error, _changeset} = error} ->
         IO.inspect(error)
