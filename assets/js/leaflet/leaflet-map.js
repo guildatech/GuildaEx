@@ -37,17 +37,12 @@ class LeafletMap extends HTMLElement {
       iconUrl: "/images/guilda-logo.png",
       iconSize: [64, 64],
     });
-  }
 
-  connectedCallback() {
-    const markerElements = this.querySelectorAll("leaflet-marker");
-    markerElements.forEach((markerEl) => {
-      const lat = markerEl.getAttribute("lat");
-      const lng = markerEl.getAttribute("lng");
-      L.marker([lat, lng], { icon: this.defaultIcon }).addTo(this.markersLayer);
+    this.addEventListener("marker-added", (e) => {
+      L.marker([e.detail.lat, e.detail.lng], { icon: this.defaultIcon }).addTo(this.markersLayer);
+      const bounds = this.markersLayer.getBounds().pad(0.1);
+      this.map.fitBounds(bounds);
     });
-    const bounds = this.markersLayer.getBounds().pad(0.1);
-    this.map.fitBounds(bounds);
   }
 }
 
