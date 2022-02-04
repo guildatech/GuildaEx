@@ -20,8 +20,8 @@ defmodule Guilda.Accounts.User do
     timestamps()
   end
 
-  @required_registration_fields ~w(telegram_id username first_name)a
-  @optional_registration_fields ~w(last_name)a
+  @required_registration_fields ~w(telegram_id)a
+  @optional_registration_fields ~w(last_name username first_name)a
 
   @doc """
   A user changeset for registration.

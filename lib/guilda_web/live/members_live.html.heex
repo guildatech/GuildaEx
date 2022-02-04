@@ -7,9 +7,9 @@
     </div>
   <% else %>
     <div class="min-h-[500px]">
-      <leaflet-map>
+      <leaflet-map id="map" phx-update="append">
         <%= for marker <- @markers do %>
-          <leaflet-marker lat={marker.lat} lng={marker.lng} />
+          <leaflet-marker id={"#{marker.lat}-#{marker.lng}"} lat={marker.lat} lng={marker.lng} />
         <% end %>
       </leaflet-map>
     </div>

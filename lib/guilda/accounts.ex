@@ -172,10 +172,9 @@ defmodule Guilda.Accounts do
     |> Repo.update()
     |> case do
       {:ok, new_user} ->
-        broadcast!(
-          user,
-          %Events.LocationChanged{user: new_user}
-        )
+        {lng, lat} = new_user.geom.coordinates
+        broadcast!(user, %Events.LocationChanged{user: new_user})
+        broadcast!("member_location", %Events.LocationAdded{lat: lat, lng: lng})
 
         {:ok, new_user}
 
@@ -190,10 +189,7 @@ defmodule Guilda.Accounts do
     |> Repo.update()
     |> case do
       {:ok, new_user} ->
-        broadcast!(
-          user,
-          %Events.LocationChanged{user: new_user}
-        )
+        broadcast!(user, %Events.LocationChanged{user: new_user})
 
         {:ok, new_user}
 
@@ -243,6 +239,10 @@ defmodule Guilda.Accounts do
   def give_admin(%User{} = user) do
     from(u in User, where: u.id == ^user.id)
     |> Repo.update_all(set: [is_admin: true])
+  end
+
+  defp broadcast!("member_location", msg) do
+    Phoenix.PubSub.broadcast!(@pubsub, "member_location", {__MODULE__, msg})
   end
 
   defp broadcast!(%User{} = user, msg) do
