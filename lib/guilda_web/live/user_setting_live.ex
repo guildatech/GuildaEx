@@ -65,7 +65,7 @@ defmodule GuildaWeb.UserSettingLive do
          |> put_flash(:info, gettext("Sua localização foi removida com sucesso."))
          |> assign(:current_user, user)}
 
-      {:error, changeset} ->
+      {:error, _changeset} ->
         {:noreply, put_flash(socket, :error, gettext("Não foi possível remover sua localização."))}
     end
   end
