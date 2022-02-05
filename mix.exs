@@ -13,7 +13,6 @@ defmodule Guilda.MixProject do
       deps: deps(),
       dialyzer: [
         plt_file: {:no_warn, "priv/plts/dialyzer.plt"},
-        ignore_warnings: ".dialyzer_ignore.exs",
         plt_add_apps: [:ex_unit]
       ],
       test_coverage: [tool: ExCoveralls],
