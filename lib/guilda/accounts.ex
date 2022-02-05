@@ -198,7 +198,7 @@ defmodule Guilda.Accounts do
     end
   end
 
-  def list_users_locations() do
+  def list_users_locations do
     from(u in User)
     |> where([u], not is_nil(u.geom))
     |> select([u], u.geom)

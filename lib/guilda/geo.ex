@@ -1,4 +1,8 @@
 defmodule Guilda.Geo do
+  @moduledoc """
+  A module used to add an error margin to coordinates.
+  """
+
   @doc """
   Returns a random lat/lng coordinate within the given radius
   of a location.

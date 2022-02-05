@@ -13,8 +13,10 @@ defmodule GuildaWeb.MembersLive do
     end
 
     {:ok,
-     assign(socket, markers: Accounts.list_users_locations(), bot_name: GuildaWeb.AuthController.telegram_bot_username()),
-     temporary_assigns: [markers: []]}
+     assign(socket,
+       markers: Accounts.list_users_locations(),
+       bot_name: GuildaWeb.AuthController.telegram_bot_username()
+     ), temporary_assigns: [markers: []]}
   end
 
   @impl true

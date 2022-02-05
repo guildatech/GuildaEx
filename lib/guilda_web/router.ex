@@ -11,7 +11,20 @@ defmodule GuildaWeb.Router do
     plug :protect_from_forgery
     plug :fetch_current_user
 
-    plug :put_secure_browser_headers
+    plug :put_secure_browser_headers, %{
+      "content-security-policy" => ~w[
+          'self'
+          'unsafe-inline'
+          api.mapbox.com
+          default-src
+          guilda-tech.s3.amazonaws.com
+          oauth.telegram.org
+          plausible.io
+          rsms.me
+          telegram.org
+          unpkg.com
+        ] |> Enum.join(" ")
+    }
   end
 
   pipeline :api do

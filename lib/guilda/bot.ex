@@ -1,4 +1,7 @@
 defmodule Guilda.Bot do
+  @moduledoc """
+  Our bot used to store the user's location.
+  """
   @bot :guilda
 
   use ExGram.Bot,
@@ -7,6 +10,8 @@ defmodule Guilda.Bot do
 
   import GuildaWeb.Gettext
 
+  require Logger
+
   alias Guilda.Accounts
 
   command("start")
@@ -14,7 +19,7 @@ defmodule Guilda.Bot do
 
   middleware(ExGram.Middleware.IgnoreUsername)
 
-  def bot(), do: @bot
+  def bot, do: @bot
 
   def handle({:command, :start, _msg}, context) do
     answer(context, "Olá!")
@@ -39,11 +44,11 @@ defmodule Guilda.Bot do
     from = context.update.message.from
 
     with {:user, {:ok, user}} <- {:user, Accounts.upsert_user(Map.put(from, :telegram_id, Kernel.to_string(from.id)))},
-         {:location, {:ok, user}} <- {:location, Accounts.set_lng_lat(user, lng, lat)} do
+         {:location, {:ok, _user}} <- {:location, Accounts.set_lng_lat(user, lng, lat)} do
       answer(context, gettext("Sua localização foi salva com sucesso! Veja o mapa em https://guildatech.com/members."))
     else
       {:user, {:error, _changeset} = error} ->
-        IO.inspect(error)
+        Logger.warning(inspect(error))
         answer(context, gettext("Não foi possível criar o seu cadastro. :("))
 
       {:location, {:error, _changeset}} ->

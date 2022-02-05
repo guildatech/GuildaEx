@@ -1,4 +1,7 @@
 defmodule GuildaWeb.Components.LayoutComponents do
+  @moduledoc """
+  General phoenix component used through the app.
+  """
   use Phoenix.Component
 
   def main_content(assigns) do
@@ -112,6 +115,7 @@ defmodule GuildaWeb.Components.LayoutComponents do
   end
 
   defp default_button_classes do
+    # credo:disable-for-next-line
     "inline-flex items-center px-3 py-2 text-sm font-medium leading-4 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
   end
 end
