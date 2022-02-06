@@ -15,12 +15,13 @@ defmodule Guilda.Accounts.User do
     field :email, :string
     field :confirmed_at, :naive_datetime
     field :is_admin, :boolean, default: false
+    field :geom, Geo.PostGIS.Geometry
 
     timestamps()
   end
 
-  @required_registration_fields ~w(telegram_id username first_name)a
-  @optional_registration_fields ~w(last_name)a
+  @required_registration_fields ~w(telegram_id)a
+  @optional_registration_fields ~w(last_name username first_name)a
 
   @doc """
   A user changeset for registration.
@@ -38,6 +39,13 @@ defmodule Guilda.Accounts.User do
     |> validate_length(:email, max: 160)
     |> unsafe_validate_unique(:email, Guilda.Repo)
     |> unique_constraint(:email)
+  end
+
+  @doc """
+  Sets the user's location.
+  """
+  def location_changeset(user, geom) do
+    change(user, geom: geom)
   end
 
   @doc """

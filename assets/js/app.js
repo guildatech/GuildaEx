@@ -20,6 +20,9 @@ import { Socket } from "phoenix";
 import topbar from "../vendor/topbar";
 import { LiveSocket } from "phoenix_live_view";
 import Hooks from "./hooks";
+import "./leaflet/leaflet-map";
+import "./leaflet/leaflet-marker";
+import "./leaflet/leaflet-icon";
 
 let Uploaders = {};
 

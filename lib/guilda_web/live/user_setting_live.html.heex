@@ -1,71 +1,56 @@
-<header class="pt-10">
-  <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-    <h1 class="text-3xl font-bold leading-tight text-gray-900">
-      <%= gettext("Configurações") %>
-    </h1>
-  </div>
-</header>
-
-<!-- Main wrapper start -->
-<main class="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
-
-  <!-- Flash messages start -->
-  <p class="alert alert-info" role="alert"
-    phx-click="lv:clear-flash"
-    phx-value-key="info"><%= live_flash(@flash, :info) %></p>
-  <p class="alert alert-danger" role="alert"
-    phx-click="lv:clear-flash"
-    phx-value-key="error"><%= live_flash(@flash, :error) %></p>
-  <!-- Flash messages end -->
-
-  <!-- Content grid start -->
-  <div class="grid grid-cols-1 gap-5">
-
-    <!-- Email section start -->
-    <div class="md:grid md:grid-cols-3 md:gap-6">
-
-      <!-- Left column -->
-      <div class="md:col-span-1">
-        <h3 class="text-lg font-medium leading-6 text-gray-900">Email</h3>
-        <p class="mt-1 text-sm leading-5 text-gray-600">
-          <%= gettext("Não enviamos spam.") %>
-        </p>
-      </div>
-      <!-- Left column end -->
-
-      <!-- Right column -->
-      <div class="mt-5 md:mt-0 md:col-span-2">
-        <.form let={f} for={@email_changeset} phx-submit="update-email">
-          <div class="shadow sm:rounded-md sm:overflow-hidden">
-            <div class="px-4 py-5 bg-white sm:p-6">
-              <%= if @email_changeset.action do %>
-                <div class="alert alert-danger">
-                  <p><%= gettext("Oops, algo deu errado! Verifique os erros abaixo.") %></p>
-                </div>
-              <% end %>
-              <div class="grid grid-cols-6 gap-6">
-                <div class="col-span-6 sm:col-span-4">
-                  <%= InputHelpers.input(f, :email) %>
-                </div>
-              </div>
+<.main_content title={gettext("Configurações")} flash={@flash}>
+  <.content_section title={gettext("Email")} subtitle={gettext("Não enviamos spam.")}}>
+    <.form let={f} for={@email_changeset} phx-submit="update-email">
+      <div class="shadow sm:rounded-md sm:overflow-hidden">
+        <div class="px-4 py-5 bg-white sm:p-6">
+          <%= if @email_changeset.action do %>
+            <div class="alert alert-danger">
+              <p><%= gettext("Oops, algo deu errado! Verifique os erros abaixo.") %></p>
             </div>
-            <div class="px-4 py-3 text-right bg-gray-50 sm:px-6">
-              <span class="inline-flex rounded-md shadow-sm">
-                <button type="submit" class="Button Button--primary">
-                  <%= gettext("Alterar email") %>
-                </button>
-              </span>
+          <% end %>
+          <div class="grid grid-cols-6 gap-6">
+            <div class="col-span-6 sm:col-span-4">
+              <%= InputHelpers.input(f, :email) %>
             </div>
           </div>
-        </.form>
+        </div>
+        <div class="px-4 py-3 text-right bg-gray-50 sm:px-6">
+          <span class="inline-flex rounded-md shadow-sm">
+            <button type="submit" class="Button Button--primary">
+              <%= gettext("Alterar email") %>
+            </button>
+          </span>
+        </div>
       </div>
-      <!-- Right column end -->
+    </.form>
+  </.content_section>
 
+  <.content_section title={gettext("Localização")} subtitle={gettext("Compartilhe sua localização para aparecer no mapa de membros")}}>
+    <div class="bg-white shadow sm:rounded-lg">
+      <%= if @current_user.geom do %>
+        <div class="px-4 py-5 sm:p-6">
+          <h3 class="mb-5 text-lg font-medium leading-6 text-gray-900">
+            <%= gettext("Você compartilhou sua localização com a Guilda") %>
+          </h3>
+          <.user_coordinates coordinates={@current_user.geom.coordinates} />
+          <div class="flex justify-end mt-5">
+            <.outline_button text={gettext("Remover localização")} phx-click="remove-location" variant="danger" />
+          </div>
+        </div>
+      <% else %>
+        <div class="px-4 py-5 sm:p-6">
+          <h3 class="text-lg font-medium leading-6 text-gray-900">
+            <%= gettext("Sua localização não está compartilhada com a Guilda") %>
+          </h3>
+          <div class="mt-2 sm:flex sm:items-start sm:justify-between">
+            <div class="max-w-xl prose text-gray-600">
+              <p><%= raw gettext("Para se registrar no mapa de participantes, envie a sua localização geográfica para o nosso bot (%{link}). O envio de localização depende do uso de GPS, e apenas os clientes mobile do Telegram (Android e iPhone) suportam o envio de coordenadas.", link: safe_to_string(link("@#{@bot_name}", to: "https://t.me/#{@bot_name}"))) %></p>
+              <p><%= raw gettext("É importante enviar uma mensagem privada <strong>diretamente</strong> para o nosso bot %{link} com a sua localização. <strong>Não envie a sua localização para o grupo!</strong>", link: safe_to_string(link("@#{@bot_name}", to: "https://t.me/#{@bot_name}"))) %></p>
+              <p><%= gettext("Para garantir sua privacidade, todas as localizações compartilhadas são salvas com uma margem de erro de 10km.") %></p>
+            </div>
+          </div>
+        </div>
+      <% end %>
     </div>
-    <!-- Email section end -->
-
-  </div>
-  <!-- Content grid end -->
-
-</main>
-<!-- Main wrapper end -->
+  </.content_section>
+</.main_content>

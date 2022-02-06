@@ -16,6 +16,7 @@ config :guilda, GuildaWeb.Endpoint,
   cache_static_manifest: "priv/static/cache_manifest.json"
 
 config :guilda, Guilda.Repo,
+  types: Guilda.PostgresTypes,
   load_from_system_env: true,
   pool_size: 10
 

@@ -37,9 +37,17 @@ if config_env() != :test do
       environment variable AWS_SECRET_ACCESS_KEY is missing.
       """
 
+  mapbox_access_token =
+    System.get_env("MAPBOX_ACCESS_TOKEN") ||
+      raise """
+      environment variable MAPBOX_ACCESS_TOKEN is missing.
+      """
+
   config :guilda, :auth,
     telegram_bot_username: telegram_bot_username,
     telegram_bot_token: telegram_bot_token
+
+  config :guilda, :maps, access_token: mapbox_access_token
 
   config :guilda, :aws,
     bucket: aws_bucket,

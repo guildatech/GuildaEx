@@ -13,7 +13,6 @@ defmodule Guilda.MixProject do
       deps: deps(),
       dialyzer: [
         plt_file: {:no_warn, "priv/plts/dialyzer.plt"},
-        ignore_warnings: ".dialyzer_ignore.exs",
         plt_add_apps: [:ex_unit]
       ],
       test_coverage: [tool: ExCoveralls],
@@ -50,6 +49,7 @@ defmodule Guilda.MixProject do
     [
       {:bcrypt_elixir, "~> 3.0"},
       {:bodyguard, "~> 2.4"},
+      {:cowlib, "~> 2.11", override: true},
       {:credo, "~> 1.1", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
       {:distillery, "~> 2.0", warn_missing: false},
@@ -57,10 +57,14 @@ defmodule Guilda.MixProject do
       {:err, "~> 0.1.0"},
       {:ex_aws_s3, "~> 2.0"},
       {:ex_aws, "~> 2.0"},
+      {:ex_gram, "~> 0.26"},
       {:ex_machina, "~> 2.4"},
       {:ex_unit_notifier, "~> 1.0", only: :test},
       {:excoveralls, "~> 0.12"},
       {:floki, "~> 0.32.0"},
+      {:geo_postgis, "~> 3.4"},
+      {:geo, "~> 3.4"},
+      {:geocalc, "~> 0.8"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
@@ -77,6 +81,7 @@ defmodule Guilda.MixProject do
       {:stream_data, "~> 0.5.0"},
       {:telemetry_metrics, "~> 0.4"},
       {:telemetry_poller, "~> 1.0.0"},
+      {:tesla, "~> 1.4"},
       {:timex, "~> 3.6"}
     ]
   end

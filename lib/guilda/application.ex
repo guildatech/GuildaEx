@@ -14,9 +14,12 @@ defmodule Guilda.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Guilda.PubSub},
       # Start the Endpoint (http/https)
-      GuildaWeb.Endpoint
+      GuildaWeb.Endpoint,
       # Start a worker by calling: Guilda.Worker.start_link(arg)
       # {Guilda.Worker, arg}
+      # {Guilda.Bot, guilda_bot_config()}
+      ExGram,
+      {Guilda.Bot, guilda_bot_config()}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
@@ -30,5 +33,15 @@ defmodule Guilda.Application do
   def config_change(changed, _new, removed) do
     GuildaWeb.Endpoint.config_change(changed, removed)
     :ok
+  end
+
+  if Application.get_env(:guilda, :environment) == :test do
+    def guilda_bot_config do
+      [method: :noup, token: "token"]
+    end
+  else
+    def guilda_bot_config do
+      [method: :polling, token: Application.fetch_env!(:guilda, :auth)[:telegram_bot_token]]
+    end
   end
 end

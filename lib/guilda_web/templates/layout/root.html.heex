@@ -8,6 +8,7 @@
     <%= live_title_tag assigns[:page_title] || "GuildaTech", suffix: " · #GuildaTech" %>
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
     <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/css/app.css")}/>
+    <script type="text/javascript">window.mapAccessToken = "<%= Application.fetch_env!(:guilda, :maps)[:access_token] %>"</script>
     <script defer phx-track-static type="text/javascript" src={Routes.static_path(@conn, "/js/app.js")}></script>
     <script async defer data-domain="guildatech.com" src="https://plausible.io/js/plausible.js"></script>
     <script>window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }</script>

@@ -4,8 +4,24 @@ defmodule Guilda.Accounts do
   """
 
   import Ecto.Query, warn: false
-  alias Guilda.Accounts.{User, UserNotifier, UserToken}
+
+  alias Guilda.Accounts.Events
+  alias Guilda.Accounts.User
+  alias Guilda.Accounts.UserNotifier
+  alias Guilda.Accounts.UserToken
   alias Guilda.Repo
+
+  @pubsub Guilda.PubSub
+
+  def subscribe(user_id) do
+    Phoenix.PubSub.subscribe(@pubsub, topic(user_id))
+  end
+
+  def unsubscribe(user_id) do
+    Phoenix.PubSub.unsubscribe(@pubsub, topic(user_id))
+  end
+
+  defp topic(user_id), do: "user:#{user_id}"
 
   ## Database getters
 
@@ -147,6 +163,49 @@ defmodule Guilda.Accounts do
     UserNotifier.deliver_update_email_instructions(user, update_email_url_fun.(encoded_token))
   end
 
+  ## Location
+  def set_lng_lat(%User{} = user, lng, lat) do
+    {new_lng, new_lat} = Guilda.Geo.random_nearby_lng_lat(lng, lat, 10)
+
+    user
+    |> User.location_changeset(%Geo.Point{coordinates: {new_lng, new_lat}, srid: 4326})
+    |> Repo.update()
+    |> case do
+      {:ok, new_user} ->
+        {lng, lat} = new_user.geom.coordinates
+        broadcast!(user, %Events.LocationChanged{user: new_user})
+        broadcast!("member_location", %Events.LocationAdded{lat: lat, lng: lng})
+
+        {:ok, new_user}
+
+      {:error, _} = error ->
+        error
+    end
+  end
+
+  def remove_location(%User{} = user) do
+    user
+    |> User.location_changeset(nil)
+    |> Repo.update()
+    |> case do
+      {:ok, new_user} ->
+        broadcast!(user, %Events.LocationChanged{user: new_user})
+
+        {:ok, new_user}
+
+      {:error, _} = error ->
+        error
+    end
+  end
+
+  def list_users_locations do
+    from(u in User)
+    |> where([u], not is_nil(u.geom))
+    |> select([u], u.geom)
+    |> Repo.all()
+    |> Enum.map(fn %{coordinates: {lng, lat}} -> %{lng: lng, lat: lat} end)
+  end
+
   ## Session
 
   @doc """
@@ -180,5 +239,13 @@ defmodule Guilda.Accounts do
   def give_admin(%User{} = user) do
     from(u in User, where: u.id == ^user.id)
     |> Repo.update_all(set: [is_admin: true])
+  end
+
+  defp broadcast!("member_location", msg) do
+    Phoenix.PubSub.broadcast!(@pubsub, "member_location", {__MODULE__, msg})
+  end
+
+  defp broadcast!(%User{} = user, msg) do
+    Phoenix.PubSub.broadcast!(@pubsub, topic(user.id), {__MODULE__, msg})
   end
 end

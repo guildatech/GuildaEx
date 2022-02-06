@@ -3,46 +3,6 @@ defmodule GuildaWeb.Router do
 
   import GuildaWeb.UserAuth
 
-  @content_security_policy %{
-    "default-src" => ~w[
-      'self'
-      http://guilda-tech.s3.amazonaws.com
-      https://guilda-tech.s3.amazonaws.com
-      https://telegram.org
-      https://oauth.telegram.org
-    ],
-    "connect-src" => ~w[
-      ws://localhost:*
-      wss://localhost:*
-      http://localhost:*
-      http://guildatech.com
-      https://guildatech.com
-      ws://guildatech.com
-      wss://guildatech.com
-      http://guilda-tech.s3.amazonaws.com
-      https://guilda-tech.s3.amazonaws.com
-      *.plausible.io
-      plausible.io
-    ],
-    "script-src" => ~w[
-      'self'
-      'unsafe-inline'
-      'unsafe-eval'
-      https://telegram.org
-      *.plausible.io
-      plausible.io
-    ],
-    "style-src" => ~w[
-      'self'
-      'unsafe-inline'
-      https://rsms.me
-    ],
-    "font-src" => ~w[
-      'self'
-      https://rsms.me
-    ]
-  }
-
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -52,8 +12,18 @@ defmodule GuildaWeb.Router do
     plug :fetch_current_user
 
     plug :put_secure_browser_headers, %{
-      "content-security-policy" =>
-        Enum.map_join(@content_security_policy, " ", fn {k, v} -> "#{k} #{Enum.join(v, " ")};" end)
+      "content-security-policy" => ~w[
+          'self'
+          'unsafe-inline'
+          api.mapbox.com
+          default-src
+          guilda-tech.s3.amazonaws.com
+          oauth.telegram.org
+          plausible.io
+          rsms.me
+          telegram.org
+          unpkg.com
+        ] |> Enum.join(" ")
     }
   end
 
@@ -80,6 +50,8 @@ defmodule GuildaWeb.Router do
       live "/podcast", PodcastEpisodeLive.Index, :index
       live "/podcast/new", PodcastEpisodeLive.Index, :new
       live "/podcast/:id/edit", PodcastEpisodeLive.Index, :edit
+
+      live "/members", MembersLive, :show
 
       ## Authentication routes
       get "/auth/telegram", AuthController, :telegram_callback

@@ -10,7 +10,15 @@ defmodule GuildaWeb.UserSettingLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :email_changeset, Accounts.change_user_email(socket.assigns.current_user))}
+    if connected?(socket) do
+      Accounts.subscribe(socket.assigns.current_user.id)
+    end
+
+    {:ok,
+     assign(socket,
+       email_changeset: Accounts.change_user_email(socket.assigns.current_user),
+       bot_name: GuildaWeb.AuthController.telegram_bot_username()
+     )}
   end
 
   @impl true
@@ -46,4 +54,26 @@ defmodule GuildaWeb.UserSettingLive do
         {:noreply, assign(socket, email_changeset: changeset)}
     end
   end
+
+  def handle_event("remove-location", _params, socket) do
+    user = socket.assigns.current_user
+
+    case Accounts.remove_location(user) do
+      {:ok, user} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, gettext("Sua localização foi removida com sucesso."))
+         |> assign(:current_user, user)}
+
+      {:error, _changeset} ->
+        {:noreply, put_flash(socket, :error, gettext("Não foi possível remover sua localização."))}
+    end
+  end
+
+  @impl true
+  def handle_info({Accounts, %Accounts.Events.LocationChanged{} = update}, socket) do
+    {:noreply, assign(socket, current_user: update.user)}
+  end
+
+  def handle_info({Accounts, _}, socket), do: {:noreply, socket}
 end
