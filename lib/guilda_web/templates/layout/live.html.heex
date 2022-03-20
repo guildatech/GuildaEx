@@ -16,3 +16,4 @@
 <% end %>
 <!-- Flash messages end -->
 <%= @inner_content %>
+<%= live_render(@socket, GuildaWeb.OnlineMembersLive, id: "online-members", session: %{}, sticky: true) %>

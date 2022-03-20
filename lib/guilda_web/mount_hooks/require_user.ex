@@ -1,4 +1,4 @@
-defmodule GuildaWeb.RequireUser do
+defmodule GuildaWeb.MountHooks.RequireUser do
   @moduledoc """
   Ensures common `assigns` are applied to all LiveViews attaching this hook.
   """

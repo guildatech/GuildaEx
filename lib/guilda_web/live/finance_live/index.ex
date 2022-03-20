@@ -7,7 +7,7 @@ defmodule GuildaWeb.FinanceLive.Index do
   alias Guilda.Finances
   alias Guilda.Finances.Transaction
 
-  on_mount GuildaWeb.RequireUser
+  on_mount GuildaWeb.MountHooks.RequireUser
 
   @impl true
   def mount(_params, _session, socket) do

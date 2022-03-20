@@ -15,7 +15,7 @@ defmodule GuildaWeb.Components.LayoutComponents do
     </header>
 
     <!-- Main wrapper start -->
-    <main class="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
+    <main class="px-4 py-6 mx-auto pb-36 max-w-7xl sm:px-6 lg:px-8">
       <!-- Content grid start -->
       <div class="grid grid-cols-1 gap-5">
         <%= render_slot(@inner_block) %>
