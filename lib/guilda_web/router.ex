@@ -3,6 +3,8 @@ defmodule GuildaWeb.Router do
 
   import GuildaWeb.UserAuth
 
+  alias GuildaWeb.MountHooks
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -41,7 +43,7 @@ defmodule GuildaWeb.Router do
     get "/podcast/feed.xml", FeedController, :index
   end
 
-  live_session :default, on_mount: GuildaWeb.InitAssigns do
+  live_session :default, on_mount: MountHooks.InitAssigns do
     scope "/", GuildaWeb do
       pipe_through [:browser]
 

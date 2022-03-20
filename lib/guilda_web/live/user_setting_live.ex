@@ -6,7 +6,7 @@ defmodule GuildaWeb.UserSettingLive do
 
   alias Guilda.Accounts
 
-  on_mount GuildaWeb.RequireUser
+  on_mount GuildaWeb.MountHooks.RequireUser
 
   @impl true
   def mount(_params, _session, socket) do

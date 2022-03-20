@@ -1,4 +1,4 @@
-defmodule GuildaWeb.InitAssigns do
+defmodule GuildaWeb.MountHooks.InitAssigns do
   @moduledoc """
   Ensures common `assigns` are applied to all LiveViews attaching this hook.
   """

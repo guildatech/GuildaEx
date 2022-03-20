@@ -13,6 +13,10 @@ defmodule Guilda.Application do
       GuildaWeb.Telemetry,
       # Start the PubSub system
       {Phoenix.PubSub, name: Guilda.PubSub},
+      # Start presence
+      GuildaWeb.Presence,
+      {Phoenix.Presence.Client,
+       client: Guilda.PresenceClient, pubsub: Guilda.PubSub, presence: GuildaWeb.Presence, name: PresenceClient},
       # Start the Endpoint (http/https)
       GuildaWeb.Endpoint,
       # Start a worker by calling: Guilda.Worker.start_link(arg)
