@@ -1,36 +1,20 @@
-<header class="pt-10">
-  <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8 sm:flex sm:items-center sm:justify-between">
-    <div class="flex-1 min-w-0">
-      <h1 class="text-3xl font-bold leading-tight text-gray-900">
-        <%= gettext("Finanças") %>
-      </h1>
-    </div>
+<.main_content title={gettext("Finanças")} flash={@flash}>
+  <:header_action>
     <%= if Bodyguard.permit?(Finances, :create_transaction, @current_user) do %>
       <div class="flex mt-4 sm:mt-0 sm:ml-4">
         <span class="order-1 sm:order-0">
-          <%= live_patch gettext("Nova Transação"), to: Routes.finance_index_path(@socket, :new), class: "Button" %>
+          <.button link_type="live_patch" color="white" label={gettext("Nova Transação")} to={Routes.finance_index_path(@socket, :new)} />
         </span>
       </div>
     <% end %>
-  </div>
-</header>
-
-<!-- Main wrapper start -->
-<main class="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
-
-  <%= if @live_action in [:new, :edit] do %>
-    <.live_component
-      module={GuildaWeb.FinanceLive.FormComponent}
-      id={@transaction.id || :new}
-      title={@page_title}
-      action={@live_action}
-      current_user={@current_user}
-      transaction={@transaction}
-      return_to={Routes.finance_index_path(@socket, :index)} />
-  <% end %>
+  </:header_action>
 
   <div class="shadow sm:rounded-md sm:overflow-hidden">
-    <.table rows={@transactions} id="transactions-table">
+    <.table
+      id="transactions-table"
+      rows={@transactions}
+      row_id={fn transaction -> "transaction-#{transaction.id}" end}
+    >
       <:col let={transaction} label={gettext("Data")}>
         <%= transaction.date %>
       </:col>
@@ -47,14 +31,44 @@
         <%= transaction.amount %>
       </:col>
 
-      <:col let={transaction} label={nil} align="right" show={Bodyguard.permit?(Finances, :manage_transaction, @current_user)}>
-        <%= if Bodyguard.permit?(Finances, :update_transaction, @current_user), do: live_patch gettext("Editar"), to: Routes.finance_index_path(@socket, :edit, transaction), class: "TableAction--edit" %>
+      <:col let={transaction} class="space-x-2" label={nil} align="right" if={Bodyguard.permit?(Finances, :manage_transaction, @current_user)}>
+        <%= if Bodyguard.permit?(Finances, :update_transaction, @current_user) do %>
+          <.button link_type="live_patch" size="xs" color="white" vairant="outline" label={gettext("Editar")} to={Routes.finance_index_path(@socket, :edit, transaction)} />
+        <% end %>
         <%= if Bodyguard.permit?(Finances, :delete_transaction, @current_user) do %>
-          <button type="button" class="TableAction--delete" phx-click="delete" phx-value-id={transaction.id} data-confirm={gettext("Tem certeza?")}><%= gettext("Excluir") %></button>
+          <.button label={gettext("Excluir")} size="xs" color="danger" variant="outline" id={"delete-transaction-#{transaction.id}"} class="TableAction--delete" phx-click={show_modal("delete-modal-#{transaction.id}")} />
         <% end %>
       </:col>
     </.table>
   </div>
 
-</main>
-<!-- Main wrapper end -->
+  <div id="dialogs" phx-update="append">
+    <%= for transaction <- @transactions, id = "delete-modal-#{transaction.id}" do %>
+      <.delete_modal
+        id={id}
+        on_confirm={
+          JS.push("delete", value: %{id: transaction.id})
+          |> hide_modal(id)
+          |> focus_closest("#transaction-#{transaction.id}")
+          |> hide("#transaction-#{transaction.id}")
+        }
+        on_cancel={focus("##{id}", "#delete-transaction-#{transaction.id}")}
+      >
+        <%= gettext("Deseja mesmo remover o registro de %{date} com valor %{value}?", date: transaction.date, value: transaction.amount) %>
+        <:cancel><%= gettext("Cancelar") %></:cancel>
+        <:confirm><%= gettext("Excluir") %></:confirm>
+      </.delete_modal>
+    <% end %>
+  </div>
+
+  <%= if @live_action in [:new, :edit] do %>
+    <.live_component
+      module={GuildaWeb.FinanceLive.FormComponent}
+      id={@transaction.id || :new}
+      title={@page_title}
+      action={@live_action}
+      current_user={@current_user}
+      transaction={@transaction}
+      return_to={Routes.finance_index_path(@socket, :index)} />
+  <% end %>
+</.main_content>

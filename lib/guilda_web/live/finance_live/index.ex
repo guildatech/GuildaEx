@@ -13,7 +13,7 @@ defmodule GuildaWeb.FinanceLive.Index do
   def mount(_params, _session, socket) do
     if connected?(socket), do: Finances.subscribe()
 
-    {:ok, assign(socket, :transactions, fetch_transactions())}
+    {:ok, fetch_transactions(socket)}
   end
 
   @impl true
@@ -31,7 +31,7 @@ defmodule GuildaWeb.FinanceLive.Index do
       {:error, error} ->
         socket
         |> put_flash(:error, Err.message(error))
-        |> push_redirect(to: Routes.finance_index_path(socket, :index))
+        |> push_patch(to: Routes.finance_index_path(socket, :index))
     end
   end
 
@@ -45,7 +45,7 @@ defmodule GuildaWeb.FinanceLive.Index do
       {:error, error} ->
         socket
         |> put_flash(:error, Err.message(error))
-        |> push_redirect(to: Routes.finance_index_path(socket, :index))
+        |> push_patch(to: Routes.finance_index_path(socket, :index))
     end
   end
 
@@ -61,10 +61,7 @@ defmodule GuildaWeb.FinanceLive.Index do
 
     case Finances.delete_transaction(socket.assigns.current_user, transaction) do
       {:ok, _episode} ->
-        {:noreply,
-         socket
-         |> put_flash(:info, gettext("Transação excluída com sucesso."))
-         |> assign(:transactions, fetch_transactions())}
+        {:noreply, put_flash(socket, :info, gettext("Transação excluída com sucesso."))}
 
       {:error, error} ->
         {:noreply,
@@ -76,18 +73,18 @@ defmodule GuildaWeb.FinanceLive.Index do
 
   @impl true
   def handle_info({:transaction_created, _transaction}, socket) do
-    {:noreply, assign(socket, :transactions, fetch_transactions())}
+    {:noreply, fetch_transactions(socket)}
   end
 
   def handle_info({:transaction_updated, _transaction}, socket) do
-    {:noreply, assign(socket, :transactions, fetch_transactions())}
+    {:noreply, fetch_transactions(socket)}
   end
 
   def handle_info({:transaction_deleted, _transaction}, socket) do
-    {:noreply, assign(socket, :transactions, fetch_transactions())}
+    {:noreply, fetch_transactions(socket)}
   end
 
-  defp fetch_transactions do
-    Finances.list_transactions()
+  defp fetch_transactions(socket) do
+    assign(socket, :transactions, Finances.list_transactions())
   end
 end

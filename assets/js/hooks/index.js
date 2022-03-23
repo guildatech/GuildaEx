@@ -1,12 +1,14 @@
-import DatePickerHook from "./date-picker";
-import PodcastPlayerHook from "./podcast-player";
-import PodcastNotifierHook from "./podcast-notifier";
 import CurrencyMaskHook from "./currency-mask";
+import DatePickerHook from "./date-picker";
+import FocusWrapHook from "./focus-wrap";
+import PodcastNotifierHook from "./podcast-notifier";
+import PodcastPlayerHook from "./podcast-player";
 
 export default {
+  CurrencyMask: CurrencyMaskHook,
   DatePicker: DatePickerHook,
-  PodcastPlayer: PodcastPlayerHook,
+  FocusWrap: FocusWrapHook,
   PodcastNotifier: PodcastNotifierHook,
   PodcastPlayer: PodcastPlayerHook,
-  CurrencyMask: CurrencyMaskHook,
+  PodcastPlayer: PodcastPlayerHook,
 };

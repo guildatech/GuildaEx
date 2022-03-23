@@ -80,7 +80,11 @@ defmodule GuildaWeb do
       # Import basic rendering functionality (render, render_layout, etc)
       import Phoenix.View
 
+      import GuildaWeb.Components
+      import GuildaWeb.Components.Button
+      import GuildaWeb.Components.Dialog
       import GuildaWeb.Components.LayoutComponents
+      import GuildaWeb.Components.Link
       import GuildaWeb.ErrorHelpers
       import GuildaWeb.Gettext
       import GuildaWeb.Helpers

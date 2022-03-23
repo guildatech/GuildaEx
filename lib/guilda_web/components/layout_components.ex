@@ -5,12 +5,17 @@ defmodule GuildaWeb.Components.LayoutComponents do
   use Phoenix.Component
 
   def main_content(assigns) do
+    assigns = assign_new(assigns, :header_action, fn -> [] end)
+
     ~H"""
     <header class="pt-10">
-      <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+      <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8 sm:flex sm:items-center sm:justify-between">
+        <div class="flex-1 min-w-0">
         <h1 class="text-3xl font-bold leading-tight text-gray-900">
           <%= @title %>
         </h1>
+        </div>
+        <%= render_slot(@header_action) %>
       </div>
     </header>
 
@@ -65,57 +70,10 @@ defmodule GuildaWeb.Components.LayoutComponents do
 
     ~H"""
     <div class="grid grid-cols-1 min-h-[180px]">
-      <leaflet-map lat={@lat} lng={@lng}>
+      <leaflet-map lat={@lat} lng={@lng} class="z-10">
         <leaflet-marker lat={@lat} lng={@lng} />
       </leaflet-map>
     </div>
     """
-  end
-
-  def button(assigns) do
-    assigns =
-      assigns
-      |> assign_new(:variant, fn -> "default" end)
-
-    extra = assigns_to_attributes(assigns, [:text])
-
-    assigns = Phoenix.LiveView.assign(assigns, :extra, extra)
-
-    ~H"""
-    <button type="button" class={button_classes(@variant)} {@extra}>
-      <%= @text %>
-    </button>
-    """
-  end
-
-  def outline_button(assigns) do
-    assigns =
-      assigns
-      |> assign_new(:variant, fn -> "default" end)
-
-    extra = assigns_to_attributes(assigns, [:text, :icon, :variant])
-
-    assigns = Phoenix.LiveView.assign(assigns, :extra, extra)
-
-    ~H"""
-    <button type="button" class={outline_button_classes(@variant)} {@extra}>
-      <%= @text %>
-    </button>
-    """
-  end
-
-  defp button_classes("default") do
-    variant_classes = "bg-white text-gray-700 border-gray-300 hover:bg-gray-50 focus:ring-blue-500"
-    default_button_classes() <> " " <> variant_classes
-  end
-
-  defp outline_button_classes("danger") do
-    variant_classes = "bg-white text-red-700 border-red-300 hover:bg-red-50 focus:ring-red-500"
-    default_button_classes() <> " " <> variant_classes
-  end
-
-  defp default_button_classes do
-    # credo:disable-for-next-line
-    "inline-flex items-center px-3 py-2 text-sm font-medium leading-4 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
   end
 end

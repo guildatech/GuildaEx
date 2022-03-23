@@ -3,9 +3,8 @@ defmodule GuildaWeb.Helpers do
   General helpers used through the app.
   """
   use Phoenix.Component
-
   import GuildaWeb.Gettext
-
+  import GuildaWeb.Components.Button
   alias Phoenix.LiveView.JS
 
   @doc """
@@ -51,7 +50,7 @@ defmodule GuildaWeb.Helpers do
           </div>
           <!-- Modal footer -->
           <div class="px-4 py-3 space-x-2 rounded-b-lg bg-gray-50 sm:px-6 sm:flex">
-            <button type="button" class="Button Button--secondary sm:ml-auto" phx-click={click_modal_close()}><%= gettext("Cancelar") %></button>
+            <.button label={gettext("Cancelar")} class="sm:ml-auto" color="white" phx-click={click_modal_close()} />
             <%= render_slot(@footer) %>
           </div>
         </div>
@@ -65,44 +64,47 @@ defmodule GuildaWeb.Helpers do
   end
 
   def table(assigns) do
-    extra = assigns_to_attributes(assigns, [:empty_state, :class, :rows, :col, :tbody_extra])
+    extra = assigns_to_attributes(assigns, [:class, :empty_state, :id, :row_id, :tbody_extra, :col, :rows])
 
     assigns =
       assigns
-      |> assign_new(:empty_state, fn -> gettext("Não há registros para exibir.") end)
       |> assign_new(:class, fn -> nil end)
+      |> assign_new(:empty_state, fn -> gettext("Não há registros para exibir.") end)
+      |> assign_new(:id, fn -> false end)
+      |> assign_new(:row_id, fn -> false end)
       |> assign_new(:tbody_extra, fn -> [] end)
+      |> assign(:col, for(col <- assigns.col, col[:if] != false, do: col))
       |> assign(:extra, extra)
 
     ~H"""
-    <table class={"Table #{@class}"} {@extra}>
+    <table class={"Table #{@class}"}>
       <thead>
         <tr>
           <%= for col <- @col do %>
-            <%= if Map.get(col, :show, true) do %>
-              <th class="Table__th" {assigns_to_attributes(col, [:show, :class, :label])}><%= col.label %></th>
-            <% end %>
+            <th class="Table__th" {column_extra_attributes(col)}><%= col.label %></th>
           <% end %>
         </tr>
       </thead>
-      <tbody class="Table__body" {@tbody_extra}>
+      <tbody id={@id} class="Table__body" {@tbody_extra}>
         <%= if @rows == [] do %>
-          <tr>
+          <tr id={"#{@id}-empty-state"}>
             <td colspan={Kernel.length(@col)} class="Table__td"><%= @empty_state %></td>
           </tr>
         <% end %>
         <%= for row <- @rows do %>
-          <tr>
+          <tr id={@row_id && @row_id.(row)}>
             <%= for col <- @col do %>
-              <%= if Map.get(col, :show, true) do %>
-                <td class={"Table__td #{Map.get(col, :class)}"} {assigns_to_attributes(col, [:show, :class, :label])}><%= render_slot(col, row) %></td>
-              <% end %>
+              <td class={"Table__td #{Map.get(col, :class)}"} {column_extra_attributes(col)}><%= render_slot(col, row) %></td>
             <% end %>
           </tr>
         <% end %>
       </tbody>
     </table>
     """
+  end
+
+  defp column_extra_attributes(col) do
+    assigns_to_attributes(col, [:if, :class, :label])
   end
 
   @doc """

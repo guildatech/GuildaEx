@@ -117,3 +117,7 @@ body {
 *[hidden] {
   display: none;
 }
+
+.flatpickr-current-month .numInputWrapper {
+  width: 6ch;
+}

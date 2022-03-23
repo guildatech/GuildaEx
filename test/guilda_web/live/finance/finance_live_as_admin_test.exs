@@ -53,7 +53,7 @@ defmodule GuildaWeb.FinanceLiveAsAdminTest do
 
     test "displays a button to delete the transaction", %{conn: conn, transaction: transaction} = opts do
       {:ok, view, _html} = live(conn, path(:index, opts))
-      assert view |> element("button[phx-click=delete][phx-value-id='#{transaction.id}']") |> has_element?()
+      assert view |> element("button[id='delete-transaction-#{transaction.id}']") |> has_element?()
     end
   end
 
@@ -156,6 +156,20 @@ defmodule GuildaWeb.FinanceLiveAsAdminTest do
         |> follow_redirect(conn)
 
       assert html =~ "some updated transaction"
+    end
+  end
+
+  describe "deleting a transaction" do
+    setup :create_transaction
+
+    test "removes the record from the page", %{conn: conn, transaction: transaction} = opts do
+      {:ok, view, _html} = live(conn, path(:index, opts))
+
+      assert has_element?(view, "td", transaction.note)
+
+      render_click(element(view, "button[id='delete-modal-#{transaction.id}-confirm']"))
+
+      refute has_element?(view, "td", transaction.note)
     end
   end
 end

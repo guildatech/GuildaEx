@@ -29,12 +29,12 @@
       </div>
       <%= GuildaWeb.ErrorHelpers.error_tag(f, :amount) %>
     </div>
-    <%= InputHelpers.input f, :date, label: gettext("Data"), type: :text_input, input_opts: [phx_hook: "DatePicker"] %>
+    <%= InputHelpers.input f, :date, label: gettext("Data"), type: :text_input, input_opts: [phx_hook: "DatePicker", data: ["remove-min-date": true]] %>
     <%= InputHelpers.input f, :note, label: gettext("Nota") %>
   </.form>
 
   <:footer>
-    <%= submit gettext("Salvar"), phx_disable_with: gettext("Salvando..."), form: "transaction-form", class: "Button Button--primary" %>
+    <.button label={gettext("Salvar")} button_type="submit" phx-disable-with={gettext("Salvando...")} form="transaction-form" />
   </:footer>
 </.modal>
 </div>
