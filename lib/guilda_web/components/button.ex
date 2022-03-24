@@ -174,6 +174,6 @@ defmodule GuildaWeb.Components.Button do
   defp render_icon(nil, _classes), do: nil
 
   defp render_icon(icon, classes) do
-    GuildaWeb.LayoutView.render_svg(icon, class: classes)
+    GuildaWeb.ViewHelpers.svg_icon(icon, class: classes)
   end
 end

@@ -55,6 +55,12 @@ config :guilda, :aws,
 
 config :ex_gram, adapter: ExGram.Adapter.Tesla
 
+config :gettext, :default_locale, "pt_BR"
+
+config :guilda, GuildaWeb.Gettext,
+  split_module_by: [:locale],
+  locales: ~w(pt_BR en)
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"
