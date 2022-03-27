@@ -112,24 +112,39 @@ defmodule Guilda.Accounts do
   end
 
   @doc """
-  Registers a user or updates their attributes.
+  Link a provider to a user account.
 
   ## Examples
 
-      iex> upsert_user(%{field: value})
+      iex> connect_provider(user, :provider, provider_uid)
       {:ok, %User{}}
 
-      iex> upsert_user(%{field: bad_value})
+      iex> connect_provider(user, :provider, provider_uid)
       {:error, %Ecto.Changeset{}}
 
   """
-  def upsert_user(attrs) do
-    telegram_id = Map.get(attrs, :telegram_id) || Map.get(attrs, "telegram_id")
-    user = get_user_by_telegram_id(telegram_id)
+  def connect_provider(%User{} = user, :telegram, telegram_id) do
+    user
+    |> User.provider_changeset(%{telegram_id: telegram_id})
+    |> Repo.update()
+  end
 
-    (user || %User{})
-    |> User.registration_changeset(attrs)
-    |> Repo.insert_or_update()
+  @doc """
+  Unlink a provider to a user account.
+
+  ## Examples
+
+      iex> disconnect_provider(user, :provider)
+      {:ok, %User{}}
+
+      iex> disconnect_provider(user, :provider)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def disconnect_provider(%User{} = user, :telegram) do
+    user
+    |> User.provider_changeset(%{telegram_id: nil})
+    |> Repo.update()
   end
 
   @doc """

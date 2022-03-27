@@ -230,19 +230,26 @@ defmodule Guilda.AccountsTest do
     end
   end
 
-  describe "change_user_password/2" do
+  describe "change_user_password/3" do
     test "returns a user changeset" do
       assert %Ecto.Changeset{} = changeset = Accounts.change_user_password(%User{})
       assert changeset.required == [:password]
+      assert changeset.action == nil
+    end
+
+    test "validates the current password" do
+      assert %Ecto.Changeset{} = changeset = Accounts.change_user_password(%User{}, "bad")
+      assert %{current_password: ["is not valid"]} = errors_on(changeset)
+      assert changeset.action == :validate
     end
 
     test "allows fields to be set" do
       changeset =
-        Accounts.change_user_password(%User{}, %{
+        Accounts.change_user_password(%User{}, "bad", %{
           "password" => "new valid password"
         })
 
-      assert changeset.valid?
+      refute changeset.valid?
       assert get_change(changeset, :password) == "new valid password"
       assert is_nil(get_change(changeset, :hashed_password))
     end

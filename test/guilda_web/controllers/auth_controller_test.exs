@@ -1,6 +1,8 @@
 defmodule GuildaWeb.AuthControllerTest do
   use GuildaWeb.ConnCase, async: true
 
+  alias Guilda.Accounts
+  alias Guilda.AccountsFixtures
   alias GuildaWeb.AuthController
 
   @jefferson {"1328041770:AAG7GlDdKF2FVEmYjHFNNFKj9UVhDOKmtqc",
@@ -23,6 +25,11 @@ defmodule GuildaWeb.AuthControllerTest do
             "username" => "Duran_the_hutt"
           }}
 
+  setup do
+    conn = build_conn() |> Plug.Test.init_test_session(%{})
+    %{conn: conn}
+  end
+
   describe "verify_telegram_data/1" do
     test "checks if the data received in the parameters are from our bot" do
       {token, params} = @jefferson
@@ -41,13 +48,44 @@ defmodule GuildaWeb.AuthControllerTest do
     end
   end
 
-  @tag :skip
   describe "GET /auth/telegram/callback" do
-    test "registers an user with valid params", %{conn: conn} do
-      {_token, params} = @jefferson
+    test "logs in an user already connected to a Telegram account", %{conn: conn} do
+      {token, params} = @jefferson
+      user = AccountsFixtures.user_fixture()
+      {:ok, _user} = Accounts.connect_provider(user, :telegram, params["id"])
+      conn = put_session(conn, :telegram_bot_token, token)
       conn = get(conn, Routes.auth_path(conn, :telegram_callback, params))
       assert redirected_to(conn) == Routes.page_path(conn, :index)
       refute get_flash(conn, :error)
+    end
+
+    test "redirects if user is signed in and already connected to a Telegram account", %{conn: conn} do
+      {token, params} = @jefferson
+      user = AccountsFixtures.user_fixture()
+      {:ok, user} = Accounts.connect_provider(user, :telegram, params["id"])
+      conn = log_in_user(conn, user)
+      conn = put_session(conn, :telegram_bot_token, token)
+      conn = get(conn, Routes.auth_path(conn, :telegram_callback, params))
+      assert redirected_to(conn) == Routes.user_settings_path(conn, :edit)
+      assert get_flash(conn, :error) =~ "You already connected a Telegram account."
+    end
+
+    test "updates the user if it is signed in and not connected to Telegram", %{conn: conn} do
+      {token, params} = @jefferson
+      user = AccountsFixtures.user_fixture()
+      conn = log_in_user(conn, user)
+      conn = put_session(conn, :telegram_bot_token, token)
+      conn = get(conn, Routes.auth_path(conn, :telegram_callback, params))
+      assert redirected_to(conn) == Routes.user_settings_path(conn, :edit)
+      assert get_flash(conn, :info) =~ "Successfully connected your Telegram account."
+    end
+
+    test "redirects if user is not signed in and no connected account was found", %{conn: conn} do
+      {token, params} = @jefferson
+      conn = put_session(conn, :telegram_bot_token, token)
+      conn = get(conn, Routes.auth_path(conn, :telegram_callback, params))
+      assert redirected_to(conn) == Routes.user_registration_path(conn, :new)
+      assert get_flash(conn, :error) =~ "You must register or sign in before connecting a Telegram account."
     end
 
     test "returns an error with invalid params", %{conn: conn} do

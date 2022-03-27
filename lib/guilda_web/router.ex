@@ -17,8 +17,8 @@ defmodule GuildaWeb.Router do
       "content-security-policy" => ~w[
           'self'
           'unsafe-inline'
-          api.mapbox.com
           default-src
+          api.mapbox.com
           guilda-tech.s3.amazonaws.com
           oauth.telegram.org
           plausible.io

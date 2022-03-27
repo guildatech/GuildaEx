@@ -107,6 +107,21 @@ defmodule GuildaWeb.UserSettingLive do
     end
   end
 
+  def handle_event("disconnect-telegram", _params, socket) do
+    user = socket.assigns.current_user
+
+    case Accounts.disconnect_provider(user, :telegram) do
+      {:ok, user} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, gettext("Your Telegram account was successfully disconnected."))
+         |> assign(:current_user, user)}
+
+      {:error, _changeset} ->
+        {:noreply, put_flash(socket, :error, gettext("Failed to remove your location."))}
+    end
+  end
+
   @impl true
   def handle_info({Accounts, %Accounts.Events.LocationChanged{} = update}, socket) do
     {:noreply, assign(socket, current_user: update.user)}

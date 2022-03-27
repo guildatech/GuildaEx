@@ -21,15 +21,9 @@
             </div>
 
             <%= unless @current_user do %>
-              <%= if Application.get_env(:guilda, :environment) == :prod do %>
-                <div id="telegram-login-button" class="flex items-center justify-center mt-6" phx-update="ignore">
-                  <script async src="https://telegram.org/js/telegram-widget.js?11" data-telegram-login={GuildaWeb.AuthController.telegram_bot_username()} data-size="large" data-auth-url={Routes.auth_path(@socket, :telegram_callback)} data-request-access="write"></script>
-                </div>
-              <% else %>
-                <div id="telegram-login-button" class="flex items-center justify-center mt-6" phx-update="ignore">
-                  <%= link gettext("Local login"), to: Routes.auth_path(@socket, :telegram_callback, %{username: "shamanime", first_name: "Jefferson", last_name: "Venerando", id: "177382713"}), class: "Button" %>
-                </div>
-              <% end %>
+              <div id="telegram-login-button" class="flex items-center justify-center mt-6" phx-update="ignore">
+                <.button link_type="a" label={gettext("Sign in")} to={Routes.user_session_path(GuildaWeb.Endpoint, :new)} />
+              </div>
             <% end %>
           </div>
         </div>

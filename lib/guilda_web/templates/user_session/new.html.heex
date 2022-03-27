@@ -29,6 +29,24 @@
           </div>
         </div>
       </.form>
+      <div class="mt-6">
+        <div class="relative">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-gray-300"></div>
+          </div>
+          <div class="relative flex justify-center text-sm">
+            <span class="px-2 text-gray-500 bg-white"> <%= gettext("Or continue with") %> </span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-3 mt-6">
+          <div>
+            <div id="telegram-login-button" class="flex items-center justify-center text-center" phx-update="ignore">
+              <script async src="https://telegram.org/js/telegram-widget.js?18" data-telegram-login={GuildaWeb.AuthController.telegram_bot_username()} data-size="large" data-auth-url={Routes.auth_path(@conn, :telegram_callback)} data-request-access="write"></script>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </.guest_content>

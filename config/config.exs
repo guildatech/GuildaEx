@@ -31,7 +31,9 @@ config :guilda, Guilda.Repo,
   ],
   migration_foreign_key: [type: :binary_id]
 
-config :guilda, :auth, telegram_bot_username: "guilda_tech_bot"
+config :guilda, :auth,
+  telegram_bot_username: System.get_env("TELEGRAM_BOT_USERNAME") || "the_bot_name",
+  telegram_bot_token: System.get_env("TELEGRAM_BOT_USERNAME") || "the_bot_token"
 
 # Configures Elixir's Logger
 config :logger, :console,

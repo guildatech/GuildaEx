@@ -47,6 +47,23 @@
     </.form>
   </.content_section>
 
+  <.content_section title={gettext("Connected accounts")} subtitle={gettext("Add other ways to sign in.")}}>
+    <.card>
+      <div class="flex flex-row items-center justify-center">
+        <div class="flex flex-col items-center text-center">
+        <%= svg_icon("telegram-plane-brands", class: "h-16 #{if @current_user.telegram_id, do: "text-primary-500", else: "text-primary-200"}") %>
+        <%= if @current_user.telegram_id do %>
+          <.button variant="outline" color="danger" label={gettext("Disconnect")} size="xs" phx-click="disconnect-telegram" />
+        <% else %>
+          <div id="telegram-login-button" class="flex items-center justify-center text-center" phx-update="ignore">
+            <script async src="https://telegram.org/js/telegram-widget.js?18" data-telegram-login={GuildaWeb.AuthController.telegram_bot_username()} data-size="large" data-auth-url={Routes.auth_path(@socket, :telegram_callback)} data-request-access="write"></script>
+          </div>
+        <% end %>
+        </div>
+      </div>
+    </.card>
+  </.content_section>
+
   <.content_section title={gettext("Location")} subtitle={gettext("Share your location to be listed on the members map")}}>
     <div class="bg-white shadow sm:rounded-lg">
       <%= if @current_user.geom do %>

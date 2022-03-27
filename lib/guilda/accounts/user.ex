@@ -15,6 +15,7 @@ defmodule Guilda.Accounts.User do
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
     field :is_admin, :boolean, default: false
+    field :telegram_id, :string
     field :geom, Geo.PostGIS.Geometry
 
     timestamps()
@@ -83,6 +84,15 @@ defmodule Guilda.Accounts.User do
   """
   def location_changeset(user, geom) do
     change(user, geom: geom)
+  end
+
+  @doc """
+  Connects providers to users.
+  """
+  def provider_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:telegram_id])
+    |> unique_constraint(:telegram_id)
   end
 
   @doc """
