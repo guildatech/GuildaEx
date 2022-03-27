@@ -1,9 +1,9 @@
 <div>
 <.modal return_to={@return_to} title={@title}>
   <.form let={f} for={@changeset} id="transaction-form" phx-target={@myself} phx-change="validate" phx-submit="save">
-    <%= InputHelpers.input f, :payee, label: gettext("Beneficiário") %>
+    <%= InputHelpers.input f, :payee, label: gettext("Beneficiary") %>
     <div class="space-y-1 form-control">
-      <%= label f, :amount, gettext("Valor"), class: "form-control__label" %>
+      <%= label f, :amount, gettext("Amount"), class: "form-control__label" %>
       <div class="relative flex">
         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
           <span class="text-gray-500 sm:text-sm sm:leading-5">
@@ -29,12 +29,12 @@
       </div>
       <%= GuildaWeb.ErrorHelpers.error_tag(f, :amount) %>
     </div>
-    <%= InputHelpers.input f, :date, label: gettext("Data"), type: :text_input, input_opts: [phx_hook: "DatePicker", data: ["remove-min-date": true]] %>
-    <%= InputHelpers.input f, :note, label: gettext("Nota") %>
+    <%= InputHelpers.input f, :date, label: gettext("Date"), type: :text_input, input_opts: [phx_hook: "DatePicker", data: ["remove-min-date": true]] %>
+    <%= InputHelpers.input f, :note, label: gettext("Note") %>
   </.form>
 
   <:footer>
-    <.button label={gettext("Salvar")} button_type="submit" phx-disable-with={gettext("Salvando...")} form="transaction-form" />
+    <.button label={gettext("Save")} button_type="submit" phx-disable-with={gettext("Saving...")} form="transaction-form" />
   </:footer>
 </.modal>
 </div>

@@ -41,7 +41,7 @@ defmodule GuildaWeb.FinanceLive.FormComponent do
       {:ok, _transaction} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Transação atualizada com sucesso.")
+         |> put_flash(:info, "Transaction updated successfully.")
          |> push_redirect(to: socket.assigns.return_to)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -60,7 +60,7 @@ defmodule GuildaWeb.FinanceLive.FormComponent do
       {:ok, _transaction} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Transação cadastrada com sucesso.")
+         |> put_flash(:info, "Transaction created successfully.")
          |> push_redirect(to: socket.assigns.return_to)}
 
       {:error, %Ecto.Changeset{} = changeset} ->

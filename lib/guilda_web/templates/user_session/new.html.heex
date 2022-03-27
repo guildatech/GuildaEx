@@ -1,0 +1,34 @@
+<.guest_content title={"Sign in"} flash={get_flash(@conn)}>
+  <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+    <div class="px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10">
+      <.form let={f} for={@conn} action={Routes.user_session_path(@conn, :create)} as={:user}>
+        <div class="space-y-6">
+          <div>
+            <%= label f, :email, class: "block text-sm font-medium text-gray-700" %>
+            <div class="mt-1">
+              <%= email_input f, :email, required: true, class: "block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm" %>
+            </div>
+          </div>
+
+          <div>
+            <%= label f, :password, class: "block text-sm font-medium text-gray-700" %>
+            <div class="mt-1">
+              <%= password_input f, :password, required: true, class: "block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm" %>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <div class="text-sm">
+              <%= link "Forgot your password?", to: Routes.user_reset_password_path(@conn, :new), class: "font-medium text-primary-600 hover:text-primary-500" %> |
+              <%= link "Register", to: Routes.user_registration_path(@conn, :new), class: "font-medium text-primary-600 hover:text-primary-500" %>
+            </div>
+          </div>
+
+          <div>
+            <.button button_type="submit" label={gettext("Sign in")} class="w-full" />
+          </div>
+        </div>
+      </.form>
+    </div>
+  </div>
+</.guest_content>

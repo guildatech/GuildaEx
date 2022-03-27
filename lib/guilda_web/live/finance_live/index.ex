@@ -25,7 +25,7 @@ defmodule GuildaWeb.FinanceLive.Index do
     case Bodyguard.permit(Finances, :update_transaction, socket.assigns.current_user) do
       :ok ->
         socket
-        |> assign(:page_title, gettext("Editar Transação"))
+        |> assign(:page_title, gettext("Edit Transaction"))
         |> assign(:transaction, Finances.get_transaction!(id))
 
       {:error, error} ->
@@ -39,7 +39,7 @@ defmodule GuildaWeb.FinanceLive.Index do
     case Bodyguard.permit(Finances, :create_transaction, socket.assigns.current_user) do
       :ok ->
         socket
-        |> assign(:page_title, gettext("Nova Transação"))
+        |> assign(:page_title, gettext("New Transaction"))
         |> assign(:transaction, %Transaction{})
 
       {:error, error} ->
@@ -51,7 +51,7 @@ defmodule GuildaWeb.FinanceLive.Index do
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, gettext("Finanças"))
+    |> assign(:page_title, gettext("Finances"))
     |> assign(:transaction, nil)
   end
 
@@ -61,7 +61,7 @@ defmodule GuildaWeb.FinanceLive.Index do
 
     case Finances.delete_transaction(socket.assigns.current_user, transaction) do
       {:ok, _episode} ->
-        {:noreply, put_flash(socket, :info, gettext("Transação excluída com sucesso."))}
+        {:noreply, put_flash(socket, :info, gettext("Transaction removed successfully."))}
 
       {:error, error} ->
         {:noreply,

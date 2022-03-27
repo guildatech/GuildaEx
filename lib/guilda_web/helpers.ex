@@ -50,7 +50,7 @@ defmodule GuildaWeb.Helpers do
           </div>
           <!-- Modal footer -->
           <div class="px-4 py-3 space-x-2 rounded-b-lg bg-gray-50 sm:px-6 sm:flex">
-            <.button label={gettext("Cancelar")} class="sm:ml-auto" color="white" phx-click={click_modal_close()} />
+            <.button label={gettext("Cancel")} class="sm:ml-auto" color="white" phx-click={click_modal_close()} />
             <%= render_slot(@footer) %>
           </div>
         </div>
@@ -69,7 +69,7 @@ defmodule GuildaWeb.Helpers do
     assigns =
       assigns
       |> assign_new(:class, fn -> nil end)
-      |> assign_new(:empty_state, fn -> gettext("Não há registros para exibir.") end)
+      |> assign_new(:empty_state, fn -> gettext("No records to show.") end)
       |> assign_new(:id, fn -> false end)
       |> assign_new(:row_id, fn -> false end)
       |> assign_new(:tbody_extra, fn -> [] end)

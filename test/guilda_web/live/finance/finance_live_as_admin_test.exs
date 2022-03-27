@@ -26,10 +26,10 @@ defmodule GuildaWeb.FinanceLiveAsAdminTest do
   describe "index" do
     test "disconnected and connected render", %{conn: conn} = opts do
       {:ok, view, disconnected_html} = live(conn, path(:index, opts))
-      assert disconnected_html =~ "Finanças"
-      assert render(view) =~ "Finanças"
-      assert disconnected_html =~ "Beneficiário"
-      assert render(view) =~ "Beneficiário"
+      assert disconnected_html =~ "Finances"
+      assert render(view) =~ "Finances"
+      assert disconnected_html =~ "Beneficiary"
+      assert render(view) =~ "Beneficiary"
     end
 
     test "displays a button to add a new transaction", %{conn: conn} = opts do
@@ -60,8 +60,8 @@ defmodule GuildaWeb.FinanceLiveAsAdminTest do
   describe "adding a new transaction" do
     test "disconnected and connected render", %{conn: conn} = opts do
       {:ok, page_live, disconnected_html} = live(conn, path(:new, opts))
-      assert disconnected_html =~ "Nova Transação"
-      assert render(page_live) =~ "Nova Transação"
+      assert disconnected_html =~ "New Transaction"
+      assert render(page_live) =~ "New Transaction"
     end
 
     test "displays the form", %{conn: conn} = opts do
@@ -110,8 +110,8 @@ defmodule GuildaWeb.FinanceLiveAsAdminTest do
 
     test "disconnected and connected render", %{conn: conn, transaction: transaction} = opts do
       {:ok, page_live, disconnected_html} = live(conn, path(:edit, transaction, opts))
-      assert disconnected_html =~ "Editar Transação"
-      assert render(page_live) =~ "Editar Transação"
+      assert disconnected_html =~ "Edit Transaction"
+      assert render(page_live) =~ "Edit Transaction"
     end
 
     test "displays a form", %{conn: conn, transaction: transaction} = opts do

@@ -12,76 +12,84 @@ msgstr ""
 "Plural-Forms: nplurals=2\n"
 
 #, elixir-autogen, elixir-format
-#: lib/guilda_web/live/menu_live.html.heex:29
-msgid "Abrir menu do usuário"
-msgstr "Open user menu"
+#: lib/guilda_web/live/episode_live/episode_component.ex:19
+#: lib/guilda_web/templates/page/index.html.heex:53
+msgid "%{episode_name} episode cover"
+msgstr ""
 
 #, elixir-autogen, elixir-format
-#: lib/guilda_web/live/user_setting_live.html.heex:14
-msgid "Alterar email"
-msgstr "Change email"
+#: lib/guilda_web/live/finance_live/form_component.html.heex:6
+#: lib/guilda_web/live/finance_live/index.html.heex:28
+msgid "Amount"
+msgstr ""
 
 #, elixir-autogen, elixir-format
-#: lib/guilda_web/live/episode_live/form_component.html.heex:105
-msgid "Apresentadores"
-msgstr "Hosts"
+#: lib/guilda_web/live/finance_live/index.html.heex:57
+msgid "Are you sure you want to remove the record from %{date} with amount %{value}?"
+msgstr ""
 
 #, elixir-autogen, elixir-format
-#: lib/guilda_web/live/episode_live/form_component.html.heex:52
-msgid "Arquivo"
-msgstr "File"
+#: lib/guilda_web/live/user_setting_live.html.heex:57
+msgid "Are you sure you want to remove your location?"
+msgstr ""
 
 #, elixir-autogen, elixir-format
 #: lib/guilda_web/live/finance_live/form_component.html.heex:4
 #: lib/guilda_web/live/finance_live/index.html.heex:20
-msgid "Beneficiário"
-msgstr "Beneficiary"
+msgid "Beneficiary"
+msgstr ""
 
 #, elixir-autogen, elixir-format
 #: lib/guilda_web/helpers.ex:53
 #: lib/guilda_web/live/finance_live/index.html.heex:58
 #: lib/guilda_web/live/user_setting_live.html.heex:58
-msgid "Cancelar"
-msgstr "Cancel"
+msgid "Cancel"
+msgstr ""
 
 #, elixir-autogen, elixir-format
-#: lib/guilda_web/live/episode_live/episode_component.ex:19
-#: lib/guilda_web/templates/page/index.html.heex:53
-msgid "Capa do episódio %{episode_name}"
-msgstr "%{episode_name} episode cover"
+#: lib/guilda_web/live/user_setting_live.html.heex:14
+msgid "Change email"
+msgstr ""
 
 #, elixir-autogen, elixir-format
-#: lib/guilda_web/live/members_live.html.heex:18
-msgid "Como compartilhar sua localização"
-msgstr "How to share your location"
+#: lib/guilda_web/templates/user_confirmation/edit.html.heex:7
+msgid "Confirm my account"
+msgstr ""
 
 #, elixir-autogen, elixir-format
-#: lib/guilda_web/live/user_setting_live.html.heex:21
-msgid "Compartilhe sua localização para aparecer no mapa de membros"
-msgstr "Share your location to be listed on the members map"
+#: lib/guilda_web/templates/user_reset_password/edit.html.heex:20
+msgid "Confirm new password"
+msgstr ""
 
 #, elixir-autogen, elixir-format
-#: lib/guilda_web/live/menu_live.ex:53
-#: lib/guilda_web/live/user_setting_live.ex:26
-#: lib/guilda_web/live/user_setting_live.html.heex:1
-msgid "Configurações"
-msgstr "Settings"
+#: lib/guilda_web/live/online_members_live.ex:26
+msgid "Connecting"
+msgstr ""
 
 #, elixir-autogen, elixir-format
 #: lib/guilda_web/live/episode_live/index.html.heex:20
-msgid "Contribua financeiramente com o podcast da Guilda em"
-msgstr "Contribute financially to the Guilda's podcast at"
+msgid "Contribute financially to the Guilda's podcast at"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/episode_live/form_component.html.heex:9
+msgid "Cover image"
+msgstr ""
 
 #, elixir-autogen, elixir-format
 #: lib/guilda_web/live/finance_live/form_component.html.heex:32
 #: lib/guilda_web/live/finance_live/index.html.heex:16
-msgid "Data"
-msgstr "Date"
+msgid "Date"
+msgstr ""
 
 #, elixir-autogen, elixir-format
-#: lib/guilda_web/live/episode_live/form_component.html.heex:106
-msgid "Data de exibição"
-msgstr "Release date"
+#: lib/guilda_web/live/episode_live/episode_component.ex:72
+#: lib/guilda_web/live/episode_live/form_component.html.heex:24
+#: lib/guilda_web/live/episode_live/form_component.html.heex:75
+#: lib/guilda_web/live/finance_live/index.html.heex:39
+#: lib/guilda_web/live/finance_live/index.html.heex:59
+msgid "Delete"
+msgstr ""
 
 #, elixir-autogen, elixir-format
 #: lib/guilda_web/live/episode_live/form_component.html.heex:74
@@ -89,328 +97,370 @@ msgid "Delete attachment: %{filename}?"
 msgstr ""
 
 #, elixir-autogen, elixir-format
-#: lib/guilda_web/live/episode_live/form_component.html.heex:104
-msgid "Descrição"
-msgstr "Description"
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/finance_live/index.html.heex:57
-msgid "Deseja mesmo remover o registro de %{date} com valor %{value}?"
-msgstr "Are you sure you want to delete with date %{date} and amount %{value}?"
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/user_setting_live.html.heex:57
-msgid "Deseja mesmo remover sua localização?"
-msgstr "Are you sure you want to remove your location?"
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/episode_live/form_component.html.heex:107
-msgid "Duração"
-msgstr "Length"
-
-#, elixir-autogen, elixir-format
 #: lib/guilda_web/live/episode_live/episode_component.ex:67
 #: lib/guilda_web/live/finance_live/index.html.heex:36
-msgid "Editar"
-msgstr "Edit"
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/finance_live/index.ex:28
-msgid "Editar Transação"
-msgstr "Edit Transaction"
+msgid "Edit"
+msgstr ""
 
 #, elixir-autogen, elixir-format
 #: lib/guilda_web/live/episode_live/index.ex:44
-msgid "Editar episódio"
-msgstr "Edit episode"
+msgid "Edit Episode"
+msgstr ""
 
 #, elixir-autogen, elixir-format
-#: lib/guilda_web/live/episode_live/form_component.html.heex:107
-msgid "Em segundos"
-msgstr "In seconds"
+#: lib/guilda_web/live/finance_live/index.ex:28
+msgid "Edit Transaction"
+msgstr ""
 
 #, elixir-autogen, elixir-format
 #: lib/guilda_web/live/user_setting_live.html.heex:2
 msgid "Email"
-msgstr "Email"
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/members_live.html.heex:6
-msgid "Envie sua localização para o nosso bot @%{bot_name} e seja o primeiro a aparecer no nosso mapa de membros!"
-msgstr "Submit your location to our bot @%{bot_name} and be the first to appear on our member map!"
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/episode_live/form_component.ex:88
-msgid "Episódio atualizado com sucesso."
-msgstr "Episode updated successfully."
+msgstr ""
 
 #, elixir-autogen, elixir-format
 #: lib/guilda_web/live/episode_live/form_component.ex:59
-msgid "Episódio cadastrado com sucesso."
-msgstr "Episode created successfully."
+msgid "Episode created successfully."
+msgstr ""
 
 #, elixir-autogen, elixir-format
 #: lib/guilda_web/live/episode_live/episode_component.ex:89
-msgid "Episódio excluído com sucesso."
-msgstr "Episode deleted successfully."
+msgid "Episode deleted successfully."
+msgstr ""
 
 #, elixir-autogen, elixir-format
-#: lib/guilda_web/live/episode_live/episode_component.ex:72
-#: lib/guilda_web/live/finance_live/index.html.heex:39
-#: lib/guilda_web/live/finance_live/index.html.heex:59
-msgid "Excluir"
-msgstr "Delete"
+#: lib/guilda_web/live/user_setting_live.ex:69
+msgid "Failed to remove your location."
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/episode_live/form_component.html.heex:41
+#: lib/guilda_web/live/episode_live/form_component.html.heex:93
+msgid "File size up to %{size}"
+msgstr ""
 
 #, elixir-autogen, elixir-format
 #: lib/guilda_web/live/finance_live/index.ex:54
 #: lib/guilda_web/live/finance_live/index.html.heex:1
 #: lib/guilda_web/live/menu_live.ex:45
-msgid "Finanças"
-msgstr "Finances"
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/episode_live/form_component.html.heex:9
-msgid "Imagem de capa"
-msgstr "Cover image"
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/user_setting_live.html.heex:21
-msgid "Localização"
-msgstr "Location"
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/menu_live.html.heex:47
-msgid "Logado como"
-msgstr "Signed in as"
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/templates/page/index.html.heex:30
-msgid "Login local"
-msgstr "Local login"
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/controllers/user_session_controller.ex:8
-msgid "Logout efetuado com sucesso."
-msgstr "Logged out sucessfully."
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/members_live.ex:17
-#: lib/guilda_web/live/members_live.html.heex:1
-msgid "Mapa de membros"
-msgstr "Members map"
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/menu_live.ex:37
-msgid "Membros"
-msgstr "Members"
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/members_live.html.heex:5
-msgid "Nenhuma localização foi compartilhada :("
-msgstr "No location shared :( "
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/finance_live/form_component.html.heex:33
-#: lib/guilda_web/live/finance_live/index.html.heex:24
-msgid "Nota"
-msgstr "Note"
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/finance_live/index.ex:42
-#: lib/guilda_web/live/finance_live/index.html.heex:6
-msgid "Nova Transação"
-msgstr "New Transaction"
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/episode_live/index.ex:30
-#: lib/guilda_web/live/episode_live/index.html.heex:27
-msgid "Novo episódio"
-msgstr "New episode"
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/user_setting_live.html.heex:2
-msgid "Não enviamos spam."
-msgstr "We don't send spam."
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/controllers/auth_controller.ex:14
-msgid "Não foi possivel autenticar. Por favor tente novamente mais tarde."
-msgstr "Unable to authenticate. Please try again later."
-
-#, elixir-autogen, elixir-format
-#: lib/guilda/bot.ex:52
-msgid "Não foi possível criar o seu cadastro. :("
-msgstr "Unable to create your registration. :("
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/user_setting_live.ex:69
-msgid "Não foi possível remover sua localização."
+msgid "Finances"
 msgstr ""
 
 #, elixir-autogen, elixir-format
-#: lib/guilda/bot.ex:55
-msgid "Não foi possível salvar a sua localização. :("
-msgstr "Unable to remove your location."
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/episode_live/index.html.heex:34
-msgid "Não há episódios cadastrados."
-msgstr "No episodes to show."
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/helpers.ex:72
-msgid "Não há registros para exibir."
-msgstr "No records to show."
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/templates/page/index.html.heex:47
-msgid "Ouça o novo episódio do podcast da GuildaTech"
-msgstr "Listen to the new episode of the GuildaTech podcast"
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/members_live.html.heex:21
-#: lib/guilda_web/live/user_setting_live.html.heex:42
-msgid "Para garantir sua privacidade, todas as localizações compartilhadas são salvas com uma margem de erro de 10km."
-msgstr "To ensure your privacy, all shared locations are saved with a 10km error margin."
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/members_live.html.heex:19
-#: lib/guilda_web/live/user_setting_live.html.heex:40
-msgid "Para se registrar no mapa de participantes, envie a sua localização geográfica para o nosso bot (%{link}). O envio de localização depende do uso de GPS, e apenas os clientes mobile do Telegram (Android e iPhone) suportam o envio de coordenadas."
-msgstr "To register on the members map, send your geographic location to our bot (%{link}). Sending location depends on the use of GPS, and only Telegram mobile clients (Android and iPhone) support sending coordinates."
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/menu_live.ex:29
-msgid "Podcast"
-msgstr "Podcast"
-
-#, elixir-autogen, elixir-format
 #: lib/guilda_web/live/menu_live.html.heex:6
-msgid "Página inicial"
-msgstr "Home page"
+msgid "Home page"
+msgstr ""
 
 #, elixir-autogen, elixir-format
-#: lib/guilda_web/templates/page/index.html.heex:43
-msgid "Quem Programa?"
-msgstr "Quem Programa?"
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/episode_live/index.html.heex:17
-msgid "Quem Programa?, o podcast da Guilda"
-msgstr "Quem Programa?, Guilda's podcast"
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/episode_live/form_component.html.heex:24
-#: lib/guilda_web/live/episode_live/form_component.html.heex:75
-msgid "Remover"
-msgstr "Remove"
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/user_setting_live.html.heex:30
-#: lib/guilda_web/live/user_setting_live.html.heex:59
-msgid "Remover localização"
-msgstr "Remove location"
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/menu_live.html.heex:55
-#: lib/guilda_web/live/menu_live.html.heex:98
-msgid "Sair"
-msgstr "Log out"
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/episode_live/form_component.html.heex:111
-#: lib/guilda_web/live/finance_live/form_component.html.heex:37
-msgid "Salvando..."
-msgstr "Saving..."
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/episode_live/form_component.html.heex:111
-#: lib/guilda_web/live/finance_live/form_component.html.heex:37
-msgid "Salvar"
-msgstr "Save"
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/episode_live/form_component.html.heex:36
-#: lib/guilda_web/live/episode_live/form_component.html.heex:88
-msgid "Selecione um arquivo"
-msgstr "Select a file"
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/episode_live/form_component.html.heex:102
-msgid "Slug"
-msgstr "Slug"
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/user_setting_live.ex:65
-msgid "Sua localização foi removida com sucesso."
-msgstr "Your location has been successfully removed."
-
-#, elixir-autogen, elixir-format
-#: lib/guilda/bot.ex:48
-msgid "Sua localização foi salva com sucesso! Veja o mapa em https://guildatech.com/members."
-msgstr "Your location has been saved successfully! See the map at https://guildatech.com/members."
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/user_setting_live.html.heex:36
-msgid "Sua localização não está compartilhada com a Guilda"
-msgstr "You're not sharing your location"
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/episode_live/form_component.html.heex:41
-#: lib/guilda_web/live/episode_live/form_component.html.heex:93
-msgid "Tamanho até %{size}"
-msgstr "File size up to %{size}"
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/finance_live/index.ex:64
-msgid "Transação excluída com sucesso."
-msgstr "Transaction removed successfully."
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/episode_live/form_component.html.heex:103
-msgid "Título"
-msgstr "Title"
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/finance_live/form_component.html.heex:6
-#: lib/guilda_web/live/finance_live/index.html.heex:28
-msgid "Valor"
-msgstr "Amount"
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/user_setting_live.html.heex:26
-msgid "Você compartilhou sua localização com a Guilda"
-msgstr "You shared your location with the Guilda"
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/controllers/user_auth.ex:117
-#: lib/guilda_web/mount_hooks/require_user.ex:16
-msgid "Você deve estar logado para acessar esta página."
-msgstr "You must be signed in to access this page."
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/controllers/user_auth.ex:135
-msgid "Você não possui permissão para realizar esta ação."
-msgstr "You do not have permission to execute this action."
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/online_members_live.ex:19
-msgid "online"
-msgstr "online"
-
-#, elixir-autogen, elixir-format
-#: lib/guilda_web/live/episode_live/form_component.html.heex:38
-#: lib/guilda_web/live/episode_live/form_component.html.heex:90
-msgid "ou arraste e solte"
-msgstr "or drag and drop"
+#: lib/guilda_web/live/members_live.html.heex:18
+msgid "How to share your location"
+msgstr ""
 
 #, elixir-autogen, elixir-format
 #: lib/guilda_web/live/members_live.html.heex:20
 #: lib/guilda_web/live/user_setting_live.html.heex:41
-msgid "É importante enviar uma mensagem privada <strong>diretamente</strong> para o nosso bot %{link} com a sua localização. <strong>Não envie a sua localização para o grupo!</strong>"
-msgstr "It is important to send a private message <strong>directly</strong> to our bot %{link} with your location. <strong>Don't send your location to the group!</strong>"
+msgid "It is important to send a private message <strong>directly</strong> to our bot %{link} with your location. <strong>Don't send your location to the group!</strong>"
+msgstr ""
 
 #, elixir-autogen, elixir-format
-#: lib/guilda_web/live/online_members_live.ex:26
-msgid "Conectando"
-msgstr "Connecting"
+#: lib/guilda_web/live/user_setting_live.html.heex:21
+msgid "Location"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/menu_live.ex:37
+msgid "Members"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/members_live.ex:17
+#: lib/guilda_web/live/members_live.html.heex:1
+msgid "Members list"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/episode_live/index.ex:30
+#: lib/guilda_web/live/episode_live/index.html.heex:27
+msgid "New Episode"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/finance_live/index.ex:42
+#: lib/guilda_web/live/finance_live/index.html.heex:6
+msgid "New Transaction"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/templates/user_reset_password/edit.html.heex:12
+msgid "New password"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/episode_live/index.html.heex:34
+msgid "No episodes to show."
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/finance_live/form_component.html.heex:33
+#: lib/guilda_web/live/finance_live/index.html.heex:24
+msgid "Note"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/templates/user_registration/new.html.heex:8
+#: lib/guilda_web/templates/user_reset_password/edit.html.heex:8
+msgid "Oops, something went wrong! Please check the errors below."
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/menu_live.html.heex:29
+msgid "Open user menu"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/menu_live.ex:29
+msgid "Podcast"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/templates/page/index.html.heex:43
+msgid "Quem Programa?"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/episode_live/index.html.heex:17
+msgid "Quem Programa?, Guilda's podcast"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/menu_live.ex:61
+#: lib/guilda_web/templates/user_registration/new.html.heex:1
+#: lib/guilda_web/templates/user_registration/new.html.heex:35
+msgid "Register"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/user_setting_live.html.heex:30
+#: lib/guilda_web/live/user_setting_live.html.heex:59
+msgid "Remove location"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/templates/user_confirmation/new.html.heex:21
+msgid "Resend confirmation instructions"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/templates/user_reset_password/edit.html.heex:35
+msgid "Reset password"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/episode_live/form_component.html.heex:36
+#: lib/guilda_web/live/episode_live/form_component.html.heex:88
+msgid "Select a file"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/templates/user_reset_password/new.html.heex:21
+msgid "Send instructions to reset password"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/menu_live.ex:69
+#: lib/guilda_web/live/user_setting_live.ex:26
+#: lib/guilda_web/live/user_setting_live.html.heex:1
+msgid "Settings"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/user_setting_live.html.heex:21
+msgid "Share your location to be listed on the members map"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/menu_live.ex:53
+#: lib/guilda_web/templates/user_session/new.html.heex:28
+msgid "Sign in"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/menu_live.html.heex:54
+#: lib/guilda_web/live/menu_live.html.heex:96
+msgid "Sign out"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/menu_live.html.heex:47
+msgid "Signed in as"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/episode_live/form_component.html.heex:102
+msgid "Slug"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/members_live.html.heex:6
+msgid "Submit your location to our bot @%{bot_name} and be the first to appear on our member map!"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/members_live.html.heex:21
+#: lib/guilda_web/live/user_setting_live.html.heex:42
+msgid "To ensure your privacy, all shared locations are saved with a 10km error margin."
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/members_live.html.heex:19
+#: lib/guilda_web/live/user_setting_live.html.heex:40
+msgid "To register on the members map, send your geographic location to our bot (%{link}). Sending location depends on the use of GPS, and only Telegram mobile clients (Android and iPhone) support sending coordinates."
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/finance_live/index.ex:64
+msgid "Transaction removed successfully."
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/user_setting_live.html.heex:2
+msgid "We don't send spam."
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/controllers/user_auth.ex:145
+msgid "You can't do this."
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/controllers/user_auth.ex:129
+#: lib/guilda_web/mount_hooks/require_user.ex:16
+msgid "You must be signed in to access this page."
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/user_setting_live.html.heex:26
+msgid "You shared your location with the Guilda"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/user_setting_live.html.heex:36
+msgid "You're not sharing your location"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/user_setting_live.ex:65
+msgid "Your location was removed successfully."
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/online_members_live.ex:19
+msgid "online"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/episode_live/form_component.html.heex:38
+#: lib/guilda_web/live/episode_live/form_component.html.heex:90
+msgid "or drag and drop"
+msgstr ""
+
+#, elixir-autogen, elixir-format, fuzzy
+#: lib/guilda_web/live/episode_live/form_component.html.heex:104
+msgid "Description"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/episode_live/form_component.html.heex:52
+msgid "File"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/episode_live/form_component.html.heex:105
+msgid "Hosts"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/episode_live/form_component.html.heex:107
+msgid "In seconds"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/episode_live/form_component.html.heex:107
+msgid "Length"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/templates/page/index.html.heex:47
+msgid "Listen to the new episode of the GuildaTech podcast"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/templates/page/index.html.heex:30
+msgid "Local login"
+msgstr ""
+
+#, elixir-autogen, elixir-format, fuzzy
+#: lib/guilda_web/helpers.ex:72
+msgid "No records to show."
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/episode_live/form_component.html.heex:106
+msgid "Release date"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/episode_live/form_component.html.heex:111
+#: lib/guilda_web/live/finance_live/form_component.html.heex:37
+msgid "Save"
+msgstr ""
+
+#, elixir-autogen, elixir-format, fuzzy
+#: lib/guilda_web/live/episode_live/form_component.html.heex:111
+#: lib/guilda_web/live/finance_live/form_component.html.heex:37
+msgid "Saving..."
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/live/episode_live/form_component.html.heex:103
+msgid "Title"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/controllers/auth_controller.ex:14
+msgid "Unable to authenticate. Please try again later."
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda/bot.ex:55
+msgid "Unable to register your account."
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda/bot.ex:58
+msgid "Unable to save your location."
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/templates/page/index.html.heex:12
+msgid "We are an inclusive community where all kinds of issues are addressed, including programming. "
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda_web/templates/page/index.html.heex:7
+msgid "Welcome to"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/guilda/bot.ex:50
+msgid "Your location has been saved successfully! See the map at https://guildatech.com/members."
+msgstr ""
+
+#, elixir-autogen, elixir-format, fuzzy
+#: lib/guilda_web/live/members_live.html.heex:5
+msgid "No location shared"
+msgstr ""
+
+#, elixir-autogen, elixir-format, fuzzy
+#: lib/guilda_web/live/episode_live/form_component.ex:88
+msgid "Episode updated successfully."
+msgstr ""

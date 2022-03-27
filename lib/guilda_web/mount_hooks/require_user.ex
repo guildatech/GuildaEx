@@ -13,7 +13,7 @@ defmodule GuildaWeb.MountHooks.RequireUser do
     else
       socket =
         socket
-        |> put_flash(:error, gettext("Você deve estar logado para acessar esta página."))
+        |> put_flash(:error, gettext("You must be signed in to access this page."))
         |> redirect(to: Routes.page_path(socket, :index))
 
       {:halt, socket}

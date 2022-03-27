@@ -1,0 +1,10 @@
+<%= @email.subject %>
+
+=========================
+
+<%= @inner_content %>
+
+=========================
+
+Thanks,
+The GuildaTech Team

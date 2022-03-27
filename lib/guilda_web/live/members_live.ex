@@ -14,7 +14,7 @@ defmodule GuildaWeb.MembersLive do
 
     {:ok,
      assign(socket,
-       page_title: gettext("Mapa de membros"),
+       page_title: gettext("Members list"),
        markers: Accounts.list_users_locations(),
        bot_name: GuildaWeb.AuthController.telegram_bot_username()
      ), temporary_assigns: [markers: []]}

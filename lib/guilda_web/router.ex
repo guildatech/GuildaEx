@@ -43,9 +43,22 @@ defmodule GuildaWeb.Router do
     get "/podcast/feed.xml", FeedController, :index
   end
 
+  scope "/", GuildaWeb do
+    pipe_through [:browser, :redirect_if_user_is_authenticated, :assign_menu]
+
+    get "/users/register", UserRegistrationController, :new
+    post "/users/register", UserRegistrationController, :create
+    get "/users/log_in", UserSessionController, :new
+    post "/users/log_in", UserSessionController, :create
+    get "/users/reset_password", UserResetPasswordController, :new
+    post "/users/reset_password", UserResetPasswordController, :create
+    get "/users/reset_password/:token", UserResetPasswordController, :edit
+    put "/users/reset_password/:token", UserResetPasswordController, :update
+  end
+
   live_session :default, on_mount: MountHooks.InitAssigns do
     scope "/", GuildaWeb do
-      pipe_through [:browser]
+      pipe_through [:browser, :assign_menu]
 
       live "/", PageLive, :index
 
@@ -56,14 +69,20 @@ defmodule GuildaWeb.Router do
       live "/members", MembersLive, :show
 
       ## Authentication routes
-      get "/auth/telegram", AuthController, :telegram_callback
+      get "/auth/telegram/callback", AuthController, :telegram_callback
+
       delete "/users/log_out", UserSessionController, :delete
+      get "/users/confirm", UserConfirmationController, :new
+      post "/users/confirm", UserConfirmationController, :create
+      get "/users/confirm/:token", UserConfirmationController, :edit
+      post "/users/confirm/:token", UserConfirmationController, :update
     end
 
     scope "/", GuildaWeb do
       pipe_through [:browser, :require_authenticated_user]
 
       get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+      put "/users/settings/update_password", UserSettingsController, :update_password
 
       live "/users/settings", UserSettingLive, :edit, as: :user_settings
       live "/finances", FinanceLive.Index, :index
@@ -89,7 +108,20 @@ defmodule GuildaWeb.Router do
 
     scope "/" do
       pipe_through :browser
+
       live_dashboard "/dashboard", metrics: GuildaWeb.Telemetry
+    end
+  end
+
+  # Enables the Swoosh mailbox preview in development.
+  #
+  # Note that preview only shows emails that were sent by the same
+  # node running the Phoenix server.
+  if Mix.env() == :dev do
+    scope "/dev" do
+      pipe_through :browser
+
+      forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
   end
 end

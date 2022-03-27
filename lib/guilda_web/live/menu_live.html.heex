@@ -3,7 +3,7 @@
     <div class="flex justify-between h-16">
       <div class="flex">
         <div class="flex items-center flex-shrink-0">
-          <%= link to: Routes.page_path(@socket, :index), title: gettext("Página inicial") do %>
+          <%= link to: Routes.page_path(@socket, :index), title: gettext("Home page") do %>
             <img class="w-auto h-11" src={Routes.static_path(@socket, "/images/guilda-logo.png")} alt="GuildaTech logo" />
           <% end %>
         </div>
@@ -26,7 +26,7 @@
                 id="user-menu"
                 class="flex text-sm bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
               >
-                <span class="sr-only"><%= gettext("Abrir menu do usuário") %></span>
+                <span class="sr-only"><%= gettext("Open user menu") %></span>
                 <%= svg_icon("user-circle-light", class: "w-8 h-8 rounded-full") %>
               </button>
             </div>
@@ -44,16 +44,14 @@
             >
               <div class="px-4 py-2">
                 <p class="text-sm leading-5">
-                  <%= gettext("Logado como") %>
+                  <%= gettext("Signed in as") %>
                 </p>
                 <p class="text-sm font-medium leading-5 text-gray-900">
-                  <%= @current_user.username %>
+                  <%= @current_user.email || @current_user.first_name %>
                 </p>
               </div>
               <div class="py-1">
-                <%= link to: Routes.user_session_path(GuildaWeb.Endpoint, :delete), method: :delete, class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" do %>
-                  <%= gettext("Sair") %>
-                <% end %>
+                <%= link gettext("Sign out"), to: Routes.user_session_path(GuildaWeb.Endpoint, :delete), method: :delete, class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" %>
               </div>
             </div>
           </div>
@@ -91,11 +89,11 @@
     <%= if @current_user do %>
       <div class="pt-4 pb-2 border-t border-gray-300">
         <div class="flex items-center px-4">
-          <div class="text-sm font-medium text-gray-400"><%= @current_user.username %></div>
+          <div class="text-sm font-medium text-gray-400"><%= @current_user.first_name %></div>
         </div>
         <div class="pt-2 space-y-1">
           <%= link to: Routes.user_session_path(GuildaWeb.Endpoint, :delete), method: :delete, class: "block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition duration-150 ease-in-out" do %>
-            <%= gettext("Sair") %>
+            <%= gettext("Sign out") %>
           <% end %>
         </div>
       </div>

@@ -34,7 +34,7 @@ defmodule GuildaWeb.MenuLive do
       },
       %{
         menu: menu,
-        text: gettext("Membros"),
+        text: gettext("Members"),
         module: GuildaWeb.MapLive,
         to: Routes.members_path(socket, :show),
         show: true,
@@ -42,7 +42,7 @@ defmodule GuildaWeb.MenuLive do
       },
       %{
         menu: menu,
-        text: gettext("Finanças"),
+        text: gettext("Finances"),
         module: GuildaWeb.FinanceLive,
         to: Routes.finance_index_path(socket, :index),
         show: logged_in?(current_user),
@@ -50,7 +50,23 @@ defmodule GuildaWeb.MenuLive do
       },
       %{
         menu: menu,
-        text: gettext("Configurações"),
+        text: gettext("Sign in"),
+        module: GuildaWeb.UserSessionController,
+        to: Routes.user_session_path(socket, :new),
+        show: !logged_in?(current_user),
+        position: :main
+      },
+      %{
+        menu: menu,
+        text: gettext("Register"),
+        module: GuildaWeb.UserRegistrationController,
+        to: Routes.user_registration_path(socket, :new),
+        show: !logged_in?(current_user),
+        position: :main
+      },
+      %{
+        menu: menu,
+        text: gettext("Settings"),
         module: GuildaWeb.UserSettingLive,
         to: Routes.user_settings_path(socket, :edit),
         show: logged_in?(current_user),

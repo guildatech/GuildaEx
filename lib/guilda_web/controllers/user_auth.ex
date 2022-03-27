@@ -2,11 +2,9 @@ defmodule GuildaWeb.UserAuth do
   @moduledoc """
   Functions related to authentication.
   """
-  import Plug.Conn
-  import Phoenix.Controller
-
   import GuildaWeb.Gettext
-
+  import Phoenix.Controller
+  import Plug.Conn
   alias Guilda.Accounts
   alias GuildaWeb.Router.Helpers, as: Routes
 
@@ -22,15 +20,22 @@ defmodule GuildaWeb.UserAuth do
   disconnected on log out. The line can be safely removed
   if you are not using LiveView.
   """
-  def log_in_user(conn, user) do
+  def log_in_user(conn, user, opts \\ []) do
+    should_redirect? = Keyword.get(opts, :redirect, true)
+    path_to_redirect = get_session(conn, :user_return_to)
     token = Accounts.generate_user_session_token(user)
-    user_return_to = get_session(conn, :user_return_to)
 
     conn
     |> renew_session()
     |> put_session(:user_token, token)
     |> put_session(:live_socket_id, "users_sessions:#{Base.url_encode64(token)}")
-    |> redirect(to: user_return_to || signed_in_path(conn))
+    |> maybe_redirect(should_redirect?, path_to_redirect)
+  end
+
+  defp maybe_redirect(conn, false, _path), do: conn
+
+  defp maybe_redirect(conn, true, path) do
+    redirect(conn, to: path || signed_in_path(conn))
   end
 
   # This function renews the session ID and erases the whole
@@ -91,6 +96,13 @@ defmodule GuildaWeb.UserAuth do
   end
 
   @doc """
+  Assigns the user menu.
+  """
+  def assign_menu(conn, _opts) do
+    assign(conn, :menu, %{action: nil, module: nil})
+  end
+
+  @doc """
   Used for routes that require the user to not be authenticated.
   """
   def redirect_if_user_is_authenticated(conn, _opts) do
@@ -114,17 +126,15 @@ defmodule GuildaWeb.UserAuth do
       conn
     else
       conn
-      |> put_flash(:error, gettext("Você deve estar logado para acessar esta página."))
+      |> put_flash(:error, gettext("You must be signed in to access this page."))
       |> maybe_store_return_to()
-      |> redirect(to: Routes.page_path(conn, :index))
+      |> redirect(to: Routes.user_session_path(conn, :new))
       |> halt()
     end
   end
 
   defp maybe_store_return_to(%{method: "GET"} = conn) do
-    %{request_path: request_path, query_string: query_string} = conn
-    return_to = if query_string == "", do: request_path, else: request_path <> "?" <> query_string
-    put_session(conn, :user_return_to, return_to)
+    put_session(conn, :user_return_to, current_path(conn))
   end
 
   defp maybe_store_return_to(conn), do: conn
@@ -132,6 +142,6 @@ defmodule GuildaWeb.UserAuth do
   defp signed_in_path(_conn), do: "/"
 
   def format_error(:unauthorized) do
-    gettext("Você não possui permissão para realizar esta ação.")
+    gettext("You can't do this.")
   end
 end

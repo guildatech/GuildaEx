@@ -8,15 +8,15 @@ defmodule GuildaWeb.PageLiveTest do
   describe "index" do
     test "disconnected and connected render", %{conn: conn} do
       {:ok, page_live, disconnected_html} = live(conn, "/")
-      refute disconnected_html =~ "Ouça o novo"
-      assert disconnected_html =~ "Boas vindas à"
-      assert render(page_live) =~ "Boas vindas à"
+      refute disconnected_html =~ "Listen to the new"
+      assert disconnected_html =~ "Welcome to"
+      assert render(page_live) =~ "Welcome to"
     end
 
     test "displays a link to podcasts if there are episodes", %{conn: conn} do
       insert(:episode)
       {:ok, _live, html} = live(conn, "/")
-      assert html =~ "Ouça o novo"
+      assert html =~ "Listen to the new"
     end
   end
 end

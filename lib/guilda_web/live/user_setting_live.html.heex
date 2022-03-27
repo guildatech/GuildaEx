@@ -1,5 +1,5 @@
-<.main_content title={gettext("Configurações")} flash={@flash}>
-  <.content_section title={gettext("Email")} subtitle={gettext("Não enviamos spam.")}}>
+<.main_content title={gettext("Settings")} flash={@flash}>
+  <.content_section title={gettext("Email")} subtitle={gettext("We don't send spam.")}}>
     <.form let={f} for={@email_changeset} phx-submit="update-email">
       <div class="shadow sm:rounded-md sm:overflow-hidden">
         <div class="px-4 py-5 bg-white sm:p-6">
@@ -7,39 +7,70 @@
             <div class="col-span-6 sm:col-span-4">
               <%= InputHelpers.input(f, :email) %>
             </div>
+
+            <div class="col-span-6 sm:col-span-4">
+              <%= InputHelpers.input(f, :current_password) %>
+            </div>
           </div>
         </div>
         <div class="px-4 py-3 text-right bg-gray-50 sm:px-6">
           <span class="inline-flex rounded-md shadow-sm">
-            <.button button_type="submit" label={gettext("Alterar email")} />
+            <.button button_type="submit" label={gettext("Change email")} />
           </span>
         </div>
       </div>
     </.form>
   </.content_section>
 
-  <.content_section title={gettext("Localização")} subtitle={gettext("Compartilhe sua localização para aparecer no mapa de membros")}}>
+  <.content_section title={gettext("Password")} subtitle={gettext("Keep your account secure.")}}>
+    <.form let={f} for={@password_changeset} phx-submit="update-password">
+      <div class="shadow sm:rounded-md sm:overflow-hidden">
+        <div class="px-4 py-5 bg-white sm:p-6">
+          <div class="grid grid-cols-6 gap-6">
+            <div class="col-span-6 sm:col-span-4">
+              <%= InputHelpers.input(f, :password, label: gettext("New password")) %>
+            </div>
+
+            <div class="col-span-6 sm:col-span-4">
+              <%= InputHelpers.input(f, :password_confirmation, label: gettext("Confirm new password")) %>
+            </div>
+
+            <div class="col-span-6 sm:col-span-4">
+              <%= InputHelpers.input(f, :current_password) %>
+            </div>
+          </div>
+        </div>
+        <div class="px-4 py-3 text-right bg-gray-50 sm:px-6">
+          <span class="inline-flex rounded-md shadow-sm">
+            <.button button_type="submit" label={gettext("Change password")} />
+          </span>
+        </div>
+      </div>
+    </.form>
+  </.content_section>
+
+  <.content_section title={gettext("Location")} subtitle={gettext("Share your location to be listed on the members map")}}>
     <div class="bg-white shadow sm:rounded-lg">
       <%= if @current_user.geom do %>
         <div class="px-4 py-5 sm:p-6">
           <h3 class="mb-5 text-lg font-medium leading-6 text-gray-900">
-            <%= gettext("Você compartilhou sua localização com a Guilda") %>
+            <%= gettext("You shared your location with the Guilda") %>
           </h3>
           <.user_coordinates coordinates={@current_user.geom.coordinates} />
           <div class="flex justify-end mt-5">
-            <.button label={gettext("Remover localização")} id="remove-location-trigger" phx-click={show_modal("remove-location-modal")} variant="outline" color="danger" />
+            <.button label={gettext("Remove location")} id="remove-location-trigger" phx-click={show_modal("remove-location-modal")} variant="outline" color="danger" />
           </div>
         </div>
       <% else %>
         <div class="px-4 py-5 sm:p-6">
           <h3 class="text-lg font-medium leading-6 text-gray-900">
-            <%= gettext("Sua localização não está compartilhada com a Guilda") %>
+            <%= gettext("You're not sharing your location") %>
           </h3>
           <div class="mt-2 sm:flex sm:items-start sm:justify-between">
             <div class="max-w-xl prose text-gray-600">
-              <p><%= raw gettext("Para se registrar no mapa de participantes, envie a sua localização geográfica para o nosso bot (%{link}). O envio de localização depende do uso de GPS, e apenas os clientes mobile do Telegram (Android e iPhone) suportam o envio de coordenadas.", link: safe_to_string(link("@#{@bot_name}", to: "https://t.me/#{@bot_name}"))) %></p>
-              <p><%= raw gettext("É importante enviar uma mensagem privada <strong>diretamente</strong> para o nosso bot %{link} com a sua localização. <strong>Não envie a sua localização para o grupo!</strong>", link: safe_to_string(link("@#{@bot_name}", to: "https://t.me/#{@bot_name}"))) %></p>
-              <p><%= gettext("Para garantir sua privacidade, todas as localizações compartilhadas são salvas com uma margem de erro de 10km.") %></p>
+              <p><%= raw gettext("To register on the members map, send your geographic location to our bot (%{link}). Sending location depends on the use of GPS, and only Telegram mobile clients (Android and iPhone) support sending coordinates.", link: safe_to_string(link("@#{@bot_name}", to: "https://t.me/#{@bot_name}"))) %></p>
+              <p><%= raw gettext("It is important to send a private message <strong>directly</strong> to our bot %{link} with your location. <strong>Don't send your location to the group!</strong>", link: safe_to_string(link("@#{@bot_name}", to: "https://t.me/#{@bot_name}"))) %></p>
+              <p><%= gettext("To ensure your privacy, all shared locations are saved with a 10km error margin.") %></p>
             </div>
           </div>
         </div>
@@ -54,9 +85,9 @@
       }
       on_cancel={focus("body", "#remove-location-trigger")}
     >
-      <%= gettext("Deseja mesmo remover sua localização?") %>
-      <:cancel><%= gettext("Cancelar") %></:cancel>
-      <:confirm><%= gettext("Remover localização") %></:confirm>
+      <%= gettext("Are you sure you want to remove your location?") %>
+      <:cancel><%= gettext("Cancel") %></:cancel>
+      <:confirm><%= gettext("Remove location") %></:confirm>
     </.delete_modal>
   </.content_section>
 </.main_content>

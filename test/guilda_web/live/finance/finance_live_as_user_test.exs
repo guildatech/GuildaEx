@@ -26,10 +26,10 @@ defmodule GuildaWeb.FinanceLiveAsUserTest do
   describe "index" do
     test "disconnected and connected render", %{conn: conn} = opts do
       {:ok, view, disconnected_html} = live(conn, path(:index, opts))
-      assert disconnected_html =~ "Finanças"
-      assert render(view) =~ "Finanças"
-      assert disconnected_html =~ "Beneficiário"
-      assert render(view) =~ "Beneficiário"
+      assert disconnected_html =~ "Finances"
+      assert render(view) =~ "Finances"
+      assert disconnected_html =~ "Beneficiary"
+      assert render(view) =~ "Beneficiary"
     end
 
     test "does not display a button to add a new transaction", %{conn: conn} = opts do

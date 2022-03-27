@@ -19,7 +19,7 @@ config :guilda, GuildaWeb.Endpoint,
   pubsub_server: Guilda.PubSub,
   live_view: [signing_salt: "E3IrZAj7"]
 
-config :guilda, Guidla.Repo,
+config :guilda, Guilda.Repo,
   types: Guilda.PostgresTypes,
   migration_timestamps: [type: :utc_datetime_usec],
   migration_primary_key: [
@@ -53,6 +53,8 @@ config :guilda, :aws,
   access_key_id: System.get_env("AWS_ACCESS_KEY_ID"),
   secret_access_key: System.get_env("AWS_SECRET_ACCESS_KEY")
 
+config :guilda, :maps, access_token: System.get_env("MAPBOX_ACCESS_TOKEN")
+
 config :ex_gram, adapter: ExGram.Adapter.Tesla
 
 config :gettext, :default_locale, "pt_BR"
@@ -60,6 +62,10 @@ config :gettext, :default_locale, "pt_BR"
 config :guilda, GuildaWeb.Gettext,
   split_module_by: [:locale],
   locales: ~w(pt_BR en)
+
+config :guilda, Guilda.Mailer, adapter: Swoosh.Adapters.Local
+
+config :swoosh, :api_client, false
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

@@ -16,7 +16,7 @@ defmodule GuildaWeb.PodcastEpisodeLive.EpisodeComponent do
     ~H"""
     <div id={@id} class="flex flex-col overflow-hidden rounded-lg shadow-lg">
       <div class="flex-shrink-0">
-        <img class="object-cover w-full h-50" src={@episode.cover_url} alt={gettext("Capa do episódio %{episode_name}", episode_name: @episode.title)}>
+        <img class="object-cover w-full h-50" src={@episode.cover_url} alt={gettext("%{episode_name} episode cover", episode_name: @episode.title)}>
       </div>
       <div class="flex flex-col justify-between flex-1 p-6 bg-white">
         <div class="flex-1">
@@ -64,12 +64,12 @@ defmodule GuildaWeb.PodcastEpisodeLive.EpisodeComponent do
         <div class="flex -mt-px bg-white border-t divide-x divide-gray-200 border-t-gray-200">
           <%= if Bodyguard.permit?(Podcasts, :update_episode, @current_user) do %>
             <div class="flex flex-1 w-0">
-              <%= live_patch gettext("Editar"), to: Routes.podcast_episode_index_path(@socket, :edit, @episode), class: "relative -mr-px w-0 flex-1 inline-flex items-center justify-center py-4 text-sm text-gray-700 font-medium border border-transparent rounded-bl-lg hover:text-gray-500" %>
+              <%= live_patch gettext("Edit"), to: Routes.podcast_episode_index_path(@socket, :edit, @episode), class: "relative -mr-px w-0 flex-1 inline-flex items-center justify-center py-4 text-sm text-gray-700 font-medium border border-transparent rounded-bl-lg hover:text-gray-500" %>
             </div>
           <% end %>
           <%= if Bodyguard.permit?(Podcasts, :delete_episode, @current_user) do %>
             <div class="flex flex-1 w-0 -ml-px">
-              <button type="button" phx-click="delete" phx-target={@myself} phx-value-id={@episode.id} data-confirm="Tem certeza?" class="relative inline-flex items-center justify-center flex-1 w-0 py-4 -mr-px text-sm font-medium text-gray-700 border border-transparent rounded-bl-lg hover:text-gray-500"><%= gettext("Excluir") %></button>
+              <button type="button" phx-click="delete" phx-target={@myself} phx-value-id={@episode.id} data-confirm="Tem certeza?" class="relative inline-flex items-center justify-center flex-1 w-0 py-4 -mr-px text-sm font-medium text-gray-700 border border-transparent rounded-bl-lg hover:text-gray-500"><%= gettext("Delete") %></button>
             </div>
           <% end %>
         </div>
@@ -86,7 +86,7 @@ defmodule GuildaWeb.PodcastEpisodeLive.EpisodeComponent do
       {:ok, _episode} ->
         {:noreply,
          socket
-         |> put_flash(:info, gettext("Episódio excluído com sucesso."))
+         |> put_flash(:info, gettext("Episode deleted successfully."))
          |> push_redirect(to: Routes.podcast_episode_index_path(socket, :index))}
 
       {:error, error} ->

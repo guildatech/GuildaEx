@@ -30,3 +30,7 @@ config :guilda, :auth, telegram_bot_token: "1328041770:AAG7GlDdKF2FVEmYjHFNNFKj9
 config :guilda, :environment, :test
 
 config :guilda, :maps, access_token: "not a token"
+
+config :gettext, :default_locale, "en"
+
+config :guilda, GuildaWeb.Gettext, locales: ~w(en)

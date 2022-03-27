@@ -27,7 +27,7 @@ defmodule GuildaWeb.PodcastEpisodeLive.Index do
     case Bodyguard.permit(Podcasts, :create_episode, socket.assigns.current_user) do
       :ok ->
         socket
-        |> assign(:page_title, gettext("Novo episódio"))
+        |> assign(:page_title, gettext("New Episode"))
         |> assign(:episode, %Episode{})
 
       {:error, error} ->
@@ -41,7 +41,7 @@ defmodule GuildaWeb.PodcastEpisodeLive.Index do
     case Bodyguard.permit(Podcasts, :update_episode, socket.assigns.current_user) do
       :ok ->
         socket
-        |> assign(:page_title, gettext("Editar episódio"))
+        |> assign(:page_title, gettext("Edit Episode"))
         |> assign(:episode, Podcasts.get_episode!(id))
 
       {:error, error} ->

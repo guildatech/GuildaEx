@@ -45,14 +45,17 @@ defmodule Guilda.Bot do
 
     with {:user, {:ok, user}} <- {:user, Accounts.upsert_user(Map.put(from, :telegram_id, Kernel.to_string(from.id)))},
          {:location, {:ok, _user}} <- {:location, Accounts.set_lng_lat(user, lng, lat)} do
-      answer(context, gettext("Sua localização foi salva com sucesso! Veja o mapa em https://guildatech.com/members."))
+      answer(
+        context,
+        gettext("Your location has been saved successfully! See the map at https://guildatech.com/members.")
+      )
     else
       {:user, {:error, _changeset} = error} ->
         Logger.warning(inspect(error))
-        answer(context, gettext("Não foi possível criar o seu cadastro. :("))
+        answer(context, gettext("Unable to register your account."))
 
       {:location, {:error, _changeset}} ->
-        answer(context, gettext("Não foi possível salvar a sua localização. :("))
+        answer(context, gettext("Unable to save your location."))
     end
   end
 end

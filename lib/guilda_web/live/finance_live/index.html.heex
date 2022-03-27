@@ -1,9 +1,9 @@
-<.main_content title={gettext("Finanças")} flash={@flash}>
+<.main_content title={gettext("Finances")} flash={@flash}>
   <:header_action>
     <%= if Bodyguard.permit?(Finances, :create_transaction, @current_user) do %>
       <div class="flex mt-4 sm:mt-0 sm:ml-4">
         <span class="order-1 sm:order-0">
-          <.button link_type="live_patch" color="white" label={gettext("Nova Transação")} to={Routes.finance_index_path(@socket, :new)} />
+          <.button link_type="live_patch" color="white" label={gettext("New Transaction")} to={Routes.finance_index_path(@socket, :new)} />
         </span>
       </div>
     <% end %>
@@ -15,28 +15,28 @@
       rows={@transactions}
       row_id={fn transaction -> "transaction-#{transaction.id}" end}
     >
-      <:col let={transaction} label={gettext("Data")}>
+      <:col let={transaction} label={gettext("Date")}>
         <%= transaction.date %>
       </:col>
 
-      <:col let={transaction} label={gettext("Beneficiário")}>
+      <:col let={transaction} label={gettext("Beneficiary")}>
         <%= transaction.payee %>
       </:col>
 
-      <:col let={transaction} label={gettext("Nota")}>
+      <:col let={transaction} label={gettext("Note")}>
         <%= transaction.note %>
       </:col>
 
-      <:col let={transaction} label={gettext("Valor")} align="right">
+      <:col let={transaction} label={gettext("Amount")} align="right">
         <%= transaction.amount %>
       </:col>
 
       <:col let={transaction} class="space-x-2" label={nil} align="right" if={Bodyguard.permit?(Finances, :manage_transaction, @current_user)}>
         <%= if Bodyguard.permit?(Finances, :update_transaction, @current_user) do %>
-          <.button link_type="live_patch" size="xs" color="white" vairant="outline" label={gettext("Editar")} to={Routes.finance_index_path(@socket, :edit, transaction)} />
+          <.button link_type="live_patch" size="xs" color="white" vairant="outline" label={gettext("Edit")} to={Routes.finance_index_path(@socket, :edit, transaction)} />
         <% end %>
         <%= if Bodyguard.permit?(Finances, :delete_transaction, @current_user) do %>
-          <.button label={gettext("Excluir")} size="xs" color="danger" variant="outline" id={"delete-transaction-#{transaction.id}"} class="TableAction--delete" phx-click={show_modal("delete-modal-#{transaction.id}")} />
+          <.button label={gettext("Delete")} size="xs" color="danger" variant="outline" id={"delete-transaction-#{transaction.id}"} class="TableAction--delete" phx-click={show_modal("delete-modal-#{transaction.id}")} />
         <% end %>
       </:col>
     </.table>
@@ -54,9 +54,9 @@
         }
         on_cancel={focus("##{id}", "#delete-transaction-#{transaction.id}")}
       >
-        <%= gettext("Deseja mesmo remover o registro de %{date} com valor %{value}?", date: transaction.date, value: transaction.amount) %>
-        <:cancel><%= gettext("Cancelar") %></:cancel>
-        <:confirm><%= gettext("Excluir") %></:confirm>
+        <%= gettext("Are you sure you want to remove the record from %{date} with amount %{value}?", date: transaction.date, value: transaction.amount) %>
+        <:cancel><%= gettext("Cancel") %></:cancel>
+        <:confirm><%= gettext("Delete") %></:confirm>
       </.delete_modal>
     <% end %>
   </div>
