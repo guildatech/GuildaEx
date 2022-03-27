@@ -7,11 +7,15 @@
 }
 
 .form-control__input {
-  @apply shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md hover:border-blue-500;
+  @apply block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm hover:border-blue-500;
 }
 
-.form-control__input--with-errors {
-  @apply pr-10 border-red-300 text-red-900;
+.form-control__input--with-errors:not(.phx-no-feedback) {
+  @apply pr-10 text-red-900 border-red-300;
+}
+
+.form-control__input_error_icon.phx-no-feedback {
+  display: none;
 }
 
 .form-control__input--with-errors:focus {

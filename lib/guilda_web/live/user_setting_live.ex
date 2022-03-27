@@ -18,6 +18,8 @@ defmodule GuildaWeb.UserSettingLive do
      assign(socket,
        email_changeset: Accounts.change_user_email(socket.assigns.current_user),
        password_changeset: Accounts.change_user_password(socket.assigns.current_user),
+       password_trigger_action: false,
+       current_password: nil,
        bot_name: GuildaWeb.AuthController.telegram_bot_username()
      )}
   end
@@ -58,22 +60,35 @@ defmodule GuildaWeb.UserSettingLive do
   end
 
   def handle_event(
-        "update-password",
-        %{"user" => user_params} = params,
+        "validate-password",
+        %{"current_password" => current_password, "user" => user_params},
         socket
       ) do
-    %{"user" => %{"current_password" => password} = user_params} = params
-    user = socket.assigns.current_user
+    password_changeset = Accounts.change_user_password(socket.assigns.current_user, current_password, user_params)
 
-    case Accounts.update_user_password(user, password, user_params) do
-      {:ok, user} ->
-        {:noreply,
-         socket
-         |> put_flash(:info, gettext("Password updated successfully."))
-         |> assign(:password_changeset, Accounts.change_user_password(user))}
+    socket =
+      socket
+      |> assign(:current_password, current_password)
+      |> assign(:password_changeset, password_changeset)
 
-      {:error, changeset} ->
-        {:noreply, assign(socket, password_changeset: changeset)}
+    {:noreply, socket}
+  end
+
+  def handle_event(
+        "update-password",
+        %{"current_password" => current_password, "user" => user_params},
+        socket
+      ) do
+    socket = assign(socket, :current_password, current_password)
+
+    socket.assigns.current_user
+    |> Accounts.apply_user_password(current_password, user_params)
+    |> case do
+      {:ok, _} ->
+        {:noreply, assign(socket, :password_trigger_action, true)}
+
+      {:error, password_changeset} ->
+        {:noreply, assign(socket, :password_changeset, password_changeset)}
     end
   end
 

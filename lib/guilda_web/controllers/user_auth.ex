@@ -20,22 +20,15 @@ defmodule GuildaWeb.UserAuth do
   disconnected on log out. The line can be safely removed
   if you are not using LiveView.
   """
-  def log_in_user(conn, user, opts \\ []) do
-    should_redirect? = Keyword.get(opts, :redirect, true)
-    path_to_redirect = get_session(conn, :user_return_to)
+  def log_in_user(conn, user) do
     token = Accounts.generate_user_session_token(user)
+    user_return_to = get_session(conn, :user_return_to)
 
     conn
     |> renew_session()
     |> put_session(:user_token, token)
     |> put_session(:live_socket_id, "users_sessions:#{Base.url_encode64(token)}")
-    |> maybe_redirect(should_redirect?, path_to_redirect)
-  end
-
-  defp maybe_redirect(conn, false, _path), do: conn
-
-  defp maybe_redirect(conn, true, path) do
-    redirect(conn, to: path || signed_in_path(conn))
+    |> redirect(to: user_return_to || signed_in_path(conn))
   end
 
   # This function renews the session ID and erases the whole

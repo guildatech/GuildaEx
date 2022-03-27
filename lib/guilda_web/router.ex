@@ -44,7 +44,7 @@ defmodule GuildaWeb.Router do
   end
 
   scope "/", GuildaWeb do
-    pipe_through [:browser, :redirect_if_user_is_authenticated, :assign_menu]
+    pipe_through [:browser, :assign_menu, :redirect_if_user_is_authenticated]
 
     get "/users/register", UserRegistrationController, :new
     post "/users/register", UserRegistrationController, :create
@@ -81,10 +81,10 @@ defmodule GuildaWeb.Router do
     scope "/", GuildaWeb do
       pipe_through [:browser, :require_authenticated_user]
 
+      live "/users/settings", UserSettingLive, :edit, as: :user_settings
       get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
       put "/users/settings/update_password", UserSettingsController, :update_password
 
-      live "/users/settings", UserSettingLive, :edit, as: :user_settings
       live "/finances", FinanceLive.Index, :index
       live "/finances/new", FinanceLive.Index, :new
       live "/finances/:id/edit", FinanceLive.Index, :edit
@@ -96,6 +96,11 @@ defmodule GuildaWeb.Router do
   #   pipe_through :api
   # end
 
+  # Enables the Swoosh mailbox preview in development.
+  #
+  # Note that preview only shows emails that were sent by the same
+  # node running the Phoenix server.
+  #
   # Enables LiveDashboard only for development
   #
   # If you want to use the LiveDashboard in production, you should put
@@ -103,25 +108,14 @@ defmodule GuildaWeb.Router do
   # If your application does not have an admins-only section yet,
   # you can use Plug.BasicAuth to set up some basic authentication
   # as long as you are also using SSL (which you should anyway).
-  if Mix.env() in [:dev, :test] do
+  if Mix.env() == :dev do
     import Phoenix.LiveDashboard.Router
 
     scope "/" do
       pipe_through :browser
 
+      forward "/sent_emails", Plug.Swoosh.MailboxPreview
       live_dashboard "/dashboard", metrics: GuildaWeb.Telemetry
-    end
-  end
-
-  # Enables the Swoosh mailbox preview in development.
-  #
-  # Note that preview only shows emails that were sent by the same
-  # node running the Phoenix server.
-  if Mix.env() == :dev do
-    scope "/dev" do
-      pipe_through :browser
-
-      forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
   end
 end
