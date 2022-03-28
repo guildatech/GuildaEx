@@ -19,7 +19,7 @@ defmodule GuildaWeb.AuthController do
         user && !user_from_telegram_params ->
           # User is signed in and there's no other account with the same Telegram ID
           case Accounts.connect_provider(user, :telegram, params["telegram_id"]) do
-            {:ok, user} ->
+            {:ok, _user} ->
               conn
               |> put_flash(:info, gettext("Successfully connected your Telegram account."))
               |> redirect(to: Routes.user_settings_path(conn, :edit))

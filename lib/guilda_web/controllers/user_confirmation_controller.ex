@@ -18,8 +18,9 @@ defmodule GuildaWeb.UserConfirmationController do
     conn
     |> put_flash(
       :info,
-      "If your email is in our system and it has not been confirmed yet, " <>
-        "you will receive an email with instructions shortly."
+      gettext(
+        "If your email is in our system and it has not been confirmed yet, you will receive an email with instructions shortly."
+      )
     )
     |> redirect(to: "/")
   end
@@ -34,7 +35,7 @@ defmodule GuildaWeb.UserConfirmationController do
     case Accounts.confirm_user(token) do
       {:ok, _} ->
         conn
-        |> put_flash(:info, "User confirmed successfully.")
+        |> put_flash(:info, "Account confirmed successfully.")
         |> redirect(to: "/")
 
       :error ->
@@ -48,7 +49,7 @@ defmodule GuildaWeb.UserConfirmationController do
 
           %{} ->
             conn
-            |> put_flash(:error, "User confirmation link is invalid or it has expired.")
+            |> put_flash(:error, "Account confirmation link is invalid or it has expired.")
             |> redirect(to: "/")
         end
     end

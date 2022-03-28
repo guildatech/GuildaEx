@@ -18,6 +18,7 @@ defmodule GuildaWeb.UserSettingLive do
      assign(socket,
        email_changeset: Accounts.change_user_email(socket.assigns.current_user),
        password_changeset: Accounts.change_user_password(socket.assigns.current_user),
+       is_legacy_account?: Accounts.is_legacy_account?(socket.assigns.current_user),
        password_trigger_action: false,
        current_password: nil,
        bot_name: GuildaWeb.AuthController.telegram_bot_username()
@@ -32,10 +33,10 @@ defmodule GuildaWeb.UserSettingLive do
   @impl true
   def handle_event(
         "update-email",
-        %{"user" => user_params} = params,
+        %{"user" => user_params},
         socket
       ) do
-    %{"user" => %{"current_password" => password} = user_params} = params
+    %{"current_password" => password} = user_params
     user = socket.assigns.current_user
 
     case Accounts.apply_user_email(user, password, user_params) do
@@ -120,6 +121,16 @@ defmodule GuildaWeb.UserSettingLive do
       {:error, _changeset} ->
         {:noreply, put_flash(socket, :error, gettext("Failed to remove your location."))}
     end
+  end
+
+  def handle_event("resend-confirmation", _params, socket) do
+    Accounts.deliver_user_confirmation_instructions(
+      socket.assigns.current_user,
+      &Routes.user_confirmation_url(socket, :edit, &1)
+    )
+
+    {:noreply,
+     put_flash(socket, :info, gettext("You will receive an email with instructions to confirm your account shortly."))}
   end
 
   @impl true

@@ -24,6 +24,14 @@ defmodule Guilda.Accounts do
   ## Database getters
 
   @doc """
+  Checks if an account was created using Telegram and does not have a hashed password.
+  """
+  def is_legacy_account?(%User{} = user) do
+    query = from u in User, where: not is_nil(u.telegram_id) and is_nil(u.hashed_password) and u.id == ^user.id
+    Repo.exists?(query)
+  end
+
+  @doc """
   Gets a user by telegram_id.
 
   ## Examples
