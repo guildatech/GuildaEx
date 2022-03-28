@@ -12,6 +12,7 @@ defmodule GuildaWeb.UserResetPasswordController do
   def create(conn, %{"user" => %{"email" => email}}) do
     if user = Accounts.get_user_by_email(email) do
       Accounts.deliver_user_reset_password_instructions(
+        conn.assigns.audit_context,
         user,
         &Routes.user_reset_password_url(conn, :edit, &1)
       )
@@ -32,7 +33,7 @@ defmodule GuildaWeb.UserResetPasswordController do
   # Do not log in the user after reset password to avoid a
   # leaked token giving the user access to the account.
   def update(conn, %{"user" => user_params}) do
-    case Accounts.reset_user_password(conn.assigns.user, user_params) do
+    case Accounts.reset_user_password(conn.assigns.audit_context, conn.assigns.user, user_params) do
       {:ok, _} ->
         conn
         |> put_flash(:info, "Password reset successfully.")

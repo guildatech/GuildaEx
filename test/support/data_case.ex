@@ -26,6 +26,7 @@ defmodule Guilda.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import Guilda.DataCase
+      import Guilda.AuditLog, only: [system: 0]
     end
   end
 

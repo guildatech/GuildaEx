@@ -42,6 +42,7 @@ defmodule GuildaWeb.UserSettingLive do
     case Accounts.apply_user_email(user, password, user_params) do
       {:ok, applied_user} ->
         Accounts.deliver_update_email_instructions(
+          socket.assigns.audit_context,
           applied_user,
           user.email,
           &Routes.user_settings_url(GuildaWeb.Endpoint, :confirm_email, &1)
@@ -96,7 +97,7 @@ defmodule GuildaWeb.UserSettingLive do
   def handle_event("remove-location", _params, socket) do
     user = socket.assigns.current_user
 
-    case Accounts.remove_location(user) do
+    case Accounts.remove_location(socket.assigns.audit_context, user) do
       {:ok, user} ->
         {:noreply,
          socket
@@ -111,7 +112,7 @@ defmodule GuildaWeb.UserSettingLive do
   def handle_event("disconnect-telegram", _params, socket) do
     user = socket.assigns.current_user
 
-    case Accounts.disconnect_provider(user, :telegram) do
+    case Accounts.disconnect_provider(socket.assigns.audit_context, user, :telegram) do
       {:ok, user} ->
         {:noreply,
          socket

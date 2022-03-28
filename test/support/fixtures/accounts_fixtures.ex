@@ -9,10 +9,7 @@ defmodule Guilda.AccountsFixtures do
   def valid_user_password, do: "hello world!"
 
   def user_fixture(attrs \\ %{}) do
-    {:ok, user} =
-      attrs
-      |> valid_user_attributes()
-      |> Guilda.Accounts.register_user()
+    {:ok, user} = Guilda.Accounts.register_user(Guilda.AuditLog.system(), valid_user_attributes(attrs))
 
     user
   end

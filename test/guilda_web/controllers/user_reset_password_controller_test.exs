@@ -1,12 +1,14 @@
 defmodule GuildaWeb.UserResetPasswordControllerTest do
   use GuildaWeb.ConnCase, async: true
-
-  alias Guilda.Accounts
-  alias Guilda.Repo
   import Guilda.AccountsFixtures
+  alias Guilda.Accounts
+  alias Guilda.AuditLog
+  alias Guilda.Repo
 
   setup do
-    %{user: user_fixture()}
+    user = user_fixture()
+    audit_context = %AuditLog{user: user}
+    %{user: user, audit_context: audit_context}
   end
 
   describe "GET /users/reset_password" do
@@ -46,7 +48,7 @@ defmodule GuildaWeb.UserResetPasswordControllerTest do
     setup %{user: user} do
       token =
         extract_user_token(fn url ->
-          Accounts.deliver_user_reset_password_instructions(user, url)
+          Accounts.deliver_user_reset_password_instructions(AuditLog.system(), user, url)
         end)
 
       %{token: token}
@@ -68,7 +70,7 @@ defmodule GuildaWeb.UserResetPasswordControllerTest do
     setup %{user: user} do
       token =
         extract_user_token(fn url ->
-          Accounts.deliver_user_reset_password_instructions(user, url)
+          Accounts.deliver_user_reset_password_instructions(AuditLog.system(), user, url)
         end)
 
       %{token: token}

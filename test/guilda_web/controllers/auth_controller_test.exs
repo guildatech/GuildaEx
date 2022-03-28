@@ -3,6 +3,7 @@ defmodule GuildaWeb.AuthControllerTest do
 
   alias Guilda.Accounts
   alias Guilda.AccountsFixtures
+  alias Guilda.AuditLog
   alias GuildaWeb.AuthController
 
   @jefferson {"1328041770:AAG7GlDdKF2FVEmYjHFNNFKj9UVhDOKmtqc",
@@ -52,7 +53,7 @@ defmodule GuildaWeb.AuthControllerTest do
     test "logs in an user already connected to a Telegram account", %{conn: conn} do
       {token, params} = @jefferson
       user = AccountsFixtures.user_fixture()
-      {:ok, _user} = Accounts.connect_provider(user, :telegram, params["id"])
+      {:ok, _user} = Accounts.connect_provider(AuditLog.system(), user, :telegram, params["id"])
       conn = put_session(conn, :telegram_bot_token, token)
       conn = get(conn, Routes.auth_path(conn, :telegram_callback, params))
       assert redirected_to(conn) == Routes.page_path(conn, :index)
@@ -62,7 +63,7 @@ defmodule GuildaWeb.AuthControllerTest do
     test "redirects if user is signed in and already connected to a Telegram account", %{conn: conn} do
       {token, params} = @jefferson
       user = AccountsFixtures.user_fixture()
-      {:ok, user} = Accounts.connect_provider(user, :telegram, params["id"])
+      {:ok, user} = Accounts.connect_provider(AuditLog.system(), user, :telegram, params["id"])
       conn = log_in_user(conn, user)
       conn = put_session(conn, :telegram_bot_token, token)
       conn = get(conn, Routes.auth_path(conn, :telegram_callback, params))

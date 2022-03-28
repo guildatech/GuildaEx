@@ -3,17 +3,15 @@ defmodule Guilda.Bot do
   Our bot used to store the user's location.
   """
   @bot :guilda
-
   use ExGram.Bot,
     name: @bot,
     setup_commands: true
 
   import GuildaWeb.Gettext
-
-  require Logger
-
   alias Guilda.Accounts
   alias Guilda.Accounts.User
+  alias Guilda.AuditLog
+  require Logger
 
   command("start")
   command("help", description: "Mostra os comandos do bot.")
@@ -45,7 +43,7 @@ defmodule Guilda.Bot do
     from = context.update.message.from
 
     with {:user, %User{} = user} <- {:user, Accounts.get_user_by_telegram_id(Kernel.to_string(from.id))},
-         {:location, {:ok, _user}} <- {:location, Accounts.set_lng_lat(user, lng, lat)} do
+         {:location, {:ok, _user}} <- {:location, Accounts.set_lng_lat(AuditLog.system(), user, lng, lat)} do
       answer(
         context,
         gettext("Your location has been saved successfully! See the map at https://guildatech.com/members.")

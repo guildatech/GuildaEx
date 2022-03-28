@@ -2,6 +2,7 @@ defmodule GuildaWeb.UserSessionController do
   use GuildaWeb, :controller
 
   alias Guilda.Accounts
+  alias Guilda.AuditLog
   alias GuildaWeb.UserAuth
 
   def new(conn, _params) do
@@ -12,6 +13,8 @@ defmodule GuildaWeb.UserSessionController do
     %{"email" => email, "password" => password} = user_params
 
     if user = Accounts.get_user_by_email_and_password(email, password) do
+      audit_context = %{conn.assigns.audit_context | user: user}
+      AuditLog.audit!(audit_context, "accounts.login", %{email: email})
       UserAuth.log_in_user(conn, user)
     else
       # In order to prevent user enumeration attacks, don't disclose whether the email is registered.

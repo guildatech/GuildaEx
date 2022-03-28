@@ -5,7 +5,7 @@ defmodule GuildaWeb.UserSettingsController do
   alias GuildaWeb.UserAuth
 
   def confirm_email(conn, %{"token" => token}) do
-    case Accounts.update_user_email(conn.assigns.current_user, token) do
+    case Accounts.update_user_email(conn.assigns.audit_context, conn.assigns.current_user, token) do
       :ok ->
         conn
         |> put_flash(:info, gettext("Email changed successfully."))
@@ -21,7 +21,7 @@ defmodule GuildaWeb.UserSettingsController do
   def update_password(conn, %{"current_password" => password, "user" => user_params}) do
     user = conn.assigns.current_user
 
-    case Accounts.update_user_password(user, password, user_params) do
+    case Accounts.update_user_password(conn.assigns.audit_context, user, password, user_params) do
       {:ok, user} ->
         conn
         |> put_flash(:info, gettext("Password updated successfully."))

@@ -7,6 +7,7 @@ defmodule Guilda.Accounts do
   alias Guilda.Accounts.User
   alias Guilda.Accounts.UserNotifier
   alias Guilda.Accounts.UserToken
+  alias Guilda.AuditLog
   alias Guilda.Repo
 
   @pubsub Guilda.PubSub
@@ -106,17 +107,26 @@ defmodule Guilda.Accounts do
 
   ## Examples
 
-      iex> register_user(%{field: value})
+      iex> register_user(%AuditLog{}, %{field: value})
       {:ok, %User{}}
 
-      iex> register_user(%{field: bad_value})
+      iex> register_user(%AuditLog{}, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def register_user(attrs) do
-    %User{}
-    |> User.registration_changeset(attrs)
-    |> Repo.insert()
+  def register_user(audit_context, attrs) do
+    user_changeset = User.registration_changeset(%User{}, attrs)
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert(:user, user_changeset)
+    |> AuditLog.multi(audit_context, "accounts.register_user", fn context, %{user: user} ->
+      %{context | user: user, params: %{email: user.email}}
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{user: user}} -> {:ok, user}
+      {:error, :user, changeset, _} -> {:error, changeset}
+    end
   end
 
   @doc """
@@ -124,17 +134,26 @@ defmodule Guilda.Accounts do
 
   ## Examples
 
-      iex> connect_provider(user, :provider, provider_uid)
+      iex> connect_provider(audit_context, user, :provider, provider_uid)
       {:ok, %User{}}
 
-      iex> connect_provider(user, :provider, provider_uid)
+      iex> connect_provider(audit_context, user, :provider, provider_uid)
       {:error, %Ecto.Changeset{}}
 
   """
-  def connect_provider(%User{} = user, :telegram, telegram_id) do
-    user
-    |> User.provider_changeset(%{telegram_id: telegram_id})
-    |> Repo.update()
+  def connect_provider(audit_context, %User{} = user, :telegram, telegram_id) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.update(:user, User.provider_changeset(user, %{telegram_id: telegram_id}))
+    |> AuditLog.multi(audit_context, "accounts.providers.connect", %{
+      user_id: user.id,
+      provider: "telegram",
+      uid: telegram_id
+    })
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{user: user}} -> {:ok, user}
+      {:error, :user, changeset, _} -> {:error, changeset}
+    end
   end
 
   @doc """
@@ -142,17 +161,26 @@ defmodule Guilda.Accounts do
 
   ## Examples
 
-      iex> disconnect_provider(user, :provider)
+      iex> disconnect_provider(audit_context, user, :provider)
       {:ok, %User{}}
 
-      iex> disconnect_provider(user, :provider)
+      iex> disconnect_provider(audit_context, user, :provider)
       {:error, %Ecto.Changeset{}}
 
   """
-  def disconnect_provider(%User{} = user, :telegram) do
-    user
-    |> User.provider_changeset(%{telegram_id: nil})
-    |> Repo.update()
+  def disconnect_provider(audit_context, %User{} = user, :telegram) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.update(:user, User.provider_changeset(user, %{telegram_id: nil}))
+    |> AuditLog.multi(audit_context, "accounts.providers.disconnect", %{
+      user_id: user.id,
+      provider: "telegram",
+      uid: user.telegram_id
+    })
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{user: user}} -> {:ok, user}
+      {:error, :user, changeset, _} -> {:error, changeset}
+    end
   end
 
   @doc """
@@ -209,19 +237,19 @@ defmodule Guilda.Accounts do
   If the token matches, the user email is updated and the token is deleted.
   The confirmed_at date is also updated to the current time.
   """
-  def update_user_email(user, token) do
+  def update_user_email(audit_context, user, token) do
     context = "change:#{user.email}"
 
     with {:ok, query} <- UserToken.verify_change_email_token_query(token, context),
          %UserToken{sent_to: email} <- Repo.one(query),
-         {:ok, _} <- Repo.transaction(user_email_multi(user, email, context)) do
+         {:ok, _} <- Repo.transaction(user_email_multi(audit_context, user, email, context)) do
       :ok
     else
       _ -> :error
     end
   end
 
-  defp user_email_multi(user, email, context) do
+  defp user_email_multi(audit_context, user, email, context) do
     changeset =
       user
       |> User.email_changeset(%{email: email})
@@ -230,6 +258,7 @@ defmodule Guilda.Accounts do
     Ecto.Multi.new()
     |> Ecto.Multi.update(:user, changeset)
     |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, [context]))
+    |> AuditLog.multi(audit_context, "accounts.update_email.finish", %{user_id: user.id, email: email})
   end
 
   @doc """
@@ -237,15 +266,23 @@ defmodule Guilda.Accounts do
 
   ## Examples
 
-      iex> deliver_update_email_instructions(user, current_email, &Routes.user_update_email_url(conn, :edit, &1))
+      iex> deliver_update_email_instructions(audit_context, user, current_email, &Routes.user_update_email_url(conn, :edit, &1))
       {:ok, %{to: ..., body: ...}}
 
   """
-  def deliver_update_email_instructions(%User{} = user, current_email, update_email_url_fun)
+  def deliver_update_email_instructions(audit_context, %User{} = user, current_email, update_email_url_fun)
       when is_function(update_email_url_fun, 1) do
     {encoded_token, user_token} = UserToken.build_email_token(user, "change:#{current_email}")
 
-    Repo.insert!(user_token)
+    {:ok, _} =
+      Ecto.Multi.new()
+      |> AuditLog.multi(audit_context, "accounts.update_email.init", %{
+        user_id: user.id,
+        email: user.email
+      })
+      |> Ecto.Multi.insert(:user_token, user_token)
+      |> Repo.transaction()
+
     UserNotifier.deliver_update_email_instructions(user, update_email_url_fun.(encoded_token))
   end
 
@@ -302,7 +339,7 @@ defmodule Guilda.Accounts do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_user_password(user, password, attrs) do
+  def update_user_password(audit_context, user, password, attrs) do
     changeset =
       user
       |> User.password_changeset(attrs)
@@ -311,6 +348,7 @@ defmodule Guilda.Accounts do
     Ecto.Multi.new()
     |> Ecto.Multi.update(:user, changeset)
     |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, :all))
+    |> AuditLog.multi(audit_context, "accounts.update_password", %{user_id: user.id})
     |> Repo.transaction()
     |> case do
       {:ok, %{user: user}} -> {:ok, user}
@@ -320,37 +358,41 @@ defmodule Guilda.Accounts do
 
   ## Location
 
-  def set_lng_lat(%User{} = user, lng, lat) do
+  def set_lng_lat(audit_context, %User{} = user, lng, lat) do
     {new_lng, new_lat} = Guilda.Geo.random_nearby_lng_lat(lng, lat, 10)
 
-    user
-    |> User.location_changeset(%Geo.Point{coordinates: {new_lng, new_lat}, srid: 4326})
-    |> Repo.update()
+    Ecto.Multi.new()
+    |> Ecto.Multi.update(:user, User.location_changeset(user, %Geo.Point{coordinates: {new_lng, new_lat}, srid: 4326}))
+    |> AuditLog.multi(audit_context, "accounts.location.share", %{
+      user_id: user.id
+    })
+    |> Repo.transaction()
     |> case do
-      {:ok, new_user} ->
-        {lng, lat} = new_user.geom.coordinates
-        broadcast!(user, %Events.LocationChanged{user: new_user})
+      {:ok, %{user: user}} ->
+        {lng, lat} = user.geom.coordinates
+        broadcast!(user, %Events.LocationChanged{user: user})
         broadcast!("member_location", %Events.LocationAdded{lat: lat, lng: lng})
+        {:ok, user}
 
-        {:ok, new_user}
-
-      {:error, _} = error ->
-        error
+      {:error, :user, changeset, _} ->
+        {:error, changeset}
     end
   end
 
-  def remove_location(%User{} = user) do
-    user
-    |> User.location_changeset(nil)
-    |> Repo.update()
+  def remove_location(audit_context, %User{} = user) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.update(:user, User.location_changeset(user, nil))
+    |> AuditLog.multi(audit_context, "accounts.location.revoke", %{
+      user_id: user.id
+    })
+    |> Repo.transaction()
     |> case do
-      {:ok, new_user} ->
-        broadcast!(user, %Events.LocationChanged{user: new_user})
+      {:ok, %{user: user}} ->
+        broadcast!(user, %Events.LocationChanged{user: user})
+        {:ok, user}
 
-        {:ok, new_user}
-
-      {:error, _} = error ->
-        error
+      {:error, :user, changeset, _} ->
+        {:error, changeset}
     end
   end
 
@@ -451,14 +493,20 @@ defmodule Guilda.Accounts do
 
   ## Examples
 
-      iex> deliver_user_reset_password_instructions(user, &Routes.user_reset_password_url(conn, :edit, &1))
+      iex> deliver_user_reset_password_instructions(audit_context, user, &Routes.user_reset_password_url(conn, :edit, &1))
       {:ok, %{to: ..., body: ...}}
 
   """
-  def deliver_user_reset_password_instructions(%User{} = user, reset_password_url_fun)
+  def deliver_user_reset_password_instructions(audit_context, %User{} = user, reset_password_url_fun)
       when is_function(reset_password_url_fun, 1) do
     {encoded_token, user_token} = UserToken.build_email_token(user, "reset_password")
-    Repo.insert!(user_token)
+
+    {:ok, _} =
+      Ecto.Multi.new()
+      |> AuditLog.multi(audit_context, "accounts.reset_password.init", %{user_id: user.id})
+      |> Ecto.Multi.insert(:user_token, user_token)
+      |> Repo.transaction()
+
     UserNotifier.deliver_reset_password_instructions(user, reset_password_url_fun.(encoded_token))
   end
 
@@ -488,17 +536,18 @@ defmodule Guilda.Accounts do
 
   ## Examples
 
-      iex> reset_user_password(user, %{password: "new long password", password_confirmation: "new long password"})
+      iex> reset_user_password(audit_context, user, %{password: "new long password", password_confirmation: "new long password"})
       {:ok, %User{}}
 
-      iex> reset_user_password(user, %{password: "valid", password_confirmation: "not the same"})
+      iex> reset_user_password(audit_context, user, %{password: "valid", password_confirmation: "not the same"})
       {:error, %Ecto.Changeset{}}
 
   """
-  def reset_user_password(user, attrs) do
+  def reset_user_password(audit_context, user, attrs) do
     Ecto.Multi.new()
     |> Ecto.Multi.update(:user, User.password_changeset(user, attrs))
     |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, :all))
+    |> AuditLog.multi(audit_context, "accounts.reset_password.finish", %{user_id: user.id})
     |> Repo.transaction()
     |> case do
       {:ok, %{user: user}} -> {:ok, user}

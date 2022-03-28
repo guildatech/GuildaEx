@@ -11,7 +11,8 @@ defmodule GuildaWeb.Endpoint do
     same_site: "Strict"
   ]
 
-  socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [:peer_data, session: @session_options]]
+  socket "/live", Phoenix.LiveView.Socket,
+    websocket: [connect_info: [:x_headers, :user_agent, :peer_data, session: @session_options]]
 
   # Serve at "/" the static files from "priv/static" directory.
   #

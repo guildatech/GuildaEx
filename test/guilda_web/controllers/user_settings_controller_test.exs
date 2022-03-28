@@ -1,9 +1,11 @@
 defmodule GuildaWeb.UserSettingsControllerTest do
   use GuildaWeb.ConnCase, async: true
-
-  alias Guilda.{Accounts, Accounts.User, Repo}
-  import Guilda.AccountsFixtures
   import Ecto.Query
+  import Guilda.AccountsFixtures
+  alias Guilda.Accounts
+  alias Guilda.Accounts.User
+  alias Guilda.AuditLog
+  alias Guilda.Repo
 
   setup :register_and_log_in_user
 
@@ -24,7 +26,7 @@ defmodule GuildaWeb.UserSettingsControllerTest do
 
       token =
         extract_user_token(fn url ->
-          Accounts.deliver_update_email_instructions(%{user | email: email}, user.email, url)
+          Accounts.deliver_update_email_instructions(AuditLog.system(), %{user | email: email}, user.email, url)
         end)
 
       %{token: token, email: email}

@@ -1,6 +1,7 @@
 defmodule GuildaWeb.Router do
   use GuildaWeb, :router
 
+  import GuildaWeb.RequestContext
   import GuildaWeb.UserAuth
 
   alias GuildaWeb.MountHooks
@@ -12,6 +13,7 @@ defmodule GuildaWeb.Router do
     plug :put_root_layout, {GuildaWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :fetch_current_user
+    plug :put_audit_context
 
     plug :put_secure_browser_headers, %{
       "content-security-policy" => ~w[

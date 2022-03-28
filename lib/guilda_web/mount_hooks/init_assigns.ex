@@ -5,12 +5,14 @@ defmodule GuildaWeb.MountHooks.InitAssigns do
   import Phoenix.LiveView
 
   alias Guilda.Accounts
+  alias GuildaWeb.RequestContext
 
   def on_mount(_any, _params, session, socket) do
     socket =
       socket
       |> assign_menu()
       |> assign_user(session)
+      |> RequestContext.put_audit_context()
 
     {:cont, socket}
   end
