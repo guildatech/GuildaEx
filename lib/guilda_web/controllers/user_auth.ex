@@ -22,12 +22,21 @@ defmodule GuildaWeb.UserAuth do
   """
   def log_in_user(conn, user) do
     token = Accounts.generate_user_session_token(user)
-    user_return_to = get_session(conn, :user_return_to)
 
     conn
     |> renew_session()
     |> put_session(:user_token, token)
     |> put_session(:live_socket_id, "users_sessions:#{Base.url_encode64(token)}")
+  end
+
+  @doc """
+  Returns to or redirects home.
+  """
+  def redirect_user_after_login(conn, _params \\ %{}) do
+    user_return_to = get_session(conn, :user_return_to)
+
+    conn
+    |> delete_session(:user_return_to)
     |> redirect(to: user_return_to || signed_in_path(conn))
   end
 
@@ -115,14 +124,22 @@ defmodule GuildaWeb.UserAuth do
   they use the application at all, here would be a good place.
   """
   def require_authenticated_user(conn, _opts) do
-    if conn.assigns[:current_user] do
-      conn
-    else
-      conn
-      |> put_flash(:error, gettext("You must be signed in to access this page."))
-      |> maybe_store_return_to()
-      |> redirect(to: Routes.user_session_path(conn, :new))
-      |> halt()
+    cond do
+      is_nil(conn.assigns[:current_user]) ->
+        conn
+        |> put_flash(:error, gettext("You must be signed in to access this page."))
+        |> maybe_store_return_to()
+        |> redirect(to: Routes.user_session_path(conn, :new))
+        |> halt()
+
+      get_session(conn, :user_totp_pending) && conn.path_info != ["users", "totp"] &&
+          conn.path_info != ["users", "logout"] ->
+        conn
+        |> redirect(to: Routes.user_totp_path(conn, :new))
+        |> halt()
+
+      true ->
+        conn
     end
   end
 

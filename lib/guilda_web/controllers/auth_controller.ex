@@ -32,7 +32,9 @@ defmodule GuildaWeb.AuthController do
 
         !user && user_from_telegram_params ->
           # User is not signed in and there is an account for the given Telegram ID
-          UserAuth.log_in_user(conn, user_from_telegram_params)
+          conn
+          |> UserAuth.log_in_user(user_from_telegram_params)
+          |> UserAuth.redirect_user_after_login()
 
         true ->
           # User is not signed in and there is no account for the given Telegram ID

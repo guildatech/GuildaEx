@@ -45,7 +45,7 @@ defmodule GuildaWeb.UserSettingsLive.TOTPComponent do
           <div class="font-mono text-center">
             <h4>
               <%= if backup_code.used_at do %>
-                <del class="text-muted"><%= backup_code.code %></del>
+                <del class="text-gray-400"><%= backup_code.code %></del>
               <% else %>
                 <%= backup_code.code %>
               <% end %>
@@ -239,7 +239,7 @@ defmodule GuildaWeb.UserSettingsLive.TOTPComponent do
   def handle_event("submit_totp", %{"current_password" => current_password}, socket) do
     socket = assign_user_changeset(socket, current_password)
 
-    if !socket.assigns.user_changeset.valid? do
+    if socket.assigns.user_changeset.valid? do
       user = socket.assigns.current_user
       editing_totp = socket.assigns.current_totp || %Accounts.UserTOTP{user_id: user.id}
       app = "GuildaTech"

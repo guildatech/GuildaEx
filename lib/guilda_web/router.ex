@@ -58,6 +58,16 @@ defmodule GuildaWeb.Router do
     put "/users/reset_password/:token", UserResetPasswordController, :update
   end
 
+  scope "/", GuildaWeb do
+    pipe_through [:browser, :assign_menu, :require_authenticated_user]
+
+    get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+    put "/users/settings/update_password", UserSettingsController, :update_password
+
+    get "/users/totp", UserTOTPController, :new
+    post "/users/totp", UserTOTPController, :create
+  end
+
   live_session :default, on_mount: MountHooks.InitAssigns do
     scope "/", GuildaWeb do
       pipe_through [:browser, :assign_menu]
@@ -79,14 +89,13 @@ defmodule GuildaWeb.Router do
       get "/users/confirm/:token", UserConfirmationController, :edit
       post "/users/confirm/:token", UserConfirmationController, :update
     end
+  end
 
+  live_session :user, on_mount: MountHooks.InitAssigns do
     scope "/", GuildaWeb do
-      pipe_through [:browser, :require_authenticated_user]
+      pipe_through [:browser, :assign_menu, :require_authenticated_user]
 
       live "/users/settings", UserSettingLive, :edit, as: :user_settings
-      get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
-      put "/users/settings/update_password", UserSettingsController, :update_password
-
       live "/finances", FinanceLive.Index, :index
       live "/finances/new", FinanceLive.Index, :new
       live "/finances/:id/edit", FinanceLive.Index, :edit

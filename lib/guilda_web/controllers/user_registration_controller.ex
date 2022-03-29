@@ -22,6 +22,7 @@ defmodule GuildaWeb.UserRegistrationController do
         conn
         |> put_flash(:info, "Account created successfully.")
         |> UserAuth.log_in_user(user)
+        |> UserAuth.redirect_user_after_login()
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
