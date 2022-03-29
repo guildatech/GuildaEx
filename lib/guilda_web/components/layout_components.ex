@@ -89,7 +89,7 @@ defmodule GuildaWeb.Components.LayoutComponents do
     ~H"""
     <div id={@id} class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
       <%= if @title do %>
-        <div class="flex-grow-0 px-4 py-5 text-lg font-bold leading-6 text-gray-900 sm:px-6">
+        <div class="flex items-center justify-between flex-grow-0 px-4 py-5 text-lg font-bold leading-6 text-gray-900 sm:px-6">
           <%= if is_list(@title), do: render_slot(@title), else: @title %>
         </div>
       <% end %>

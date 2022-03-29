@@ -7,6 +7,7 @@ defmodule Guilda.Accounts do
   alias Guilda.Accounts.User
   alias Guilda.Accounts.UserNotifier
   alias Guilda.Accounts.UserToken
+  alias Guilda.Accounts.UserTOTP
   alias Guilda.AuditLog
   alias Guilda.Repo
 
@@ -197,6 +198,19 @@ defmodule Guilda.Accounts do
   end
 
   ## Settings
+
+  @doc """
+  Returns a User changeset that is valid if the current password is valid.
+
+  It returns a changeset. The changeset has an action if the current password
+  is not nil.
+  """
+  def validate_user_current_password(user, current_password) do
+    user
+    |> Ecto.Changeset.change()
+    |> User.validate_current_password(current_password)
+    |> attach_action_if_current_password(current_password)
+  end
 
   @doc """
   Returns an `%Ecto.Changeset{}` for changing the user email.
@@ -402,6 +416,131 @@ defmodule Guilda.Accounts do
     |> select([u], u.geom)
     |> Repo.all()
     |> Enum.map(fn %{coordinates: {lng, lat}} -> %{lng: lng, lat: lat} end)
+  end
+
+  ## TOTP
+
+  @doc """
+  Gets the %UserTOTP{} entry, if any.
+  """
+  def get_user_totp(user) do
+    Repo.get_by(UserTOTP, user_id: user.id)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for changing user TOTP.
+
+  ## Examples
+
+      iex> change_user_totp(%UserTOTP{})
+      %Ecto.Changeset{data: %UserTOTP{}}
+
+  """
+  def change_user_totp(totp, attrs \\ %{}) do
+    UserTOTP.changeset(totp, attrs)
+  end
+
+  @doc """
+  Updates the TOTP secret.
+
+  The secret is a random 20 bytes binary that is used to generate the QR Code to
+  enable 2FA using auth applications. It will only be updated if the OTP code
+  sent is valid.
+
+  ## Examples
+
+      iex> upsert_user_totp(%UserTOTP{secret: <<...>>}, code: "123456")
+      {:ok, %Ecto.Changeset{data: %UserTOTP{}}}
+
+  """
+  def upsert_user_totp(audit_context, totp, attrs) do
+    totp_changeset =
+      totp
+      |> UserTOTP.changeset(attrs)
+      |> UserTOTP.ensure_backup_codes()
+      # If we are updating, let's make sure the secret
+      # in the struct propagates to the changeset.
+      |> Ecto.Changeset.force_change(:secret, totp.secret)
+
+    audit_action = if is_nil(totp.id), do: "enable", else: "update"
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert_or_update(:totp, totp_changeset)
+    |> AuditLog.multi(audit_context, "accounts.user_totp.#{audit_action}", %{
+      user_id: totp.user_id
+    })
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{totp: totp}} -> {:ok, totp}
+      {:error, :totp, changeset, _} -> {:error, changeset}
+    end
+  end
+
+  @doc """
+  Regenerates the user backup codes for totp.
+
+  ## Examples
+
+      iex> regenerate_user_totp_backup_codes(%UserTOTP{})
+      %UserTOTP{backup_codes: [...]}
+
+  """
+  def regenerate_user_totp_backup_codes(audit_context, totp) do
+    {:ok, updated_totp} =
+      Repo.transaction(fn ->
+        AuditLog.audit!(audit_context, "accounts.user_totp.regenerate_backup_codes", %{
+          user_id: totp.user_id
+        })
+
+        totp
+        |> Ecto.Changeset.change()
+        |> UserTOTP.regenerate_backup_codes()
+        |> Repo.update!()
+      end)
+
+    updated_totp
+  end
+
+  @doc """
+  Disables the TOTP configuration for the given user.
+  """
+  def delete_user_totp(audit_context, user_totp) do
+    Repo.transaction(fn ->
+      AuditLog.audit!(audit_context, "accounts.user_totp.disable", %{user_id: user_totp.user_id})
+      Repo.delete!(user_totp)
+    end)
+
+    :ok
+  end
+
+  @doc """
+  Validates if the given TOTP code is valid.
+  """
+  def validate_user_totp(audit_context, user, code) do
+    totp = Repo.get_by!(UserTOTP, user_id: user.id)
+
+    cond do
+      UserTOTP.valid_totp?(totp, code) ->
+        AuditLog.audit!(audit_context, "accounts.user_totp.validated", %{user_id: user.id})
+        :valid_totp
+
+      changeset = UserTOTP.validate_backup_code(totp, code) ->
+        {:ok, totp} =
+          Repo.transaction(fn ->
+            AuditLog.audit!(audit_context, "accounts.user_totp.validated_with_backup_code", %{
+              user_id: user.id
+            })
+
+            Repo.update!(changeset)
+          end)
+
+        {:valid_backup_code, Enum.count(totp.backup_codes, &is_nil(&1.used_at))}
+
+      true ->
+        AuditLog.audit!(audit_context, "accounts.user_totp.invalid_code_used", %{user_id: user.id})
+
+        :invalid
+    end
   end
 
   ## Session

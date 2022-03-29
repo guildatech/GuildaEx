@@ -4,9 +4,10 @@ defmodule GuildaWeb.Components.Dialog do
   import GuildaWeb.Components.Link
   alias Phoenix.LiveView.JS
 
-  def delete_modal(assigns) do
+  def modal(assigns) do
     assigns =
       assigns
+      |> assign_new(:type, fn -> "default" end)
       |> assign_new(:show, fn -> false end)
       |> assign_new(:patch, fn -> nil end)
       |> assign_new(:navigate, fn -> nil end)
@@ -16,17 +17,18 @@ defmodule GuildaWeb.Components.Dialog do
       |> assign_new(:title, fn -> [] end)
       |> assign_new(:confirm, fn -> [] end)
       |> assign_new(:cancel, fn -> [] end)
-      |> assign_rest(~w(id show patch navigate on_cancel on_confirm title confirm cancel)a)
+      |> assign_new(:extra_footer, fn -> nil end)
+      |> assign_rest(~w(id type show patch navigate on_cancel on_confirm title confirm cancel extra_footer)a)
 
     ~H"""
     <div id={@id} class={"fixed z-50 inset-0 overflow-y-auto #{if @show, do: "fade-in", else: "hidden"}"} {@rest}>
-      <.focus_wrap id={"#{@id}-focus-wrap"} content={"##{@id}-container"}>
+      <.focus_wrap id={"#{@id}-focus-wrap"} content={"##{@id}-container"} class="flex items-center justify-center h-screen p-4">
         <div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0" aria-labelledby={"#{@id}-title"} aria-describedby={"#{@id}-description"} role="dialog" aria-modal="true" tabindex="0">
           <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" aria-hidden="true"></div>
           <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
           <div
             id={"#{@id}-container"}
-            class={"#{if @show, do: "fade-in-scale", else: "hidden"} sticky inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform sm:my-8 sm:align-middle sm:max-w-xl sm:w-full sm:p-6"}
+            class={"#{if @show, do: "fade-in-scale", else: "hidden"} sticky inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform sm:my-8 sm:align-middle sm:max-w-xl sm:w-full"}
             phx-window-keydown={hide_modal(@on_cancel, @id)} phx-key="escape"
             phx-click-away={hide_modal(@on_cancel, @id)}
           >
@@ -36,10 +38,10 @@ defmodule GuildaWeb.Components.Dialog do
             <%= if @navigate do %>
               <.link link_type="live_redirect" to={@navigate} data-modal-return class="hidden"></.link>
             <% end %>
-            <div class="sm:flex sm:items-start">
-              <div class="w-full mt-3 mr-12 text-center sm:mt-0 sm:ml-4 sm:text-left">
+            <%= if @type == "delete" do %>
+              <div class="w-full pt-4 pl-4 pr-4 text-center sm:text-left">
                 <h3 class="text-lg font-medium leading-6 text-gray-900" id={"#{@id}-title"}>
-                  <%= render_slot(@title) %>
+                  <%= if is_list(@title), do: render_slot(@title), else: @title %>
                 </h3>
                 <svg class="mx-auto" width="123" height="119" viewBox="0 0 123 119" xmlns="http://www.w3.org/2000/svg">
                   <g fill="none" fill-rule="evenodd">
@@ -63,29 +65,66 @@ defmodule GuildaWeb.Components.Dialog do
                   </p>
                 </div>
               </div>
-            </div>
-            <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-              <%= for confirm <- @confirm do %>
+              <div class="p-4 sm:flex sm:flex-row-reverse">
+                <%= for confirm <- @confirm do %>
+                  <button
+                    id={"#{@id}-confirm"}
+                    class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+                    phx-click={@on_confirm}
+                    phx-disable-with
+                    {assigns_to_attributes(confirm)}
+                  >
+                    <%= render_slot(confirm) %>
+                  </button>
+                <% end %>
+                <%= for cancel <- @cancel do %>
+                  <button
+                    class="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:w-auto sm:text-sm"
+                    phx-click={hide_modal(@on_cancel, @id)}
+                    {assigns_to_attributes(cancel)}
+                  >
+                    <%= render_slot(cancel) %>
+                  </button>
+                <% end %>
+              </div>
+            <% else %>
+              <div class="flex items-center justify-between px-4 py-4 space-x-2 border-b-2 rounded-t-lg bg-gray-50 sm:px-6 sm:flex">
+                <h2><%= if is_list(@title), do: render_slot(@title), else: @title %></h2>
                 <button
-                  id={"#{@id}-confirm"}
-                  class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
-                  phx-click={@on_confirm}
-                  phx-disable-with
-                  {assigns_to_attributes(confirm)}
-                >
-                  <%= render_slot(confirm) %>
-                </button>
-              <% end %>
-              <%= for cancel <- @cancel do %>
-                <button
-                  class="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:w-auto sm:text-sm"
                   phx-click={hide_modal(@on_cancel, @id)}
-                  {assigns_to_attributes(cancel)}
+                  class="flex items-center space-x-1 text-gray-500"
+                  aria-label="close modal"
                 >
-                  <%= render_slot(cancel) %>
+                  <GuildaWeb.Helpers.remix_icon icon="close-line" class="text-2xl" />
                 </button>
-              <% end %>
-            </div>
+              </div>
+              <div class="px-4 pt-5 pb-4 overflow-y-auto sm:p-6 sm:pb-4">
+                <%= render_slot(@inner_block) %>
+              </div>
+              <div class="px-4 py-3 bg-gray-50 sm:px-6 sm:flex sm:flex-row-reverse">
+                <%= for confirm <- @confirm do %>
+                  <button
+                    id={"#{@id}-confirm"}
+                    class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+                    phx-click={@on_confirm}
+                    phx-disable-with
+                    {assigns_to_attributes(confirm)}
+                  >
+                    <%= render_slot(confirm) %>
+                  </button>
+                <% end %>
+                <%= if is_list(@extra_footer), do: render_slot(@extra_footer) %>
+                <%= for cancel <- @cancel do %>
+                  <button
+                    class="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:w-auto sm:text-sm"
+                    phx-click={hide_modal(@on_cancel, @id)}
+                    {assigns_to_attributes(cancel)}
+                  >
+                    <%= render_slot(cancel) %>
+                  </button>
+                <% end %>
+              </div>
+            <% end %>
           </div>
         </div>
       </.focus_wrap>

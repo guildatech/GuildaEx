@@ -44,7 +44,8 @@
 
   <div id="dialogs" phx-update="append">
     <%= for transaction <- @transactions, id = "delete-modal-#{transaction.id}" do %>
-      <.delete_modal
+      <.modal
+        type="delete"
         id={id}
         on_confirm={
           JS.push("delete", value: %{id: transaction.id})
@@ -57,7 +58,7 @@
         <%= gettext("Are you sure you want to remove the record from %{date} with amount %{value}?", date: transaction.date, value: transaction.amount) %>
         <:cancel><%= gettext("Cancel") %></:cancel>
         <:confirm><%= gettext("Delete") %></:confirm>
-      </.delete_modal>
+      </.modal>
     <% end %>
   </div>
 

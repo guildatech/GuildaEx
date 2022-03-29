@@ -49,6 +49,7 @@ defmodule GuildaWeb.Components do
 
   def show_modal(js \\ %JS{}, id) when is_binary(id) do
     js
+    |> JS.add_class("overflow-hidden", to: "body")
     |> JS.show(
       to: "##{id}",
       display: "inline-block",
@@ -66,6 +67,7 @@ defmodule GuildaWeb.Components do
 
   def hide_modal(js \\ %JS{}, id) do
     js
+    |> JS.remove_class("overflow-hidden", to: "body")
     |> JS.remove_class("fade-in", to: "##{id}")
     |> JS.hide(
       to: "##{id}",

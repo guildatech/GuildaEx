@@ -81,8 +81,10 @@ defmodule GuildaWeb do
       import Phoenix.View
 
       import GuildaWeb.Components
+      import GuildaWeb.Components.Badge
       import GuildaWeb.Components.Button
       import GuildaWeb.Components.Dialog
+      import GuildaWeb.Components.Form
       import GuildaWeb.Components.LayoutComponents
       import GuildaWeb.Components.Link
       import GuildaWeb.ErrorHelpers

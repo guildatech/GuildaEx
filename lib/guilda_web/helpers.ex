@@ -15,7 +15,7 @@ defmodule GuildaWeb.Helpers do
         <.live_component module={MyComponent}  />
       </.live_modal>
   """
-  def modal(assigns) do
+  def old_modal(assigns) do
     assigns =
       assigns
       |> assign_new(:class, fn -> "" end)

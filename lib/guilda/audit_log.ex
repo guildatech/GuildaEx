@@ -44,7 +44,7 @@ defmodule Guilda.AuditLog do
     "accounts.update_password" => ~w(user_id),
     "accounts.user_totp.enable" => ~w(user_id),
     "accounts.user_totp.update" => ~w(user_id),
-    "accounts.user_totp.disable" => ~w(user_hid),
+    "accounts.user_totp.disable" => ~w(user_id),
     "accounts.user_totp.regenerate_backup_codes" => ~w(user_id),
     "accounts.user_totp.validated" => ~w(user_id),
     "accounts.user_totp.validated_with_backup_code" => ~w(user_id),
