@@ -74,7 +74,7 @@ defmodule GuildaWeb.Components.Form do
           nil
         end
       end)
-      |> assign_new(:wrapper_classes, fn -> "mb-6" end)
+      |> assign_new(:wrapper_classes, fn -> "" end)
 
     ~H"""
     <div class={@wrapper_classes}>

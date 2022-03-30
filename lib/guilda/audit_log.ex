@@ -37,6 +37,7 @@ defmodule Guilda.AuditLog do
   @params %{
     "accounts.login" => ~w(email),
     "accounts.register_user" => ~w(email),
+    "accounts.add_email_and_password" => ~w(email),
     "accounts.reset_password.init" => ~w(user_id),
     "accounts.reset_password.finish" => ~w(user_id),
     "accounts.update_email.init" => ~w(user_id email),

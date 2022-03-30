@@ -131,6 +131,33 @@ defmodule Guilda.Accounts do
   end
 
   @doc """
+  Upgrade a user account that didn't have an email or password set.
+
+  ## Examples
+
+      iex> set_email_and_password(%AuditLog{}, %{field: value})
+      {:ok, %User{}}
+
+      iex> set_email_and_password(%AuditLog{}, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def set_email_and_password(audit_context, user, attrs) do
+    user_changeset = User.registration_changeset(user, attrs)
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.update(:user, user_changeset)
+    |> AuditLog.multi(audit_context, "accounts.add_email_and_password", fn context, %{user: user} ->
+      %{context | user: user, params: %{email: user.email}}
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{user: user}} -> {:ok, user}
+      {:error, :user, changeset, _} -> {:error, changeset}
+    end
+  end
+
+  @doc """
   Link a provider to a user account.
 
   ## Examples

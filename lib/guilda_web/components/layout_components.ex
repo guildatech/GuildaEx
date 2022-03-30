@@ -85,9 +85,10 @@ defmodule GuildaWeb.Components.LayoutComponents do
       |> assign_new(:id, fn -> nil end)
       |> assign_new(:title, fn -> nil end)
       |> assign_new(:footer, fn -> nil end)
+      |> assign_new(:class, fn -> "" end)
 
     ~H"""
-    <div id={@id} class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
+    <div id={@id} class={"flex flex-col overflow-hidden bg-white rounded-lg shadow #{@class}"}>
       <%= if @title do %>
         <div class="flex items-center justify-between flex-grow-0 px-4 py-5 text-lg font-bold leading-6 text-gray-900 sm:px-6">
           <%= if is_list(@title), do: render_slot(@title), else: @title %>

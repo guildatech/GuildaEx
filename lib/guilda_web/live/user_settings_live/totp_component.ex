@@ -105,12 +105,11 @@ defmodule GuildaWeb.UserSettingsLive.TOTPComponent do
       <div class="grid grid-cols-6 gap-6">
         <div class="col-span-6 sm:col-span-4">
           <.form_field type="text_input" form={f} field={:code} label={gettext("Authentication code")} autocomplete="off" />
-
-          <div class="space-x-3">
-            <.button button_type="submit" label={gettext("Verify code")} phx-disable-with={gettext("Verifying...")} />
-            <.button color="white" label={gettext("Cancel")} phx-target={@myself} phx-click="cancel_totp" />
-          </div>
         </div>
+      </div>
+      <div class="mt-5 space-x-3">
+        <.button button_type="submit" label={gettext("Verify code")} phx-disable-with={gettext("Verifying...")} />
+        <.button color="white" label={gettext("Cancel")} phx-target={@myself} phx-click="cancel_totp" />
       </div>
 
       <%= if @current_totp do %>
@@ -143,16 +142,15 @@ defmodule GuildaWeb.UserSettingsLive.TOTPComponent do
       <div class="grid grid-cols-6 gap-6">
         <div class="col-span-6 sm:col-span-4">
           <.form_field type="password_input" id="current_password_for_totp" phx-debounce="blur" name="current_password" value={@current_password} form={f} field={:current_password} label={if @current_totp, do: gettext("Enter your current password to change 2FA"), else: gettext("Enter your current password to enable 2FA")} />
-
-          <.button button_type="submit">
-            <%= if @current_totp do %>
-              <%= gettext("Change two-factor authentication") %>
-            <% else %>
-              <%= gettext("Enable two-factor authentication") %>
-            <% end %>
-          </.button>
         </div>
       </div>
+      <.button button_type="submit" class="mt-5">
+        <%= if @current_totp do %>
+          <%= gettext("Change two-factor authentication") %>
+        <% else %>
+          <%= gettext("Enable two-factor authentication") %>
+        <% end %>
+      </.button>
     </.form>
     """
   end

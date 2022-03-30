@@ -1,29 +1,11 @@
 <.main_content title={gettext("Settings")} flash={@flash}>
   <%= if @is_legacy_account? do %>
-    <div class="p-4 rounded-md bg-yellow-50">
-      <div class="flex">
-        <div class="flex-shrink-0">
-          <!-- Heroicon name: solid/exclamation -->
-          <svg class="w-5 h-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-          </svg>
-        </div>
-        <div class="ml-3">
-          <h3 class="text-sm font-medium text-yellow-800"><%= gettext("Attention needed") %></h3>
-          <div class="mt-2 text-sm text-yellow-700">
-            <p><%= gettext("You're signed in using an old account that does not have an email or password set.") %></p>
-            <p><%= gettext("Please add an email to your account to access newer accounts feature like 2FA and Webauthn.") %></p>
-            <.form for={:add_email} class="mt-5 sm:flex sm:items-center" phx-submit="add-email">
-              <div class="w-full sm:max-w-xs">
-                <label for="email" class="sr-only"><%= gettext("Email") %></label>
-                <input type="email" name="email" id="email" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm" placeholder="you@example.com">
-              </div>
-              <button type="submit" class="inline-flex items-center justify-center w-full px-4 py-2 mt-3 font-medium text-white border border-transparent rounded-md shadow-sm bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Save</button>
-            </.form>
-          </div>
-        </div>
-      </div>
-    </div>
+    <.live_component
+      module={GuildaWeb.UserSettingsLive.AddEmailPasswordComponent}
+      id={:legacy_account}
+      current_user={@current_user}
+      audit_context={@audit_context}
+    />
   <% else %>
     <.content_section title={gettext("Email")} subtitle={gettext("We don't send spam.")}}>
       <%= if !@current_user.confirmed_at do %>

@@ -30,7 +30,6 @@ defmodule GuildaWeb.UserSettingLive do
     {:noreply, assign(socket, :page_title, gettext("Settings"))}
   end
 
-  @impl true
   def handle_event(
         "update-email",
         %{"user" => user_params},
