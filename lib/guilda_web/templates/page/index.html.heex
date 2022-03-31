@@ -19,12 +19,6 @@
             <div class="flex justify-center">
               <%= svg_icon("guilda-love", class: "h-56 sm:h-64") %>
             </div>
-
-            <%= unless @current_user do %>
-              <div id="telegram-login-button" class="flex items-center justify-center mt-6" phx-update="ignore">
-                <.button link_type="a" label={gettext("Sign in")} to={Routes.user_session_path(GuildaWeb.Endpoint, :new)} />
-              </div>
-            <% end %>
           </div>
         </div>
       </div>

@@ -50,22 +50,6 @@ defmodule GuildaWeb.MenuLive do
       },
       %{
         menu: menu,
-        text: gettext("Sign in"),
-        module: GuildaWeb.UserSessionController,
-        to: Routes.user_session_path(socket, :new),
-        show: !logged_in?(current_user),
-        position: :main
-      },
-      %{
-        menu: menu,
-        text: gettext("Register"),
-        module: GuildaWeb.UserRegistrationController,
-        to: Routes.user_registration_path(socket, :new),
-        show: !logged_in?(current_user),
-        position: :main
-      },
-      %{
-        menu: menu,
         text: gettext("Settings"),
         module: GuildaWeb.UserSettingLive,
         to: Routes.user_settings_path(socket, :edit),

@@ -15,8 +15,8 @@
         </div>
       </div>
 
-      <%= if @current_user do %>
-        <div class="hidden sm:ml-6 sm:flex sm:items-center">
+      <div class="flex items-center">
+        <%= if @current_user do %>
           <!-- Profile dropdown -->
           <div x-data="{ open: false }" @click.away="open = false" class="relative ml-3">
             <div>
@@ -55,8 +55,13 @@
               </div>
             </div>
           </div>
-        </div>
-      <% end %>
+        <% else %>
+          <div class="flex space-x-2 shrink-0">
+            <.button link_type="a" to={Routes.user_session_path(GuildaWeb.Endpoint, :new)} label={gettext("Sign in")} />
+            <.button link_type="a" color="white" to={Routes.user_registration_path(GuildaWeb.Endpoint, :new)} label={gettext("Register")} />
+          </div>
+        <% end %>
+      </div>
 
       <div class="flex items-center -mr-2 sm:hidden">
         <!-- Mobile menu button -->
