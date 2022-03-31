@@ -2,6 +2,8 @@ defmodule GuildaWeb.Components.Dialog do
   use Phoenix.Component
   import GuildaWeb.Components
   import GuildaWeb.Components.Link
+  import GuildaWeb.Components.Button
+  import GuildaWeb.Gettext
   alias Phoenix.LiveView.JS
 
   def modal(assigns) do
@@ -18,7 +20,7 @@ defmodule GuildaWeb.Components.Dialog do
       |> assign_new(:confirm, fn -> [] end)
       |> assign_new(:cancel, fn -> [] end)
       |> assign_new(:extra_footer, fn -> nil end)
-      |> assign_rest(~w(id type show patch navigate on_cancel on_confirm title confirm cancel extra_footer)a)
+      |> assign_rest(~w(id type show patch navigate on_cancel on_confirm title confirm submit cancel extra_footer)a)
 
     ~H"""
     <div id={@id} class={"fixed z-50 inset-0 overflow-y-auto #{if @show, do: "fade-in", else: "hidden"}"} {@rest}>
@@ -112,6 +114,11 @@ defmodule GuildaWeb.Components.Dialog do
                   >
                     <%= render_slot(confirm) %>
                   </button>
+                <% end %>
+                <%= for submit <- @submit do %>
+                  <.button button_type="submit" phx-disable-with={gettext("Saving...")} form={submit[:form]} class="inline-flex justify-center w-full font-medium sm:w-auto sm:text-sm sm:ml-3">
+                    <%= render_slot(submit) %>
+                  </.button>
                 <% end %>
                 <%= if is_list(@extra_footer), do: render_slot(@extra_footer) %>
                 <%= for cancel <- @cancel do %>

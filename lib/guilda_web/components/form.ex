@@ -64,7 +64,8 @@ defmodule GuildaWeb.Components.Form do
           :field,
           :label,
           :field_type,
-          :wrapper_classes
+          :wrapper_classes,
+          :hint
         ])
       end)
       |> assign_new(:label, fn ->
@@ -75,6 +76,7 @@ defmodule GuildaWeb.Components.Form do
         end
       end)
       |> assign_new(:wrapper_classes, fn -> "" end)
+      |> assign_new(:hint, fn -> nil end)
 
     ~H"""
     <div class={@wrapper_classes}>
@@ -147,6 +149,9 @@ defmodule GuildaWeb.Components.Form do
       <% end %>
 
       <.form_field_error class="mt-1" form={@form} field={@field} />
+      <%= if @hint do %>
+        <p class="mt-2 text-sm text-gray-500"><%= @hint %></p>
+      <% end %>
     </div>
     """
   end
