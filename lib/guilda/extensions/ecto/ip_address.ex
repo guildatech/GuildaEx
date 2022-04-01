@@ -1,8 +1,9 @@
 defmodule Guilda.Extensions.Ecto.IPAddress do
+  @moduledoc false
   use Ecto.Type
 
   @impl true
-  def type(), do: :inet
+  def type, do: :inet
 
   @impl true
   def cast(string) when is_binary(string) do

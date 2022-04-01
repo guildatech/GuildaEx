@@ -1,4 +1,7 @@
 defmodule GuildaWeb.Components.Badge do
+  @moduledoc """
+  HTML component to render badges.
+  """
   use Phoenix.Component
 
   def badge(assigns) do

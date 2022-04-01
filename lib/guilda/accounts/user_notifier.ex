@@ -1,4 +1,7 @@
 defmodule Guilda.Accounts.UserNotifier do
+  @moduledoc """
+  This module contains all functions related to user notifications.
+  """
   use Phoenix.Swoosh,
     view: GuildaWeb.UserNotifierView,
     layout: {GuildaWeb.LayoutView, :email}

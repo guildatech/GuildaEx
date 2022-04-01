@@ -8,7 +8,7 @@ defmodule GuildaWeb.UserSettingLive do
 
   on_mount GuildaWeb.MountHooks.RequireUser
 
-  @impl true
+  @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
     if connected?(socket) do
       Accounts.subscribe(socket.assigns.current_user.id)
@@ -25,11 +25,12 @@ defmodule GuildaWeb.UserSettingLive do
      )}
   end
 
-  @impl true
+  @impl Phoenix.LiveView
   def handle_params(_params, _url, socket) do
     {:noreply, assign(socket, :page_title, gettext("Settings"))}
   end
 
+  @impl Phoenix.LiveView
   def handle_event(
         "update-email",
         %{"user" => user_params},
@@ -133,7 +134,7 @@ defmodule GuildaWeb.UserSettingLive do
      put_flash(socket, :info, gettext("You will receive an email with instructions to confirm your account shortly."))}
   end
 
-  @impl true
+  @impl Phoenix.LiveView
   def handle_info({Accounts, %Accounts.Events.LocationChanged{} = update}, socket) do
     {:noreply, assign(socket, current_user: update.user)}
   end

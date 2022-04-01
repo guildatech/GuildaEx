@@ -56,9 +56,12 @@ defmodule GuildaWeb.UserAuth do
   #     end
   #
   defp renew_session(conn) do
+    user_return_to = get_session(conn, :user_return_to)
+
     conn
     |> configure_session(renew: true)
     |> clear_session()
+    |> put_session(:user_return_to, user_return_to)
   end
 
   @doc """

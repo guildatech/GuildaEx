@@ -1,4 +1,7 @@
 defmodule GuildaWeb.UserSettingsLive.TOTPComponent do
+  @moduledoc """
+  Renders TOTP form in the Settings page.
+  """
   use GuildaWeb, :live_component
 
   alias Guilda.Accounts
@@ -282,6 +285,7 @@ defmodule GuildaWeb.UserSettingsLive.TOTPComponent do
     |> assign(:user_changeset, Accounts.validate_user_current_password(user, current_password))
   end
 
+  # sobelow_skip ["XSS.Raw"]
   defp generate_qrcode(uri) do
     uri
     |> EQRCode.encode()
@@ -289,6 +293,7 @@ defmodule GuildaWeb.UserSettingsLive.TOTPComponent do
     |> raw()
   end
 
+  # sobelow_skip ["XSS.Raw"]
   defp format_secret(secret) do
     secret
     |> Base.encode32(padding: false)

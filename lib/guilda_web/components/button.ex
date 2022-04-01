@@ -1,8 +1,12 @@
 # credo:disable-for-this-file Credo.Check.Readability.MaxLineLength
 defmodule GuildaWeb.Components.Button do
+  @moduledoc """
+  HTML component to render buttons.
+  """
   use Phoenix.Component
   import Phoenix.LiveView, only: [assign_new: 3]
   import GuildaWeb.Components.Link
+  alias GuildaWeb.Components.Helpers
 
   def button(assigns) do
     assigns =
@@ -59,7 +63,7 @@ defmodule GuildaWeb.Components.Button do
       focus:outline-none
       transition duration-150 ease-in-out
     """
-    |> GuildaWeb.Components.Helpers.convert_string_to_one_line()
+    |> Helpers.convert_string_to_one_line()
   end
 
   defp size_css(size) when is_binary(size) do

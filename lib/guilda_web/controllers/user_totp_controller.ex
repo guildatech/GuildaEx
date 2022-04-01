@@ -44,7 +44,7 @@ defmodule GuildaWeb.UserTOTPController do
       conn
     else
       conn
-      |> redirect(to: Routes.dashboard_index_path(conn, :index))
+      |> UserAuth.redirect_user_after_login()
       |> halt()
     end
   end

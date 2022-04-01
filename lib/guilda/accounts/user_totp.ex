@@ -1,6 +1,8 @@
 defmodule Guilda.Accounts.UserTOTP do
+  @moduledoc """
+  User TOTP schema and API functions.
+  """
   use Ecto.Schema
-  import Ecto.Query
   import Ecto.Changeset
 
   @primary_key {:id, :binary_id, autogenerate: true}

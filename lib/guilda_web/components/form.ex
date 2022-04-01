@@ -1,4 +1,7 @@
 defmodule GuildaWeb.Components.Form do
+  @moduledoc """
+  HTML component to render form fields.
+  """
   use Phoenix.Component
   import Phoenix.HTML.Form
 
@@ -46,13 +49,6 @@ defmodule GuildaWeb.Components.Form do
     <% end %>
     """
   end
-
-  # prop form, :any, required: true
-  # prop field, :any, required: true
-  # prop type, :string, required: true, options: ["text_input", "email_input", "number_input", "password_input", "search_input", "telephone_input", "url_input", "time_input", "time_select", "datetime_local_input", "datetime_select", "color_input", "file_input", "range_input", "textarea", "select", "checkbox", "radio_gro"]
-  # prop disabled, :boolean, default: false, options: ["text_input"]
-  # prop label, :string
-  # prop wrapper_classes, :string
 
   @doc "Use this when you want to include the label and some margin."
   def form_field(assigns) do

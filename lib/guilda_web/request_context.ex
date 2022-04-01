@@ -1,5 +1,7 @@
 defmodule GuildaWeb.RequestContext do
+  @moduledoc false
   alias Guilda.AuditLog
+  alias Guilda.Extensions.Ecto.IPAddress
 
   def put_audit_context(conn_or_socket, opts \\ [])
 
@@ -28,7 +30,7 @@ defmodule GuildaWeb.RequestContext do
   defp get_ip(headers) do
     with {_, ip} <- List.keyfind(headers, "x-forwarded-for", 0),
          [ip | _] = String.split(ip, ","),
-         {:ok, address} <- Guilda.Extensions.Ecto.IPAddress.cast(ip) do
+         {:ok, address} <- IPAddress.cast(ip) do
       address
     else
       _ ->

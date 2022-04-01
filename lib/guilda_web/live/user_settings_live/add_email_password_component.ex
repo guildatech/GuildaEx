@@ -1,4 +1,7 @@
 defmodule GuildaWeb.UserSettingsLive.AddEmailPasswordComponent do
+  @moduledoc """
+  Component used to add email/password to legacy accounts.
+  """
   use GuildaWeb, :live_component
 
   alias Guilda.Accounts

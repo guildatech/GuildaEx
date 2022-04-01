@@ -1,4 +1,8 @@
 defmodule GuildaWeb.Components.Helpers do
+  @moduledoc """
+  Provides general helpers used in components.
+  """
+
   @doc """
   Remove newlines and extra spaces from a string
   """

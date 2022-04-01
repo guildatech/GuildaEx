@@ -4,8 +4,6 @@ defmodule GuildaWeb.Helpers do
   """
   use Phoenix.Component
   import GuildaWeb.Gettext
-  import GuildaWeb.Components.Button
-  alias Phoenix.LiveView.JS
 
   def table(assigns) do
     extra = assigns_to_attributes(assigns, [:class, :empty_state, :id, :row_id, :tbody_extra, :col, :rows])

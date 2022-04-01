@@ -1,4 +1,7 @@
 defmodule GuildaWeb.Components.Dialog do
+  @moduledoc """
+  A modal component.
+  """
   use Phoenix.Component
   import GuildaWeb.Components
   import GuildaWeb.Components.Link
