@@ -240,16 +240,18 @@ defmodule Guilda.Accounts do
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for changing the user email.
+  Returns an `%Ecto.Changeset{}` for changing the user email and validates the password.
 
   ## Examples
 
-      iex> change_user_email(user)
+      iex> change_user_email(user, password, attrs)
       %Ecto.Changeset{data: %User{}}
 
   """
-  def change_user_email(user, attrs \\ %{}) do
+  def change_user_email(user, current_password \\ nil, attrs \\ %{}) do
     User.email_changeset(user, attrs)
+    |> User.validate_current_password(current_password)
+    |> attach_action_if_current_password(current_password)
   end
 
   @doc """

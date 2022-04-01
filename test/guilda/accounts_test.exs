@@ -4,6 +4,7 @@ defmodule Guilda.AccountsTest do
   alias Guilda.Accounts
   alias Guilda.Accounts.User
   alias Guilda.Accounts.UserToken
+  alias Guilda.Accounts.UserTOTP
   alias Guilda.AuditLog
 
   describe "get_user_by_email/1" do
@@ -194,7 +195,7 @@ defmodule Guilda.AccountsTest do
 
   describe "update_user_email/2" do
     setup do
-      user = user_fixture()
+      user = user_fixture(%{confirmed: false})
       email = unique_user_email()
 
       token =
@@ -379,7 +380,9 @@ defmodule Guilda.AccountsTest do
       %{user: user, audit_context: audit_context}
     end
 
-    test "sends token through notification", %{user: user} do
+    test "sends token through notification" do
+      user = user_fixture(%{confirmed: false})
+
       token =
         extract_user_token(fn url ->
           Accounts.deliver_user_confirmation_instructions(user, url)
@@ -395,7 +398,7 @@ defmodule Guilda.AccountsTest do
 
   describe "confirm_user/1" do
     setup do
-      user = user_fixture()
+      user = user_fixture(%{confirmed: false})
       audit_context = %AuditLog{user: user}
 
       token =
@@ -516,6 +519,47 @@ defmodule Guilda.AccountsTest do
     end
   end
 
+  describe "set_email_and_password/3" do
+    test "adds an email and password when the user doesn't have them" do
+      user = user_fixture(%{confirmed: false})
+      Repo.update_all(User, set: [email: nil, hashed_password: nil])
+      user = Repo.reload(user)
+      refute user.email
+      refute user.hashed_password
+      refute user.confirmed_at
+
+      assert {:ok, user} =
+               Accounts.set_email_and_password(system(), user, %{
+                 email: "user@example.com",
+                 password: "new valid password"
+               })
+
+      assert user.email
+      assert user.hashed_password
+    end
+  end
+
+  describe "connect_provider/4" do
+    test "sets the provider ID" do
+      user = user_fixture()
+      refute user.telegram_id
+
+      assert {:ok, user} = Accounts.connect_provider(system(), user, :telegram, "123321")
+      assert user.telegram_id == "123321"
+    end
+  end
+
+  describe "disconnect_provider/3" do
+    test "removes the provider ID" do
+      user = user_fixture()
+      {:ok, user} = Accounts.connect_provider(system(), user, :telegram, "123321")
+      assert user.telegram_id
+
+      assert {:ok, user} = Accounts.disconnect_provider(system(), user, :telegram)
+      refute user.telegram_id == "123321"
+    end
+  end
+
   describe "inspect/2" do
     test "does not include password" do
       refute inspect(%User{password: "123456"}) =~ "password: \"123456\""
@@ -527,7 +571,7 @@ defmodule Guilda.AccountsTest do
       user = user_fixture()
       refute user.is_admin
       assert {1, nil} = Accounts.give_admin(user)
-      assert %User{is_admin: true} = Accounts.get_user_by_email(user.email)
+      assert %User{is_admin: true} = Repo.reload(user)
     end
   end
 
@@ -557,6 +601,170 @@ defmodule Guilda.AccountsTest do
       assert user.geom
       assert {:ok, user} = Accounts.remove_location(audit_context, user)
       refute user.geom
+    end
+  end
+
+  describe "upsert_user_totp/3" do
+    setup do
+      user = user_fixture()
+      audit_context = %Guilda.AuditLog{user: user}
+
+      %{
+        totp: %UserTOTP{user_id: user.id, secret: valid_totp_secret()},
+        user: user,
+        audit_context: audit_context
+      }
+    end
+
+    test "validates required otp", %{totp: totp} do
+      {:error, changeset} = Accounts.upsert_user_totp(system(), totp, %{code: ""})
+      assert %{code: ["can't be blank"]} = errors_on(changeset)
+    end
+
+    test "validates otp as 6 digits number", %{totp: totp} do
+      {:error, changeset} = Accounts.upsert_user_totp(system(), totp, %{code: "1234567"})
+      assert %{code: ["should be a 6 digit number"]} = errors_on(changeset)
+    end
+
+    test "validates otp against the secret", %{totp: totp} do
+      {:error, changeset} = Accounts.upsert_user_totp(system(), totp, %{code: "123456"})
+      assert %{code: ["invalid code"]} = errors_on(changeset)
+    end
+
+    test "upserts user's TOTP secret", %{totp: totp, user: user, audit_context: audit_context} do
+      otp = NimbleTOTP.verification_code(totp.secret)
+
+      assert {:ok, totp} = Accounts.upsert_user_totp(audit_context, totp, %{code: otp})
+      assert Repo.get!(UserTOTP, totp.id).secret == totp.secret
+
+      [audit_log] = Guilda.AuditLog.list_by_user(user, action: "accounts.user_totp.enable")
+      assert audit_log.params == %{"user_id" => user.id}
+
+      new_secret = valid_totp_secret()
+      new_otp = NimbleTOTP.verification_code(new_secret)
+
+      assert {:ok, _} =
+               Accounts.upsert_user_totp(audit_context, %{totp | secret: new_secret}, %{
+                 code: new_otp
+               })
+
+      [audit_log] = Guilda.AuditLog.list_by_user(user, action: "accounts.user_totp.update")
+      assert audit_log.params == %{"user_id" => user.id}
+    end
+
+    test "generates backup codes if they are missing", %{
+      totp: totp,
+      user: user,
+      audit_context: audit_context
+    } do
+      otp = NimbleTOTP.verification_code(totp.secret)
+
+      assert {:ok, totp} = Accounts.upsert_user_totp(audit_context, totp, %{code: otp})
+
+      assert length(totp.backup_codes) == 10
+      assert Enum.all?(totp.backup_codes, &(byte_size(&1.code) == 8))
+      assert Enum.all?(totp.backup_codes, &(:binary.first(&1.code) in ?A..?Z))
+
+      [audit_log] = Guilda.AuditLog.list_by_user(user, action: "accounts.user_totp.enable")
+      assert audit_log.params == %{"user_id" => user.id}
+    end
+  end
+
+  describe "delete_user_totp/2" do
+    setup do
+      user = user_fixture()
+      audit_context = %Guilda.AuditLog{user: user}
+
+      %{totp: user_totp_fixture(user), user: user, audit_context: audit_context}
+    end
+
+    test "removes otp secret", %{totp: totp, user: user, audit_context: audit_context} do
+      :ok = Accounts.delete_user_totp(audit_context, totp)
+      refute Repo.get(UserTOTP, totp.id)
+
+      [audit_log] = Guilda.AuditLog.list_by_user(user, action: "accounts.user_totp.disable")
+
+      assert audit_log.params == %{"user_id" => user.id}
+    end
+  end
+
+  describe "regenerate_user_totp_backup_codes/2" do
+    setup do
+      user = user_fixture()
+      audit_context = %Guilda.AuditLog{user: user}
+
+      %{totp: user_totp_fixture(user), user: user, audit_context: audit_context}
+    end
+
+    test "replaces backup codes", %{totp: totp, user: user, audit_context: audit_context} do
+      assert Accounts.regenerate_user_totp_backup_codes(audit_context, totp).backup_codes !=
+               totp.backup_codes
+
+      [audit_log] = Guilda.AuditLog.list_by_user(user, action: "accounts.user_totp.regenerate_backup_codes")
+
+      assert audit_log.params == %{"user_id" => user.id}
+    end
+
+    test "does not persist changes made to the struct", %{
+      totp: totp,
+      audit_context: audit_context
+    } do
+      changed = %{totp | secret: "SECRET"}
+      assert Accounts.regenerate_user_totp_backup_codes(audit_context, changed).secret == "SECRET"
+      assert Repo.get(UserTOTP, changed.id).secret == totp.secret
+    end
+  end
+
+  describe "validate_user_totp/3" do
+    setup do
+      user = user_fixture()
+      audit_context = %Guilda.AuditLog{user: user}
+
+      %{totp: user_totp_fixture(user), user: user, audit_context: audit_context}
+    end
+
+    test "returns invalid if the code is not valid", %{user: user, audit_context: audit_context} do
+      assert Accounts.validate_user_totp(audit_context, user, "invalid") == :invalid
+      assert Accounts.validate_user_totp(audit_context, user, nil) == :invalid
+
+      [audit_log, other_audit_log] = Guilda.AuditLog.list_by_user(user, action: "accounts.user_totp.invalid_code_used")
+
+      assert audit_log.params == %{"user_id" => user.id}
+      assert other_audit_log.params == %{"user_id" => user.id}
+    end
+
+    test "returns valid for valid totp", %{user: user, totp: totp, audit_context: audit_context} do
+      code = NimbleTOTP.verification_code(totp.secret)
+      assert Accounts.validate_user_totp(audit_context, user, code) == :valid_totp
+
+      [audit_log] = Guilda.AuditLog.list_by_user(user, action: "accounts.user_totp.validated")
+
+      assert audit_log.params == %{"user_id" => user.id}
+    end
+
+    test "returns valid for valid backup code", %{
+      user: user,
+      totp: totp,
+      audit_context: audit_context
+    } do
+      at = :rand.uniform(10) - 1
+      code = Enum.fetch!(totp.backup_codes, at).code
+      assert Accounts.validate_user_totp(audit_context, user, code) == {:valid_backup_code, 9}
+      assert Enum.fetch!(Repo.get(UserTOTP, totp.id).backup_codes, at).used_at
+
+      [audit_log] =
+        Guilda.AuditLog.list_by_user(user,
+          action: "accounts.user_totp.validated_with_backup_code"
+        )
+
+      assert audit_log.params == %{"user_id" => user.id}
+
+      # Cannot reuse the code
+      assert Accounts.validate_user_totp(audit_context, user, code) == :invalid
+
+      [audit_log] = Guilda.AuditLog.list_by_user(user, action: "accounts.user_totp.invalid_code_used")
+
+      assert audit_log.params == %{"user_id" => user.id}
     end
   end
 end

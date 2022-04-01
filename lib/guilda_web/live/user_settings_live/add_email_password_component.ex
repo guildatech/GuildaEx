@@ -74,9 +74,9 @@ defmodule GuildaWeb.UserSettingsLive.AddEmailPasswordComponent do
          socket
          |> put_flash(
            :info,
-           gettext("A link to confirm your e-mail change has been sent to the new address.")
+           gettext("A link to confirm your email change has been sent to the new address.")
          )
-         |> push_redirect(to: Routes.user_settings_path(socket, :edit))}
+         |> push_redirect(to: Routes.user_settings_path(socket, :index))}
 
       {:error, changeset} ->
         {:noreply, assign(socket, changeset: changeset)}

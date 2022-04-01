@@ -9,12 +9,12 @@ defmodule GuildaWeb.UserSettingsController do
       :ok ->
         conn
         |> put_flash(:info, gettext("Email changed successfully."))
-        |> redirect(to: Routes.user_settings_path(conn, :edit))
+        |> redirect(to: Routes.user_settings_path(conn, :index))
 
       :error ->
         conn
         |> put_flash(:error, gettext("Email change link is invalid or it has expired."))
-        |> redirect(to: Routes.user_settings_path(conn, :edit))
+        |> redirect(to: Routes.user_settings_path(conn, :index))
     end
   end
 
@@ -25,13 +25,13 @@ defmodule GuildaWeb.UserSettingsController do
       {:ok, user} ->
         conn
         |> put_flash(:info, gettext("Password updated successfully."))
-        |> put_session(:user_return_to, Routes.user_settings_path(conn, :edit))
+        |> put_session(:user_return_to, Routes.user_settings_path(conn, :index))
         |> UserAuth.log_in_user(user)
 
       _ ->
         conn
         |> put_flash(:error, gettext("We were unable to update your password. Please try again."))
-        |> redirect(to: Routes.user_settings_path(conn, :edit))
+        |> redirect(to: Routes.user_settings_path(conn, :index))
     end
   end
 end

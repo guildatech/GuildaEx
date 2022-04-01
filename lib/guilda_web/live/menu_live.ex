@@ -52,7 +52,7 @@ defmodule GuildaWeb.MenuLive do
         menu: menu,
         text: gettext("Settings"),
         module: GuildaWeb.UserSettingLive,
-        to: Routes.user_settings_path(socket, :edit),
+        to: Routes.user_settings_path(socket, :index),
         show: logged_in?(current_user),
         position: :main
       }

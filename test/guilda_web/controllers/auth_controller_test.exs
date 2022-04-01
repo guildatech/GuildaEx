@@ -67,7 +67,7 @@ defmodule GuildaWeb.AuthControllerTest do
       conn = log_in_user(conn, user)
       conn = put_session(conn, :telegram_bot_token, token)
       conn = get(conn, Routes.auth_path(conn, :telegram_callback, params))
-      assert redirected_to(conn) == Routes.user_settings_path(conn, :edit)
+      assert redirected_to(conn) == Routes.user_settings_path(conn, :index)
       assert get_flash(conn, :error) =~ "You already connected a Telegram account."
     end
 
@@ -77,7 +77,7 @@ defmodule GuildaWeb.AuthControllerTest do
       conn = log_in_user(conn, user)
       conn = put_session(conn, :telegram_bot_token, token)
       conn = get(conn, Routes.auth_path(conn, :telegram_callback, params))
-      assert redirected_to(conn) == Routes.user_settings_path(conn, :edit)
+      assert redirected_to(conn) == Routes.user_settings_path(conn, :index)
       assert get_flash(conn, :info) =~ "Successfully connected your Telegram account."
     end
 

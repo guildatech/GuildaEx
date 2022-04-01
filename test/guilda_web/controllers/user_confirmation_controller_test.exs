@@ -19,7 +19,9 @@ defmodule GuildaWeb.UserConfirmationControllerTest do
 
   describe "POST /users/confirm" do
     @tag :capture_log
-    test "sends a new confirmation token", %{conn: conn, user: user} do
+    test "sends a new confirmation token", %{conn: conn} do
+      user = user_fixture(%{confirmed: false})
+
       conn =
         post(conn, Routes.user_confirmation_path(conn, :create), %{
           "user" => %{"email" => user.email}
@@ -67,7 +69,9 @@ defmodule GuildaWeb.UserConfirmationControllerTest do
   end
 
   describe "POST /users/confirm/:token" do
-    test "confirms the given token once", %{conn: conn, user: user} do
+    test "confirms the given token once", %{conn: conn} do
+      user = user_fixture(%{confirmed: false})
+
       token =
         extract_user_token(fn url ->
           Accounts.deliver_user_confirmation_instructions(user, url)
@@ -95,7 +99,8 @@ defmodule GuildaWeb.UserConfirmationControllerTest do
       refute get_flash(conn, :error)
     end
 
-    test "does not confirm email with invalid token", %{conn: conn, user: user} do
+    test "does not confirm email with invalid token", %{conn: conn} do
+      user = user_fixture(%{confirmed: false})
       conn = post(conn, Routes.user_confirmation_path(conn, :update, "oops"))
       assert redirected_to(conn) == "/"
       assert get_flash(conn, :error) =~ "Account confirmation link is invalid or it has expired"

@@ -68,6 +68,19 @@ defmodule GuildaWeb.Router do
     post "/users/totp", UserTOTPController, :create
   end
 
+  scope "/", GuildaWeb do
+    pipe_through [:browser, :assign_menu]
+
+    ## Authentication routes
+    get "/auth/telegram/callback", AuthController, :telegram_callback
+
+    delete "/users/log_out", UserSessionController, :delete
+    get "/users/confirm", UserConfirmationController, :new
+    post "/users/confirm", UserConfirmationController, :create
+    get "/users/confirm/:token", UserConfirmationController, :edit
+    post "/users/confirm/:token", UserConfirmationController, :update
+  end
+
   live_session :default, on_mount: MountHooks.InitAssigns do
     scope "/", GuildaWeb do
       pipe_through [:browser, :assign_menu]
@@ -79,15 +92,6 @@ defmodule GuildaWeb.Router do
       live "/podcast/:id/edit", PodcastEpisodeLive.Index, :edit
 
       live "/members", MembersLive, :show
-
-      ## Authentication routes
-      get "/auth/telegram/callback", AuthController, :telegram_callback
-
-      delete "/users/log_out", UserSessionController, :delete
-      get "/users/confirm", UserConfirmationController, :new
-      post "/users/confirm", UserConfirmationController, :create
-      get "/users/confirm/:token", UserConfirmationController, :edit
-      post "/users/confirm/:token", UserConfirmationController, :update
     end
   end
 
@@ -95,7 +99,7 @@ defmodule GuildaWeb.Router do
     scope "/", GuildaWeb do
       pipe_through [:browser, :assign_menu, :require_authenticated_user]
 
-      live "/users/settings", UserSettingLive, :edit, as: :user_settings
+      live "/users/settings", UserSettingLive, :index, as: :user_settings
       live "/finances", FinanceLive.Index, :index
       live "/finances/new", FinanceLive.Index, :new
       live "/finances/:id/edit", FinanceLive.Index, :edit

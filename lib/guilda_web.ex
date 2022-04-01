@@ -47,6 +47,10 @@ defmodule GuildaWeb do
       opts = Keyword.merge([layout: {GuildaWeb.LayoutView, "live.html"}], unquote(opts))
       use Phoenix.LiveView, opts
 
+      def handle_info({:flash, key, message}, socket) do
+        {:noreply, put_flash(socket, key, message)}
+      end
+
       unquote(view_helpers())
     end
   end

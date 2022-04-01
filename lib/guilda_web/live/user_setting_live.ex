@@ -16,7 +16,6 @@ defmodule GuildaWeb.UserSettingLive do
 
     {:ok,
      assign(socket,
-       email_changeset: Accounts.change_user_email(socket.assigns.current_user),
        password_changeset: Accounts.change_user_password(socket.assigns.current_user),
        is_legacy_account?: Accounts.is_legacy_account?(socket.assigns.current_user),
        password_trigger_action: false,
@@ -31,36 +30,6 @@ defmodule GuildaWeb.UserSettingLive do
   end
 
   @impl Phoenix.LiveView
-  def handle_event(
-        "update-email",
-        %{"user" => user_params},
-        socket
-      ) do
-    %{"current_password" => password} = user_params
-    user = socket.assigns.current_user
-
-    case Accounts.apply_user_email(user, password, user_params) do
-      {:ok, applied_user} ->
-        Accounts.deliver_update_email_instructions(
-          socket.assigns.audit_context,
-          applied_user,
-          user.email,
-          &Routes.user_settings_url(GuildaWeb.Endpoint, :confirm_email, &1)
-        )
-
-        {:noreply,
-         socket
-         |> put_flash(
-           :info,
-           gettext("A link to confirm your e-mail change has been sent to the new address.")
-         )
-         |> assign(:email_changeset, Accounts.change_user_email(user))}
-
-      {:error, changeset} ->
-        {:noreply, assign(socket, email_changeset: changeset)}
-    end
-  end
-
   def handle_event(
         "validate-password",
         %{"current_password" => current_password, "user" => user_params},

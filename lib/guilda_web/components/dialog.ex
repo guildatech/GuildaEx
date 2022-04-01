@@ -22,6 +22,7 @@ defmodule GuildaWeb.Components.Dialog do
       |> assign_new(:title, fn -> [] end)
       |> assign_new(:confirm, fn -> [] end)
       |> assign_new(:cancel, fn -> [] end)
+      |> assign_new(:submit, fn -> [] end)
       |> assign_new(:extra_footer, fn -> nil end)
       |> assign_rest(~w(id type show patch navigate on_cancel on_confirm title confirm submit cancel extra_footer)a)
 
@@ -126,6 +127,7 @@ defmodule GuildaWeb.Components.Dialog do
                 <%= if is_list(@extra_footer), do: render_slot(@extra_footer) %>
                 <%= for cancel <- @cancel do %>
                   <button
+                    id={"#{@id}-close-btn"}
                     class="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:w-auto sm:text-sm"
                     phx-click={hide_modal(@on_cancel, @id)}
                     {assigns_to_attributes(cancel)}
