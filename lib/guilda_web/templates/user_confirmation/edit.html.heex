@@ -1,0 +1,20 @@
+<.guest_content title={"Confirm account"} flash={get_flash(@conn)}>
+  <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+    <div class="px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10">
+      <.form let={_f} for={:user} action={Routes.user_confirmation_path(@conn, :update, @token)}>
+        <div class="space-y-6">
+          <div>
+            <.button button_type="submit" label={gettext("Confirm my account")} class="w-full" />
+          </div>
+
+          <div class="flex items-center justify-between">
+            <div class="text-sm">
+              <%= link "Register", to: Routes.user_registration_path(@conn, :new), class: "font-medium text-primary-600 hover:text-primary-500" %> |
+              <%= link "Sign in", to: Routes.user_session_path(@conn, :new), class: "font-medium text-primary-600 hover:text-primary-500" %>
+            </div>
+          </div>
+        </div>
+      </.form>
+    </div>
+  </div>
+</.guest_content>

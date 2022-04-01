@@ -3,16 +3,15 @@ defmodule Guilda.Bot do
   Our bot used to store the user's location.
   """
   @bot :guilda
-
   use ExGram.Bot,
     name: @bot,
     setup_commands: true
 
   import GuildaWeb.Gettext
-
-  require Logger
-
   alias Guilda.Accounts
+  alias Guilda.Accounts.User
+  alias Guilda.AuditLog
+  require Logger
 
   command("start")
   command("help", description: "Mostra os comandos do bot.")
@@ -43,16 +42,23 @@ defmodule Guilda.Bot do
   def handle({:location, %{latitude: lat, longitude: lng}}, context) do
     from = context.update.message.from
 
-    with {:user, {:ok, user}} <- {:user, Accounts.upsert_user(Map.put(from, :telegram_id, Kernel.to_string(from.id)))},
-         {:location, {:ok, _user}} <- {:location, Accounts.set_lng_lat(user, lng, lat)} do
-      answer(context, gettext("Sua localização foi salva com sucesso! Veja o mapa em https://guildatech.com/members."))
+    with {:user, %User{} = user} <- {:user, Accounts.get_user_by_telegram_id(Kernel.to_string(from.id))},
+         {:location, {:ok, _user}} <- {:location, Accounts.set_lng_lat(AuditLog.system(), user, lng, lat)} do
+      answer(
+        context,
+        gettext("Your location has been saved successfully! See the map at https://guildatech.com/members.")
+      )
     else
-      {:user, {:error, _changeset} = error} ->
-        Logger.warning(inspect(error))
-        answer(context, gettext("Não foi possível criar o seu cadastro. :("))
+      {:user, nil} ->
+        answer(
+          context,
+          gettext(
+            "You don't have an account yet. Please register at https://guildatech.com/users/register, confirm your email address and link your Telegram account."
+          )
+        )
 
       {:location, {:error, _changeset}} ->
-        answer(context, gettext("Não foi possível salvar a sua localização. :("))
+        answer(context, gettext("Unable to save your location."))
     end
   end
 end

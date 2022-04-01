@@ -1,5 +1,19 @@
-<main role="main" class="container">
-  <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-  <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
-  <%= @inner_content %>
-</main>
+<%= live_render @conn, GuildaWeb.MenuLive, id: "menu", session: %{"menu" => @menu, "current_user" => @current_user} %>
+<!-- Flash messages start -->
+<%= if msg = get_flash(@conn, :info) do %>
+  <div class="alert alert-info" role="alert" phx-click="lv:clear-flash" phx-value-key="info">
+    <div class="px-2 mx-auto max-w-7xl sm:px-4 lg:px-8">
+      <%= msg %>
+    </div>
+  </div>
+<% end %>
+<%= if msg = get_flash(@conn, :error) do %>
+  <div class="alert alert-danger" role="alert" phx-click="lv:clear-flash" phx-value-key="error">
+    <div class="px-2 mx-auto max-w-7xl sm:px-4 lg:px-8">
+      <%= msg %>
+    </div>
+  </div>
+<% end %>
+<!-- Flash messages end -->
+<%= @inner_content %>
+<%= live_render(@conn, GuildaWeb.OnlineMembersLive, id: "online-members", session: %{}, sticky: true) %>

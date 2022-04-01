@@ -1,6 +1,7 @@
 defmodule GuildaWeb.Router do
   use GuildaWeb, :router
 
+  import GuildaWeb.RequestContext
   import GuildaWeb.UserAuth
 
   alias GuildaWeb.MountHooks
@@ -12,13 +13,14 @@ defmodule GuildaWeb.Router do
     plug :put_root_layout, {GuildaWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :fetch_current_user
+    plug :put_audit_context
 
     plug :put_secure_browser_headers, %{
       "content-security-policy" => ~w[
           'self'
           'unsafe-inline'
-          api.mapbox.com
           default-src
+          api.mapbox.com
           guilda-tech.s3.amazonaws.com
           oauth.telegram.org
           plausible.io
@@ -43,9 +45,45 @@ defmodule GuildaWeb.Router do
     get "/podcast/feed.xml", FeedController, :index
   end
 
+  scope "/", GuildaWeb do
+    pipe_through [:browser, :assign_menu, :redirect_if_user_is_authenticated]
+
+    get "/users/register", UserRegistrationController, :new
+    post "/users/register", UserRegistrationController, :create
+    get "/users/log_in", UserSessionController, :new
+    post "/users/log_in", UserSessionController, :create
+    get "/users/reset_password", UserResetPasswordController, :new
+    post "/users/reset_password", UserResetPasswordController, :create
+    get "/users/reset_password/:token", UserResetPasswordController, :edit
+    put "/users/reset_password/:token", UserResetPasswordController, :update
+  end
+
+  scope "/", GuildaWeb do
+    pipe_through [:browser, :assign_menu, :require_authenticated_user]
+
+    get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+    put "/users/settings/update_password", UserSettingsController, :update_password
+
+    get "/users/totp", UserTOTPController, :new
+    post "/users/totp", UserTOTPController, :create
+  end
+
+  scope "/", GuildaWeb do
+    pipe_through [:browser, :assign_menu]
+
+    ## Authentication routes
+    get "/auth/telegram/callback", AuthController, :telegram_callback
+
+    delete "/users/log_out", UserSessionController, :delete
+    get "/users/confirm", UserConfirmationController, :new
+    post "/users/confirm", UserConfirmationController, :create
+    get "/users/confirm/:token", UserConfirmationController, :edit
+    post "/users/confirm/:token", UserConfirmationController, :update
+  end
+
   live_session :default, on_mount: MountHooks.InitAssigns do
     scope "/", GuildaWeb do
-      pipe_through [:browser]
+      pipe_through [:browser, :assign_menu]
 
       live "/", PageLive, :index
 
@@ -54,18 +92,14 @@ defmodule GuildaWeb.Router do
       live "/podcast/:id/edit", PodcastEpisodeLive.Index, :edit
 
       live "/members", MembersLive, :show
-
-      ## Authentication routes
-      get "/auth/telegram", AuthController, :telegram_callback
-      delete "/users/log_out", UserSessionController, :delete
     end
+  end
 
+  live_session :user, on_mount: MountHooks.InitAssigns do
     scope "/", GuildaWeb do
-      pipe_through [:browser, :require_authenticated_user]
+      pipe_through [:browser, :assign_menu, :require_authenticated_user]
 
-      get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
-
-      live "/users/settings", UserSettingLive, :edit, as: :user_settings
+      live "/users/settings", UserSettingLive, :index, as: :user_settings
       live "/finances", FinanceLive.Index, :index
       live "/finances/new", FinanceLive.Index, :new
       live "/finances/:id/edit", FinanceLive.Index, :edit
@@ -77,6 +111,11 @@ defmodule GuildaWeb.Router do
   #   pipe_through :api
   # end
 
+  # Enables the Swoosh mailbox preview in development.
+  #
+  # Note that preview only shows emails that were sent by the same
+  # node running the Phoenix server.
+  #
   # Enables LiveDashboard only for development
   #
   # If you want to use the LiveDashboard in production, you should put
@@ -89,6 +128,8 @@ defmodule GuildaWeb.Router do
 
     scope "/" do
       pipe_through :browser
+
+      forward "/sent_emails", Plug.Swoosh.MailboxPreview
       live_dashboard "/dashboard", metrics: GuildaWeb.Telemetry
     end
   end

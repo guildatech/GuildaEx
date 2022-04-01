@@ -3,6 +3,7 @@ defmodule GuildaWeb.Components.LayoutComponents do
   General phoenix component used through the app.
   """
   use Phoenix.Component
+  alias GuildaWeb.Router.Helpers, as: Routes
 
   def main_content(assigns) do
     assigns = assign_new(assigns, :header_action, fn -> [] end)
@@ -24,6 +25,24 @@ defmodule GuildaWeb.Components.LayoutComponents do
       <!-- Content grid start -->
       <div class="grid grid-cols-1 gap-5">
         <%= render_slot(@inner_block) %>
+      </div>
+      <!-- Content grid end -->
+    </main>
+    <!-- Main wrapper end -->
+    """
+  end
+
+  def guest_content(assigns) do
+    ~H"""
+    <!-- Main wrapper start -->
+    <main class="flex flex-col justify-center h-full py-12 sm:px-6 lg:px-8">
+      <!-- Content grid start -->
+      <div class="flex flex-col justify-center min-h-full py-12 sm:px-6 lg:px-8">
+        <div class="sm:mx-auto sm:w-full sm:max-w-md">
+          <img class="w-auto h-24 mx-auto" src={Routes.static_path(GuildaWeb.Endpoint, "/images/guilda-logo.png")} alt="GuildaTech logo" />
+          <h1 class="mt-6 text-3xl font-extrabold text-center text-gray-900"><%= @title %></h1>
+        </div>
+          <%= render_slot(@inner_block) %>
       </div>
       <!-- Content grid end -->
     </main>
@@ -57,6 +76,33 @@ defmodule GuildaWeb.Components.LayoutComponents do
 
     </div>
     <!-- Section end -->
+    """
+  end
+
+  def card(assigns) do
+    assigns =
+      assigns
+      |> assign_new(:id, fn -> nil end)
+      |> assign_new(:title, fn -> nil end)
+      |> assign_new(:footer, fn -> nil end)
+      |> assign_new(:class, fn -> "" end)
+
+    ~H"""
+    <div id={@id} class={"flex flex-col overflow-hidden bg-white rounded-lg shadow #{@class}"}>
+      <%= if @title do %>
+        <div class="flex items-center justify-between flex-grow-0 px-4 py-5 text-lg font-bold leading-6 text-gray-900 sm:px-6">
+          <%= if is_list(@title), do: render_slot(@title), else: @title %>
+        </div>
+      <% end %>
+      <div class={"flex-grow px-4 pb-5 sm:px-6 #{unless @title, do: "pt-5"}"}>
+        <%= render_slot(@inner_block) %>
+      </div>
+      <%= if @footer do %>
+        <div class="px-4 py-3 text-right bg-gray-50 sm:px-6">
+          <%= render_slot(@footer) %>
+        </div>
+      <% end %>
+    </div>
     """
   end
 

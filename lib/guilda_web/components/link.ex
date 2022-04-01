@@ -1,4 +1,7 @@
 defmodule GuildaWeb.Components.Link do
+  @moduledoc """
+  HTML component to render links.
+  """
   use Phoenix.Component
 
   def link(assigns) do

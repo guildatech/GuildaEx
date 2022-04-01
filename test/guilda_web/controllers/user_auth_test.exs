@@ -19,18 +19,19 @@ defmodule GuildaWeb.UserAuthTest do
       conn = UserAuth.log_in_user(conn, user)
       assert token = get_session(conn, :user_token)
       assert get_session(conn, :live_socket_id) == "users_sessions:#{Base.url_encode64(token)}"
-      assert redirected_to(conn) == "/"
       assert Accounts.get_user_by_session_token(token)
+    end
+
+    test "persists user_return_to", %{conn: conn, user: user} do
+      assert conn
+             |> put_session(:user_return_to, "/foo/bar")
+             |> UserAuth.log_in_user(user)
+             |> get_session(:user_return_to) == "/foo/bar"
     end
 
     test "clears everything previously stored in the session", %{conn: conn, user: user} do
       conn = conn |> put_session(:to_be_removed, "value") |> UserAuth.log_in_user(user)
       refute get_session(conn, :to_be_removed)
-    end
-
-    test "redirects to the configured path", %{conn: conn, user: user} do
-      conn = conn |> put_session(:user_return_to, "/hello") |> UserAuth.log_in_user(user)
-      assert redirected_to(conn) == "/hello"
     end
   end
 
@@ -41,7 +42,6 @@ defmodule GuildaWeb.UserAuthTest do
       conn =
         conn
         |> put_session(:user_token, user_token)
-        |> put_req_cookie("user_remember_me", user_token)
         |> fetch_cookies()
         |> UserAuth.log_out_user()
 
@@ -104,13 +104,13 @@ defmodule GuildaWeb.UserAuthTest do
     test "redirects if user is not authenticated", %{conn: conn} do
       conn = conn |> fetch_flash() |> UserAuth.require_authenticated_user([])
       assert conn.halted
-      assert redirected_to(conn) == Routes.page_path(conn, :index)
-      assert get_flash(conn, :error) == "Você deve estar logado para acessar esta página."
+      assert redirected_to(conn) == Routes.user_session_path(conn, :new)
+      assert get_flash(conn, :error) == "You must be signed in to access this page."
     end
 
     test "stores the path to redirect to on GET", %{conn: conn} do
       halted_conn =
-        %{conn | request_path: "/foo", query_string: ""}
+        %{conn | path_info: ["foo"], query_string: ""}
         |> fetch_flash()
         |> UserAuth.require_authenticated_user([])
 
@@ -118,7 +118,7 @@ defmodule GuildaWeb.UserAuthTest do
       assert get_session(halted_conn, :user_return_to) == "/foo"
 
       halted_conn =
-        %{conn | request_path: "/foo", query_string: "bar=baz"}
+        %{conn | path_info: ["foo"], query_string: "bar=baz"}
         |> fetch_flash()
         |> UserAuth.require_authenticated_user([])
 
@@ -126,7 +126,7 @@ defmodule GuildaWeb.UserAuthTest do
       assert get_session(halted_conn, :user_return_to) == "/foo?bar=baz"
 
       halted_conn =
-        %{conn | request_path: "/foo?bar", method: "POST"}
+        %{conn | path_info: ["foo"], query_string: "bar", method: "POST"}
         |> fetch_flash()
         |> UserAuth.require_authenticated_user([])
 

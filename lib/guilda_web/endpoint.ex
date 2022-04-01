@@ -1,24 +1,6 @@
 defmodule GuildaWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :guilda
 
-  def init(_key, config) do
-    if config[:load_from_system_env] do
-      port = System.fetch_env!("PORT")
-      secret_key_base = System.fetch_env!("SECRET_KEY_BASE")
-      app_host = System.fetch_env!("APP_HOST")
-
-      config =
-        config
-        |> Keyword.put(:http, [:inet6, port: port])
-        |> Keyword.put(:secret_key_base, secret_key_base)
-        |> Keyword.put(:url, host: app_host, scheme: "https", port: 443)
-
-      {:ok, config}
-    else
-      {:ok, config}
-    end
-  end
-
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.
   # Set :encryption_salt if you would also like to encrypt it.
@@ -29,7 +11,8 @@ defmodule GuildaWeb.Endpoint do
     same_site: "Strict"
   ]
 
-  socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [:peer_data, session: @session_options]]
+  socket "/live", Phoenix.LiveView.Socket,
+    websocket: [connect_info: [:x_headers, :user_agent, :peer_data, session: @session_options]]
 
   # Serve at "/" the static files from "priv/static" directory.
   #

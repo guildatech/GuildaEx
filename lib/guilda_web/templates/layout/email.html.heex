@@ -1,0 +1,22 @@
+<mjml>
+  <mj-head>
+    <mj-title><%= @email.subject %></mj-title>
+  </mj-head>
+  <mj-body background-color="#ffffff" font-size="13px">
+    <mj-section background-color="#ffffff" padding-bottom="0px" padding-top="0">
+      <mj-column vertical-align="top" width="100%">
+        <mj-image src="https://guildatech.com/images/guilda-logo-4134e28f2839dcd3b5e426557364bdcb.png?vsn=d" alt="" align="center" border="none" width="100px" padding-left="0px" padding-right="0px" padding-bottom="50px" padding-top="50px"></mj-image>
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="rgb(243, 244, 246)" vertical-align="top" padding-bottom="0px" padding-top="0">
+      <mj-column vertical-align="top" width="100%">
+        <mj-text align="left" color="rgb(234, 179, 8)" font-size="35px" font-weight="bold" font-family="open Sans Helvetica, Arial, sans-serif" padding-left="25px" padding-right="25px" padding-bottom="10px" padding-top="30px"><%= @email.subject %></mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="rgb(243, 244, 246)" padding-bottom="20px" padding-top="20px">
+      <mj-column vertical-align="middle" width="100%">
+        <%= @inner_content %>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

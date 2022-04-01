@@ -12,7 +12,11 @@ defmodule GuildaWeb.InputHelpers do
   def input(form, field, label) when not is_list(label), do: input(form, field, label: label)
 
   def input(form, field, opts) do
-    input_opts = Keyword.merge([class: form_input_classes(form, field)], Keyword.get(opts, :input_opts, []))
+    input_opts =
+      Keyword.merge(
+        [class: form_input_classes(form, field), phx_feedback_for: input_id(form, field)],
+        Keyword.get(opts, :input_opts, [])
+      )
 
     type = Keyword.get(opts, :type) || Form.input_type(form, field)
     input = [apply(Form, type, [form, field, input_opts])]

@@ -1,9 +1,11 @@
 defmodule GuildaWeb.UserSettingsControllerTest do
   use GuildaWeb.ConnCase, async: true
-
-  alias Guilda.{Accounts, Accounts.User, Repo}
-  import Guilda.AccountsFixtures
   import Ecto.Query
+  import Guilda.AccountsFixtures
+  alias Guilda.Accounts
+  alias Guilda.Accounts.User
+  alias Guilda.AuditLog
+  alias Guilda.Repo
 
   setup :register_and_log_in_user
 
@@ -24,7 +26,7 @@ defmodule GuildaWeb.UserSettingsControllerTest do
 
       token =
         extract_user_token(fn url ->
-          Accounts.deliver_update_email_instructions(%{user | email: email}, user.email, url)
+          Accounts.deliver_update_email_instructions(AuditLog.system(), %{user | email: email}, user.email, url)
         end)
 
       %{token: token, email: email}
@@ -32,19 +34,19 @@ defmodule GuildaWeb.UserSettingsControllerTest do
 
     test "updates the user email once", %{conn: conn, user: user, token: token, email: email} do
       conn = get(conn, Routes.user_settings_path(conn, :confirm_email, token))
-      assert redirected_to(conn) == Routes.user_settings_path(conn, :edit)
+      assert redirected_to(conn) == Routes.user_settings_path(conn, :index)
       assert get_flash(conn, :info) =~ "Email changed successfully"
       refute get_user_by_email(user.email)
       assert get_user_by_email(email)
 
       conn = get(conn, Routes.user_settings_path(conn, :confirm_email, token))
-      assert redirected_to(conn) == Routes.user_settings_path(conn, :edit)
+      assert redirected_to(conn) == Routes.user_settings_path(conn, :index)
       assert get_flash(conn, :error) =~ "Email change link is invalid or it has expired"
     end
 
     test "does not update email with invalid token", %{conn: conn, user: user} do
       conn = get(conn, Routes.user_settings_path(conn, :confirm_email, "oops"))
-      assert redirected_to(conn) == Routes.user_settings_path(conn, :edit)
+      assert redirected_to(conn) == Routes.user_settings_path(conn, :index)
       assert get_flash(conn, :error) =~ "Email change link is invalid or it has expired"
       assert get_user_by_email(user.email)
     end
@@ -52,7 +54,7 @@ defmodule GuildaWeb.UserSettingsControllerTest do
     test "redirects if user is not logged in", %{token: token} do
       conn = build_conn()
       conn = get(conn, Routes.user_settings_path(conn, :confirm_email, token))
-      assert redirected_to(conn) == Routes.page_path(conn, :index)
+      assert redirected_to(conn) == Routes.user_session_path(conn, :new)
     end
   end
 end

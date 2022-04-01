@@ -25,9 +25,9 @@ defmodule GuildaWeb.PodcastEpisodeAsGuestLiveTest do
     setup :create_episode
 
     test "list all podcast episodes", %{conn: conn, episode: episode} = opts do
-      {:ok, _live, html} = live(conn, path(:index, opts))
+      {:ok, view, html} = live(conn, path(:index, opts))
 
-      assert html =~ "Quem Programa?, o podcast da Guilda"
+      assert has_element?(view, "h2", "Quem Programa?, Guilda's podcast")
       assert html =~ episode.title
     end
 

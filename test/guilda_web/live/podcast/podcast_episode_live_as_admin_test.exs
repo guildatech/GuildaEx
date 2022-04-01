@@ -27,9 +27,9 @@ defmodule GuildaWeb.PodcastEpisodeAsAdminLiveTest do
     setup :create_episode
 
     test "list all podcast episodes", %{conn: conn, episode: episode} = opts do
-      {:ok, _live, html} = live(conn, path(:index, opts))
+      {:ok, view, html} = live(conn, path(:index, opts))
 
-      assert html =~ "Quem Programa?, o podcast da Guilda"
+      assert has_element?(view, "h2", "Quem Programa?, Guilda's podcast")
       assert html =~ episode.title
     end
 
@@ -52,8 +52,8 @@ defmodule GuildaWeb.PodcastEpisodeAsAdminLiveTest do
   describe "adding a new episode" do
     test "disconnected and connected render", %{conn: conn} = opts do
       {:ok, view, html} = live(conn, path(:new, opts))
-      assert html =~ "Novo episódio"
-      assert render(view) =~ "Novo episódio"
+      assert html =~ "New Episode"
+      assert render(view) =~ "New Episode"
     end
 
     test "displays the form", %{conn: conn} do
@@ -94,8 +94,8 @@ defmodule GuildaWeb.PodcastEpisodeAsAdminLiveTest do
 
     test "disconnected and connected render", %{conn: conn, episode: episode} = opts do
       {:ok, view, html} = live(conn, path(:edit, episode, opts))
-      assert html =~ "Editar episódio"
-      assert render(view) =~ "Editar episódio"
+      assert html =~ "Edit Episode"
+      assert render(view) =~ "Edit Episode"
     end
 
     test "displays a form", %{conn: conn, episode: episode} = opts do

@@ -23,13 +23,13 @@ defmodule GuildaWeb.FinanceLiveAsGuestTest do
 
   describe "index" do
     test "redirects", %{conn: conn} = opts do
-      assert {:error, {:redirect, %{to: "/"}}} = live(conn, path(:index, opts))
+      assert {:error, {:redirect, %{to: "/users/log_in"}}} = live(conn, path(:index, opts))
     end
   end
 
   describe "adding a new transaction" do
     test "redirects", %{conn: conn} = opts do
-      assert {:error, {:redirect, %{to: "/"}}} = live(conn, path(:new, opts))
+      assert {:error, {:redirect, %{to: "/users/log_in"}}} = live(conn, path(:new, opts))
     end
   end
 
@@ -37,7 +37,7 @@ defmodule GuildaWeb.FinanceLiveAsGuestTest do
     setup :create_transaction
 
     test "redirects", %{conn: conn, transaction: transaction} = opts do
-      assert {:error, {:redirect, %{to: "/"}}} = live(conn, path(:edit, transaction, opts))
+      assert {:error, {:redirect, %{to: "/users/log_in"}}} = live(conn, path(:edit, transaction, opts))
     end
   end
 end
