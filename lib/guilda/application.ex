@@ -22,6 +22,7 @@ defmodule Guilda.Application do
       # Start a worker by calling: Guilda.Worker.start_link(arg)
       # {Guilda.Worker, arg}
       # {Guilda.Bot, guilda_bot_config()}
+      {Finch, name: Swoosh.Finch},
       ExGram,
       {Guilda.Bot, guilda_bot_config()}
     ]
