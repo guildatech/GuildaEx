@@ -6,7 +6,7 @@ config :guilda, Guilda.Repo,
   username: "postgres",
   password: "postgres",
   database: "guilda_dev",
-  hostname: "localhost",
+  hostname: "guilda-database",
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 

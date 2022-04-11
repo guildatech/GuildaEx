@@ -53,3 +53,6 @@ npm-debug.log
 
 # Ignore VSCode workspace settings
 .vscode
+
+# Docker image
+.cache

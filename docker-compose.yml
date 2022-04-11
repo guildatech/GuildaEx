@@ -28,13 +28,16 @@ services:
       - .:/opt/app
     working_dir: /opt/app
     ports:
-      - 4000:4000
+      - 4001:4001
     # run bash file to start container
     command: bash /opt/app/docker-compose.sh
-
+    depends_on:
+      - "guilda-database"
+    env_file:
+      - .env.dev
   # Database
   guilda-database:
-    image: postgres:13.1
+    image: postgis/postgis:14-3.2
     container_name: guilda-database
     networks:
       - internal
@@ -45,6 +48,6 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=guilda
+      - POSTGRES_DB=guilda_dev
     ports:
-      - 5432:5432
+      - 5433:5432
