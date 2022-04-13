@@ -3,10 +3,10 @@ import Config
 # Configure your database
 config :guilda, Guilda.Repo,
   types: Guilda.PostgresTypes,
-  username: "postgres",
-  password: "postgres",
-  database: "guilda_dev",
-  hostname: "guilda-database",
+  username: System.get_env("DB_USER", "postgres"),
+  password: System.get_env("DB_PASS", "postgres"),
+  database: System.get_env("DB_NAME", "guilda_dev"),
+  hostname: System.get_env("DB_HOST", "guilda-database"),
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 

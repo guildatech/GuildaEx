@@ -1,36 +1,32 @@
-networks:
-  internal:
-    driver: bridge
-
 volumes:
   guilda-postgres-data:
-    driver: local
+    external: true
 
 services:
   guilda-elixir:
-    build:
-      context: .
-      dockerfile: Dockerfile-dev
+    image: registry.loworbitlabs.com/guilda-elixir:latest
+    restart: always
     container_name: guilda-elixir
-    networks:
-      - internal
-    volumes:
-      - .:/opt/app
-    working_dir: /opt/app
     ports:
-      - 4001:4001
+      - 4001:4000
+    depends_on:
+      - "guilda-database"
     env_file:
-      - .env.dev
+      - .env.prod
+  # Database
   guilda-database:
+    restart: always
     image: postgis/postgis:14-3.2
     container_name: guilda-database
-    networks:
-      - internal
     volumes:
       - guilda-postgres-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=guilda_dev
+      - POSTGRES_DB=guilda_prod
     ports:
-      - 5433:5432
+      - 5434:5432
+networks:
+  default:
+    name: firefly-network
+    external: true

@@ -1,0 +1,11 @@
+FROM bitwalker/alpine-elixir-phoenix:latest
+
+RUN \
+  apk update && \
+  apk --no-cache --update add \
+  postgresql-client \
+  rm -rf /var/cache/apk/*
+
+WORKDIR /opt/app
+
+ENTRYPOINT ["bash","entrypoint.sh"]

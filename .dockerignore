@@ -1,0 +1,12 @@
+_build
+.dockerignore
+.envrc
+assets/node_modules
+deps
+docker-compose.prod.yml
+docker-compose.sh
+docker-compose.yml
+Dockerfile
+Dockerfile-dev
+test
+.git
