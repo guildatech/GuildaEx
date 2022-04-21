@@ -33,12 +33,22 @@ defmodule GuildaWeb.ConnCase do
     end
   end
 
-  setup tags do
-    :ok = Sandbox.checkout(Guilda.Repo)
+  defp wait_for_children(children_lookup) when is_function(children_lookup) do
+    Process.sleep(100)
 
-    unless tags[:async] do
-      Sandbox.mode(Guilda.Repo, {:shared, self()})
+    for pid <- children_lookup.() do
+      ref = Process.monitor(pid)
+      assert_receive {:DOWN, ^ref, _, _, _}, 1000
     end
+  end
+
+  setup tags do
+    pid = Sandbox.start_owner!(Guilda.Repo, shared: not tags[:async])
+    on_exit(fn -> Sandbox.stop_owner(pid) end)
+
+    on_exit(fn ->
+      wait_for_children(fn -> GuildaWeb.Presence.fetchers_pids() end)
+    end)
 
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end

@@ -31,14 +31,14 @@ defmodule GuildaWeb.OnlineMembersLive do
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
-    Guilda.PresenceClient.subscribe_to_online_users()
+    GuildaWeb.Presence.subscribe_to_online_users()
 
     if connected?(socket) do
       if user = socket.assigns[:current_user] do
-        Guilda.PresenceClient.track(user.id)
+        GuildaWeb.Presence.track_user(user.id)
       else
         if peer_data = get_connect_info(socket, :peer_data) do
-          Guilda.PresenceClient.track(:inet.ntoa(peer_data.address))
+          GuildaWeb.Presence.track_user(:inet.ntoa(peer_data.address))
         end
       end
     end
@@ -47,12 +47,12 @@ defmodule GuildaWeb.OnlineMembersLive do
   end
 
   @impl Phoenix.LiveView
-  def handle_info({Guilda.PresenceClient, _users}, socket) do
+  def handle_info({GuildaWeb.Presence, _users}, socket) do
     {:noreply, count_users(socket)}
   end
 
   defp count_users(socket) do
-    users_count = Guilda.PresenceClient.list("online_users") |> Map.keys() |> Kernel.length()
+    users_count = GuildaWeb.Presence.list_users("online_users") |> Map.keys() |> Kernel.length()
     assign(socket, :online_users_count, users_count)
   end
 end

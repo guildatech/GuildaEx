@@ -79,7 +79,7 @@ defmodule Guilda.MixProject do
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_view, "~> 0.17.5"},
       {:phoenix_swoosh, "~> 0.3"},
-      {:phoenix, "~> 1.6.6", override: true},
+      {:phoenix, github: "phoenixframework/phoenix", override: true},
       {:plug_cowboy, "~> 2.0"},
       {:postgrex, ">= 0.0.0"},
       {:sobelow, "~> 0.9", only: [:dev, :test], runtime: false},

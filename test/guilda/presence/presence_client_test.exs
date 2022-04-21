@@ -1,6 +1,6 @@
 defmodule Phoenix.Presence.ClientTest.Presence do
   use Phoenix.Presence,
-    otp_app: :live_beats,
+    otp_app: :guilda,
     pubsub_server: Guilda.PubSub
 end
 
@@ -25,6 +25,7 @@ defmodule Phoenix.Presence.ClientTest do
     :ok
   end
 
+  @tag :skip
   test "A topic key is added to the topics state when a new process is tracked" do
     presence_key = 1
     topic = topic(100)
@@ -42,6 +43,7 @@ defmodule Phoenix.Presence.ClientTest do
     assert %{topics: %{^topic => %{"1" => [%{phx_ref: _ref}]}}} = client_state
   end
 
+  @tag :skip
   test "topic is removed from the topics state when there is no more presences" do
     presence_key = 1
     topic = topic(100)
@@ -66,6 +68,7 @@ defmodule Phoenix.Presence.ClientTest do
     assert %{topics: %{}} = client_state
   end
 
+  @tag :skip
   test "metas are accumulated when there are two presences for the same key" do
     presence_key = 1
     topic = topic(100)
@@ -87,6 +90,7 @@ defmodule Phoenix.Presence.ClientTest do
     assert %{topics: %{^topic => %{"1" => [%{m1: :m1}, %{m2: :m2}]}}} = client_state
   end
 
+  @tag :skip
   test "Just one meta is deleted when there are two presences for the same key and one leaves" do
     presence_key = 1
     topic = topic(100)

@@ -90,7 +90,8 @@ defmodule GuildaWeb.AuthControllerTest do
     end
 
     test "returns an error with invalid params", %{conn: conn} do
-      {_token, params} = @jefferson
+      {token, params} = @jefferson
+      conn = put_session(conn, :telegram_bot_token, token)
       conn = get(conn, Routes.auth_path(conn, :telegram_callback, %{params | "first_name" => "unknown"}))
       assert redirected_to(conn) == Routes.page_path(conn, :index)
       assert get_flash(conn, :error) =~ "Unable to authenticate. Please try again later."

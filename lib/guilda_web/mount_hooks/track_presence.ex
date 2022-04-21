@@ -5,7 +5,7 @@ defmodule GuildaWeb.MountHooks.TrackPresence do
 
   def on_mount(_any, _params, _session, socket) do
     if user = socket.assigns[:current_user] do
-      Guilda.PresenceClient.track(user.telegram_id)
+      GuildaWeb.Presence.track_user(user.id)
     end
 
     {:cont, socket}
