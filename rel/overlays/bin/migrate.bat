@@ -1,0 +1,1 @@
+call "%~dp0\guilda" eval Guilda.Release.migrate
