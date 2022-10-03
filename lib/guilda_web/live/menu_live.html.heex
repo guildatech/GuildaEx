@@ -8,10 +8,8 @@
           <% end %>
         </div>
         <div class="hidden space-x-8 sm:-my-px sm:ml-6 sm:flex">
-          <%= for entry <- main_menu_entries(@entries), do: maybe_active_live_redirect(entry, :main) %>
-          <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
-            <%= link "LiveDashboard", to: Routes.live_dashboard_path(@socket, :home), class: "inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" %>
-          <% end %>
+          <.menu_entry :for={entry <- main_menu_entries(@entries)} entry={entry} context={:main} />
+          <.link :if={function_exported?(Routes, :live_dashboard_path, 2)} navigate={Routes.live_dashboard_path(@socket, :home)} class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out"><%= gettext("LiveDashboard") %></.link>
         </div>
       </div>
 
@@ -27,7 +25,7 @@
                 class="flex text-sm bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
               >
                 <span class="sr-only"><%= gettext("Open user menu") %></span>
-                <%= svg_icon("user-circle-light", class: "w-8 h-8 rounded-full") %>
+                <Heroicons.user_circle class="w-8 h-8" />
               </button>
             </div>
             <!--
@@ -51,14 +49,14 @@
                 </p>
               </div>
               <div class="py-1">
-                <%= link gettext("Sign out"), to: Routes.user_session_path(GuildaWeb.Endpoint, :delete), method: :delete, class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" %>
+                <.link navigate={Routes.user_session_path(GuildaWeb.Endpoint, :delete)} method={:delete} class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><%= gettext("Sign out") %></.link>
               </div>
             </div>
           </div>
         <% else %>
           <div class="flex space-x-2 shrink-0">
-            <.button link_type="a" to={Routes.user_session_path(GuildaWeb.Endpoint, :new)} label={gettext("Sign in")} />
-            <.button link_type="a" color="white" to={Routes.user_registration_path(GuildaWeb.Endpoint, :new)} label={gettext("Register")} />
+            <.button href={Routes.user_session_path(GuildaWeb.Endpoint, :new)} color="primary"><%= gettext("Sign in") %></.button>
+            <.button href={Routes.user_registration_path(GuildaWeb.Endpoint, :new)}><%= gettext("Register") %></.button>
           </div>
         <% end %>
       </div>
@@ -88,8 +86,8 @@
   -->
   <div x-show="mobileOpen" class="sm:hidden">
     <div class="pt-2 pb-3 space-y-1">
-      <%= for entry <- main_menu_entries(@entries), do: maybe_active_live_redirect(entry, :mobile) %>
-      <%= for entry <- secondary_menu_entries(@entries), do: maybe_active_live_redirect(entry, :mobile) %>
+      <.menu_entry :for={entry <- main_menu_entries(@entries)} entry={entry} context={:mobile} />
+      <.menu_entry :for={entry <- secondary_menu_entries(@entries)} entry={entry} context={:mobile} />
     </div>
     <%= if @current_user do %>
       <div class="pt-4 pb-2 border-t border-gray-300">

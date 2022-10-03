@@ -12,16 +12,12 @@
           <p><%= gettext("Enter the six-digit code from your device or any of your eight-character backup codes to finish logging in.") %></p>
 
           <div>
-            <%= label f, :code, class: "block text-sm font-medium text-gray-700" %>
-            <div class="mt-1">
-              <%= text_input f, :code, required: true, class: "block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm" %>
-              <%= error_tag f, :code %>
-            </div>
+            <.input field={{f, :code}} label={gettext("Code")} />
           </div>
 
           <div class="flex flex-col items-center space-y-2">
-            <.button button_type="submit" label={gettext("Verify code and sign in")} class="w-full" />
-            <span>or <%= link "click here to sign out", to: Routes.user_session_path(@conn, :delete), method: :delete, class: "font-medium text-primary-800" %></span>
+            <.button type="submit" class="w-full"><%= gettext("Verify code and sign in") %></.button>
+            <span>or <.link navigate={Routes.user_session_path(@conn, :delete)} method={:delete} class="font-medium text-primary-800"><%= gettext("click here to sign out") %></.link></span>
           </div>
         </div>
       </.form>

@@ -35,13 +35,13 @@ defmodule GuildaWeb.PodcastEpisodeLive.EpisodeComponent do
           </p>
           <div class="flex space-x-1 text-sm text-gray-500">
             <time datetime="2020-03-16">
-              <%= format_date @episode.aired_date %>
+              <%= GuildaWeb.ViewHelpers.format_date @episode.aired_date %>
             </time>
             <span aria-hidden="true">
               &middot;
             </span>
             <span>
-              <%= format_seconds @episode.length %>
+              <%= GuildaWeb.ViewHelpers.format_seconds @episode.length %>
             </span>
           </div>
         </div>

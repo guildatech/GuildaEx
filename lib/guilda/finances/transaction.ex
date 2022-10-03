@@ -8,10 +8,11 @@ defmodule Guilda.Finances.Transaction do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "transactions" do
-    field :amount, :decimal
+    field :amount, :decimal, default: Decimal.new(0)
     field :date, :date
     field :note, :string
     field :payee, :string
+    field :transaction_type, Ecto.Enum, values: ~w(inflow outflow)a, default: :inflow, virtual: true
 
     field :toggle, :boolean, default: false, virtual: true
 

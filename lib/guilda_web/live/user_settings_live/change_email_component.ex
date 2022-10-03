@@ -34,7 +34,7 @@ defmodule GuildaWeb.UserSettingsLive.ChangeEmailComponent do
               <h3 class="text-sm font-medium text-yellow-800"><%= gettext("Attention needed") %></h3>
               <div class="mt-2 text-sm text-yellow-700">
                 <p><%= gettext("Please confirm your email address to access all features.") %></p>
-                <.link id="resend-confirmation-btn" link_type="button" phx-update="ignore" class="mt-2 font-bold" phx-click={JS.push("resend-confirmation") |> JS.hide()} phx-disable-with={gettext("Sending...")} label={gettext("Resend confirmation instructions.")} />
+                <.button id="resend-confirmation-btn" phx-update="ignore" class="mt-2 font-bold" phx-click={JS.push("resend-confirmation") |> JS.hide()} phx-disable-with={gettext("Sending...")}><%= gettext("Resend confirmation instructions.") %></.button>
               </div>
             </div>
           </div>
@@ -45,14 +45,14 @@ defmodule GuildaWeb.UserSettingsLive.ChangeEmailComponent do
           <div class="grid grid-cols-6 gap-6">
             <div class="col-span-6 sm:col-span-4">
               <div class="space-y-6">
-                <.form_field type="text_input" form={f} field={:email} />
-                <.form_field type="password_input" form={f} field={:current_password} name="current_password" />
+                <.input field={{f, :email}} type="text" label={gettext("Email")} />
+                <.input field={{f, :current_password}} type="password" name="current_password" label={gettext("Current password")} />
               </div>
             </div>
           </div>
         </.form>
         <:footer>
-          <.button button_type="submit" form="update-email-form" label={gettext("Change email")} />
+          <.button type="submit" color="primary" form="update-email-form"><%= gettext("Change email") %></.button>
         </:footer>
       </.card>
     </.content_section>

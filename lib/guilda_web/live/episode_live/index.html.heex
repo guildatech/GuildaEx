@@ -1,16 +1,14 @@
 <!-- Main wrapper start -->
 <main class="px-4 pt-10 pb-20 mx-auto max-w-7xl sm:px-6 lg:pb-28 lg:px-8">
-
-  <%= if @live_action in [:new, :edit] do %>
-    <.live_component
-      module={GuildaWeb.Podcasts.PodcastEpisodeLive.FormComponent}
-      id={@episode.id || :new}
-      title={@page_title}
-      action={@live_action}
-      current_user={@current_user}
-      episode={@episode}
-      return_to={Routes.podcast_episode_index_path(@socket, :index)} />
-  <% end %>
+  <.live_component
+    :if={@live_action in [:new, :edit]}
+    module={GuildaWeb.Podcasts.PodcastEpisodeLive.FormComponent}
+    id={@episode.id || :new}
+    title={@page_title}
+    action={@live_action}
+    current_user={@current_user}
+    episode={@episode}
+    return_to={Routes.podcast_episode_index_path(@socket, :index)} />
 
   <div class="text-center">
     <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
@@ -23,23 +21,24 @@
         <svg class="inline w-6 h-6 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
       </a>
     </p>
-    <%= if Bodyguard.permit?(Podcasts, :create_episode, @current_user) do %>
-      <.button link_type="live_patch" color="white" class="mt-3" label={gettext("New Episode")} to={Routes.podcast_episode_index_path(@socket, :new)} />
-    <% end %>
-  </div>
-  <%= if @podcast_episodes == [] do %>
-    <div class="flex flex-col items-center mt-10">
-      <.remix_icon icon="mic-off-line" class="mb-4 text-yellow-400 text-7xl" />
-      <p class="text-xl text-gray-700">
-        <%= gettext("No episodes to show.") %>
-      </p>
-    </div>
-  <% end %>
-  <div id="podcasts-notifier" phx-hook="PodcastNotifier" class="grid max-w-lg gap-5 mx-auto mt-12 lg:grid-cols-3 lg:max-w-none">
-    <%= for episode <- @podcast_episodes do %>
-      <.live_component module={GuildaWeb.PodcastEpisodeLive.EpisodeComponent} id={"episode-card-#{episode.id}"} episode={episode} current_user={@current_user} />
-    <% end %>
+    <.button
+      :if={Bodyguard.permit?(Podcasts, :create_episode, @current_user)}
+      class="mt-3"
+      patch={Routes.podcast_episode_index_path(@socket, :new)}
+    >
+      <%= gettext("New Episode") %>
+    </.button>
   </div>
 
+  <div :if={@podcast_episodes == []} class="flex flex-col items-center mt-10">
+    <Heroicons.microphone class="mb-4 text-yellow-400 w-24 h-24" />
+    <p class="text-xl text-gray-700">
+      <%= gettext("No episodes to show.") %>
+    </p>
+  </div>
+
+  <div id="podcasts-notifier" phx-hook="PodcastNotifier" class="grid max-w-lg gap-5 mx-auto mt-12 lg:grid-cols-3 lg:max-w-none">
+    <.live_component :for={episode <- @podcast_episodes} module={GuildaWeb.PodcastEpisodeLive.EpisodeComponent} id={"episode-card-#{episode.id}"} episode={episode} current_user={@current_user} />
+  </div>
 </main>
 <!-- Main wrapper end -->

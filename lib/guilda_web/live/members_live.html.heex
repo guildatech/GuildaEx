@@ -1,16 +1,14 @@
 <.main_content title={gettext("Members list")} flash={@flash}>
   <%= if @markers == [] do %>
     <div class="max-w-lg mx-auto text-center">
-      <.remix_icon icon="road-map-line" class="text-gray-400 text-7xl" />
+      <Heroicons.map class="text-gray-400 w-20 text-7xl m-auto" />
       <h3 class="mt-4 text-lg font-medium text-gray-900"><%= gettext("No location shared") %></h3>
       <p class="mt-2 text-sm text-gray-500"><%= gettext("Submit your location to our bot @%{bot_name} and be the first to appear on our member map!", bot_name: @bot_name) %></p>
     </div>
   <% else %>
     <div class="min-h-[500px]">
       <leaflet-map id="map" phx-update="append">
-        <%= for marker <- @markers do %>
-          <leaflet-marker id={"#{marker.lat}-#{marker.lng}"} lat={marker.lat} lng={marker.lng} />
-        <% end %>
+        <leaflet-marker :for={marker <- @markers} id={"#{marker.lat}-#{marker.lng}"} lat={marker.lat} lng={marker.lng} />
       </leaflet-map>
     </div>
   <% end %>

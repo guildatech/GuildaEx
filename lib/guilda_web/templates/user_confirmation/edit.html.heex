@@ -4,13 +4,13 @@
       <.form let={_f} for={:user} action={Routes.user_confirmation_path(@conn, :update, @token)}>
         <div class="space-y-6">
           <div>
-            <.button button_type="submit" label={gettext("Confirm my account")} class="w-full" />
+            <.button type="submit" class="w-full"><%= gettext("Confirm my account") %></.button>
           </div>
 
           <div class="flex items-center justify-between">
             <div class="text-sm">
-              <%= link "Register", to: Routes.user_registration_path(@conn, :new), class: "font-medium text-primary-600 hover:text-primary-500" %> |
-              <%= link "Sign in", to: Routes.user_session_path(@conn, :new), class: "font-medium text-primary-600 hover:text-primary-500" %>
+              <.link navigate={Routes.user_registration_path(@conn, :new)} class="font-medium text-primary-600 hover:text-primary-500"><%= gettext("Register") %></.link> |
+              <.link navigate={Routes.user_session_path(@conn, :new)} class="font-medium text-primary-600 hover:text-primary-500"><%= gettext("Sign in") %></.link>
             </div>
           </div>
         </div>

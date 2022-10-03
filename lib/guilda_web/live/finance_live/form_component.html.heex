@@ -1,37 +1,16 @@
 <div>
-<.modal id="transaction-form-modal" patch={@return_to} title={@title} show={true}>
-  <.form let={f} for={@changeset} id="transaction-form" phx-target={@myself} phx-change="validate" phx-submit="save">
+<.modal id="transaction-form-modal" patch={@return_to} show>
+  <:title><%= @title %></:title>
+  <.form :let={f} for={@changeset} id="transaction-form" phx-target={@myself} phx-change="validate" phx-submit="save">
     <div class="space-y-6">
-      <.form_field type="text_input" form={f} field={:payee} label={gettext("Beneficiary")} />
-      <div class="space-y-1 form-control">
-        <%= label f, :amount, gettext("Amount"), class: "form-control__label" %>
-        <div class="relative flex">
-          <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-            <span class="text-gray-500 sm:text-sm sm:leading-5">
-              $
-            </span>
-          </div>
-          <input
-            id={input_id f, :amount}
-            name="transaction[amount]"
-            phx-hook="CurrencyMask"
-            value={input_value(f, :amount)}
-            type="text"
-            class="block w-full pr-12 form-control__input pl-7 sm:text-sm sm:leading-5"
-            placeholder="10.58"
-            inputmode="numeric"/>
-          <label for={input_id f, :toggle} class="absolute inset-y-0 right-0 flex items-center mr-2 cursor-pointer">
-            <div class="relative">
-              <%= checkbox f, :toggle, class: "hidden" %>
-              <div class="h-8 rounded shadow-inner toggle__line w-14"></div>
-              <div class="absolute inset-y-0 left-0 w-6 h-6 m-1 transition-transform duration-200 ease-in transform bg-white rounded shadow toggle__dot"></div>
-            </div>
-          </label>
-        </div>
-        <%= GuildaWeb.ErrorHelpers.error_tag(f, :amount) %>
-      </div>
-      <.form_field type="text_input" form={f} field={:date} label={gettext("Date")} phx_hook="DatePicker" data-remove-min-date="true" />
-      <.form_field type="textarea" form={f} field={:note} label={gettext("Note")} />
+      <.input type="text" field={{f, :payee}} label={gettext("Beneficiary")} />
+      <.input type="text" field={{f, :amount}} label={gettext("Amount")} phx-hook="CurrencyMask" inputmode="numeric" inline_prefix="$" />
+      <.input type="radio" field={{f, :transaction_type}} label={gettext("Transaction type")}>
+        <:entry label={gettext("Inflow")} value="inflow" checked={Kernel.to_string(Ecto.Changeset.get_field(@changeset, :transaction_type)) == "inflow"} />
+        <:entry label={gettext("Outflow")} value="outflow" checked={Kernel.to_string(Ecto.Changeset.get_field(@changeset, :transaction_type)) == "outflow"} />
+      </.input>
+      <.input field={{f, :date}} type="text" label={gettext("Date")} phx-hook="DatePicker" data-remove-min-date="true" />
+      <.input field={{f, :note}} type="textarea" label={gettext("Note")} />
     </div>
   </.form>
 

@@ -1,75 +1,68 @@
 <.main_content title={gettext("Finances")} flash={@flash}>
-  <:header_action>
-    <%= if Bodyguard.permit?(Finances, :create_transaction, @current_user) do %>
-      <div class="flex mt-4 sm:mt-0 sm:ml-4">
-        <span class="order-1 sm:order-0">
-          <.button link_type="live_patch" color="white" label={gettext("New Transaction")} to={Routes.finance_index_path(@socket, :new)} />
-        </span>
-      </div>
-    <% end %>
+  <:header_action :if={Bodyguard.permit?(Finances, :create_transaction, @current_user)}>
+    <div class="flex mt-4 sm:mt-0 sm:ml-4">
+      <span class="order-1 sm:order-0">
+        <.button color="white" patch={Routes.finance_index_path(@socket, :new)}><%= gettext("New Transaction") %></.button>
+      </span>
+    </div>
   </:header_action>
 
   <div class="shadow sm:rounded-md sm:overflow-hidden">
     <.table
       id="transactions-table"
       rows={@transactions}
-      row_id={fn transaction -> "transaction-#{transaction.id}" end}
     >
-      <:col let={transaction} label={gettext("Date")}>
+      <:col :let={transaction} label={gettext("Date")}>
         <%= transaction.date %>
       </:col>
 
-      <:col let={transaction} label={gettext("Beneficiary")}>
+      <:col :let={transaction} label={gettext("Beneficiary")}>
         <%= transaction.payee %>
       </:col>
 
-      <:col let={transaction} label={gettext("Note")}>
+      <:col :let={transaction} label={gettext("Note")}>
         <%= transaction.note %>
       </:col>
 
-      <:col let={transaction} label={gettext("Amount")} align="right">
+      <:col :let={transaction} label={gettext("Amount")} align="right">
         <%= transaction.amount %>
       </:col>
 
-      <:col let={transaction} class="space-x-2" label={nil} align="right" if={Bodyguard.permit?(Finances, :manage_transaction, @current_user)}>
-        <%= if Bodyguard.permit?(Finances, :update_transaction, @current_user) do %>
-          <.button link_type="live_patch" size="xs" color="white" vairant="outline" label={gettext("Edit")} to={Routes.finance_index_path(@socket, :edit, transaction)} />
-        <% end %>
-        <%= if Bodyguard.permit?(Finances, :delete_transaction, @current_user) do %>
-          <.button label={gettext("Delete")} size="xs" color="danger" variant="outline" id={"delete-transaction-#{transaction.id}"} class="TableAction--delete" phx-click={show_modal("delete-modal-#{transaction.id}")} />
-        <% end %>
-      </:col>
+      <:action :let={transaction} :if={Bodyguard.permit?(Finances, :update_transaction, @current_user)}>
+        <.button size="xs" vairant="outline" patch={Routes.finance_index_path(@socket, :edit, transaction)}><%= gettext("Edit") %></.button>
+      </:action>
+      <:action :let={transaction} :if={Bodyguard.permit?(Finances, :delete_transaction, @current_user)}>
+        <.button size="xs" color="danger" variant="outline" id={"delete-transaction-#{transaction.id}"} phx-click={show_modal("delete-modal-#{transaction.id}")}><%= gettext("Delete") %></.button>
+      </:action>
     </.table>
   </div>
 
   <div id="dialogs" phx-update="append">
-    <%= for transaction <- @transactions, id = "delete-modal-#{transaction.id}" do %>
-      <.modal
-        type="delete"
-        id={id}
-        on_confirm={
-          JS.push("delete", value: %{id: transaction.id})
-          |> hide_modal(id)
-          |> focus_closest("#transaction-#{transaction.id}")
-          |> hide("#transaction-#{transaction.id}")
-        }
-        on_cancel={focus("##{id}", "#delete-transaction-#{transaction.id}")}
-      >
-        <%= gettext("Are you sure you want to remove the record from %{date} with amount %{value}?", date: transaction.date, value: transaction.amount) %>
-        <:cancel><%= gettext("Cancel") %></:cancel>
-        <:confirm><%= gettext("Delete") %></:confirm>
-      </.modal>
-    <% end %>
+    <.modal
+      :for={transaction <- @transactions}
+      type="delete"
+      id={"delete-modal-#{transaction.id}"}
+      on_confirm={
+        JS.push("delete", value: %{id: transaction.id})
+        |> hide_modal("delete-modal-#{transaction.id}")
+        |> hide("#transaction-#{transaction.id}")
+      }
+    >
+      <:title><%= gettext("Delete") %></:title>
+      <%= gettext("Are you sure you want to remove the record from %{date} with amount %{value}?", date: transaction.date, value: transaction.amount) %>
+      <:cancel><%= gettext("Cancel") %></:cancel>
+      <:confirm><%= gettext("Delete") %></:confirm>
+    </.modal>
   </div>
 
-  <%= if @live_action in [:new, :edit] do %>
-    <.live_component
-      module={GuildaWeb.FinanceLive.FormComponent}
-      id={@transaction.id || :new}
-      title={@page_title}
-      action={@live_action}
-      current_user={@current_user}
-      transaction={@transaction}
-      return_to={Routes.finance_index_path(@socket, :index)} />
-  <% end %>
+  <.live_component
+    :if={@live_action in [:new, :edit]}
+    module={GuildaWeb.FinanceLive.FormComponent}
+    id={@transaction.id || :new}
+    title={@page_title}
+    action={@live_action}
+    current_user={@current_user}
+    transaction={@transaction}
+    return_to={Routes.finance_index_path(@socket, :index)}
+  />
 </.main_content>

@@ -12,13 +12,13 @@
 
           <div class="flex items-center justify-between">
             <div class="text-sm">
-              <%= link "Register", to: Routes.user_registration_path(@conn, :new), class: "font-medium text-primary-600 hover:text-primary-500" %> |
-              <%= link "Sign in", to: Routes.user_session_path(@conn, :new), class: "font-medium text-primary-600 hover:text-primary-500" %>
+              <.link navigate={Routes.user_registration_path(@conn, :new)} class="font-medium text-primary-600 hover:text-primary-500"><%= gettext("Register") %></.link> |
+              <.link navigate={Routes.user_session_path(@conn, :new)} class="font-medium text-primary-600 hover:text-primary-500"><%= gettext("Sign in") %></.link>
             </div>
           </div>
 
           <div>
-            <.button button_type="submit" label={gettext("Resend confirmation instructions")} class="w-full" />
+            <.button type="submit" class="w-full"><%= gettext("Resend confirmation instructions") %></.button>
           </div>
         </div>
       </.form>

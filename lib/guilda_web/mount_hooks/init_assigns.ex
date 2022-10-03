@@ -2,8 +2,7 @@ defmodule GuildaWeb.MountHooks.InitAssigns do
   @moduledoc """
   Ensures common `assigns` are applied to all LiveViews attaching this hook.
   """
-  import Phoenix.LiveView
-
+  import Phoenix.Component, only: [assign: 2, assign_new: 3]
   alias Guilda.Accounts
   alias GuildaWeb.RequestContext
 

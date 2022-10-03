@@ -8,9 +8,7 @@ defmodule GuildaWeb.FinanceLive.FormComponent do
 
   @impl true
   def update(%{transaction: transaction} = assigns, socket) do
-    changeset =
-      Finances.change_transaction(transaction)
-      |> set_toggle_value()
+    changeset = Finances.change_transaction(transaction) |> set_transaction_type()
 
     {:ok,
      socket
@@ -74,36 +72,32 @@ defmodule GuildaWeb.FinanceLive.FormComponent do
     end
   end
 
+  defp set_transaction_type(changeset) do
+    negative_amount = Decimal.lt?(Ecto.Changeset.get_field(changeset, :amount), 0)
+
+    if negative_amount do
+      Ecto.Changeset.put_change(changeset, :transaction_type, :outflow)
+    else
+      Ecto.Changeset.put_change(changeset, :transaction_type, :inflow)
+    end
+  end
+
   defp toggle_amount_signal(attrs) do
-    toggle = Map.get(attrs, "toggle", "false")
+    type = Map.get(attrs, "transaction_type")
 
     Map.update(attrs, "amount", "", fn
-      "" when toggle == "true" ->
+      "" when type == "inflow" ->
         "0.00"
 
       "" ->
         "-0.00"
 
-      value when toggle == "true" ->
+      value when type == "inflow" ->
         String.replace(value, "-", "")
 
       value ->
         value = String.replace(value, "-", "")
         "-#{value}"
     end)
-  end
-
-  defp set_toggle_value(changeset) do
-    set_toggle_value(changeset, changeset.data)
-  end
-
-  defp set_toggle_value(changeset, %{amount: nil}), do: Ecto.Changeset.put_change(changeset, :amount, "-0.00")
-
-  defp set_toggle_value(changeset, %{amount: amount}) do
-    if Decimal.lt?(amount, 0) do
-      changeset
-    else
-      Ecto.Changeset.put_change(changeset, :toggle, true)
-    end
   end
 end

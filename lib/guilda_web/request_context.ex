@@ -24,7 +24,7 @@ defmodule GuildaWeb.RequestContext do
       user: socket.assigns[:current_user]
     }
 
-    Phoenix.LiveView.assign_new(socket, :audit_context, fn -> audit_context end)
+    Phoenix.Component.assign_new(socket, :audit_context, fn -> audit_context end)
   end
 
   defp get_ip(headers) do

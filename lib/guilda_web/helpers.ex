@@ -48,24 +48,4 @@ defmodule GuildaWeb.Helpers do
   defp column_extra_attributes(col) do
     assigns_to_attributes(col, [:if, :class, :label])
   end
-
-  @doc """
-  Renders [Remix](https://remixicon.com) icon.
-
-  ## Examples
-
-      <.remix_icon icon="cpu-line" />
-
-      <.remix_icon icon="cpu-line" class="mr-1 align-middle" />
-  """
-  def remix_icon(assigns) do
-    assigns =
-      assigns
-      |> assign_new(:class, fn -> "" end)
-      |> assign(:attrs, assigns_to_attributes(assigns, [:icon, :class]))
-
-    ~H"""
-    <i class={"ri-#{@icon} #{@class}"} aria-hidden="true" {@attrs}></i>
-    """
-  end
 end

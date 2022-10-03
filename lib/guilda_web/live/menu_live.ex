@@ -74,6 +74,23 @@ defmodule GuildaWeb.MenuLive do
     live_redirect(text, to: route, class: classes)
   end
 
+  def menu_entry(assigns) do
+    %{entry: %{menu: menu, module: module, to: route}, context: context} = assigns
+
+    class =
+      if to_string(menu.module) =~ to_string(module) do
+        active_class(context)
+      else
+        inactive_class(context)
+      end
+
+    assigns = assign(assigns, :class, class)
+
+    ~H"""
+    <.link navigate={@entry.to} class={@class}><%= @entry.text %></.link>
+    """
+  end
+
   defp active_class(:main) do
     "inline-flex items-center px-1 pt-1 border-b-2 border-yellow-500 text-sm font-medium leading-5 text-gray-900 focus:outline-none focus:border-yellow-700 transition duration-150 ease-in-out"
   end
