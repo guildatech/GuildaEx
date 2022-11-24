@@ -27,7 +27,7 @@ defmodule GuildaWeb.Components do
   def flash(assigns) do
     ~H"""
     <div
-      :if={msg = render_slot(@inner_block) || Phoenix.Flash.get(@flash, @kind)}
+      :if={msg = render_slot(@inner_block) || get_flash(@flash, @kind)}
       id={@id}
       phx-mounted={@autoshow && show("##{@id}")}
       phx-click={JS.push("lv:clear-flash", value: %{key: @kind}) |> hide("#flash")}
@@ -52,6 +52,20 @@ defmodule GuildaWeb.Components do
     """
   end
 
+  # Copied from https://github.com/phoenixframework/phoenix/blob/master/lib/phoenix/flash.ex
+  # to be used while Phoenix 1.7 is not released
+  defp get_flash(%mod{}, key) when is_atom(key) or is_binary(key) do
+    raise ArgumentError, """
+    expected a map of flash data, but got a %#{inspect(mod)}{}
+    Use the @flash assign set by the :fetch_flash plug instead:
+        <%= Phoenix.Flash.get(@flash, :#{key}) %>
+    """
+  end
+
+  defp get_flash(%{} = flash, key) when is_atom(key) or is_binary(key) do
+    Map.get(flash, to_string(key))
+  end
+
   @doc """
   Renders an input with label and error messages.
 
@@ -72,7 +86,7 @@ defmodule GuildaWeb.Components do
 
   attr :type, :string,
     default: "text",
-    values: ~w(checkbox color date datetime-local email file hidden month number password
+    values: ~w(checkbox color date datetime-local datepicker email file hidden month number password
                range radio search select tel text textarea time url week)
 
   attr :value, :any

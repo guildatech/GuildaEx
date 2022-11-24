@@ -11,7 +11,7 @@ defmodule GuildaWeb.MenuLive do
        menu: menu,
        current_user: current_user,
        entries: menu_entries(socket, menu, current_user)
-     ), layout: {GuildaWeb.LayoutView, "navbar.html"}}
+     ), layout: {GuildaWeb.LayoutView, :navbar}}
   end
 
   def main_menu_entries(entries) do

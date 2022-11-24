@@ -154,7 +154,7 @@ defmodule GuildaWeb.UserSettingsLive.TOTPComponent do
       :let={f}
       for={@user_changeset}
       id="form-submit-totp"
-      phx_change="change_totp"
+      phx-change="change_totp"
       phx-submit="submit_totp"
       phx-target={@myself}
     >

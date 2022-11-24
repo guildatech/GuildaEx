@@ -5,37 +5,32 @@ defmodule GuildaWeb.Components.Button do
   @doc """
   Renders a button or a link styled as a button.
   """
-  attr(:type, :string, default: "button")
-  attr(:patch, :string, default: nil)
-  attr(:navigate, :string, default: nil)
-  attr(:href, :any, default: nil)
-  attr(:class, :string, default: nil)
-  attr(:override_class, :boolean, default: false)
-  attr(:rounded, :boolean, default: false)
+  attr :type, :string, default: "button"
+  attr :patch, :string, default: nil
+  attr :navigate, :string, default: nil
+  attr :href, :any, default: nil
+  attr :class, :string, default: nil
+  attr :override_class, :boolean, default: false
+  attr :rounded, :boolean, default: false
 
-  attr(:variant, :string, default: "default", values: ~w(default outline))
+  attr :variant, :string, default: "default", values: ~w(default outline)
 
-  attr(:color, :string,
+  attr :color, :string,
     default: "white",
     values: ~w(primary secondary white success danger)
-  )
 
-  attr(:loading, :boolean, default: false)
-  attr(:size, :string, default: "md", values: ~w(xs sm md lg xl))
-  attr(:label, :string, default: nil)
-  attr(:rest, :global, doc: "the arbitrary HTML attributes to apply to the button tag")
+  attr :loading, :boolean, default: false
+  attr :size, :string, default: "md", values: ~w(xs sm md lg xl)
+  attr :label, :string, default: nil
+  attr :rest, :global, include: ~w(disabled form name value)
 
-  slot(:inner_block)
+  slot :inner_block, required: true
 
   def button(%{navigate: navigate, patch: patch, href: href} = assigns)
       when is_binary(navigate) or is_binary(patch) or is_binary(href) do
     ~H"""
     <.link patch={@patch} navigate={@navigate} href={@href} class={button_classes(assigns)} {@rest}>
-      <%= if @inner_block != [] do %>
-        <%= render_slot(@inner_block) %>
-      <% else %>
-        <%= @label %>
-      <% end %>
+      <%= render_slot(@inner_block) %>
     </.link>
     """
   end
@@ -43,11 +38,7 @@ defmodule GuildaWeb.Components.Button do
   def button(assigns) do
     ~H"""
     <button type={@type} class={button_classes(assigns)} {@rest}>
-      <%= if @inner_block != [] do %>
-        <%= render_slot(@inner_block) %>
-      <% else %>
-        <%= @label %>
-      <% end %>
+      <%= render_slot(@inner_block) %>
     </button>
     """
   end

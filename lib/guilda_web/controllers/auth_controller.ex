@@ -61,7 +61,7 @@ defmodule GuildaWeb.AuthController do
     Application.fetch_env!(:guilda, :auth)[:telegram_bot_token]
   end
 
-  if Application.get_env(:guilda, :environment) == :dev do
+  if Application.compile_env(:guilda, :environment) == :dev do
     def verify_telegram_data(params, _token \\ nil) do
       {:ok, Map.put(params, "telegram_id", params["id"])}
     end

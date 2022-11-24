@@ -34,7 +34,7 @@ defmodule GuildaWeb.UserRegistrationControllerTest do
       response = html_response(conn, 200)
       assert response =~ email
       assert response =~ "Settings</a>"
-      assert response =~ "Sign out</a>"
+      assert response =~ "Sign out\n</a>"
     end
 
     test "render errors for invalid data", %{conn: conn} do
