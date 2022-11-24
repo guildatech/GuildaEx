@@ -11,7 +11,7 @@ defmodule GuildaWeb.MenuLive do
        menu: menu,
        current_user: current_user,
        entries: menu_entries(socket, menu, current_user)
-     ), layout: {GuildaWeb.LayoutView, "navbar.html"}}
+     ), layout: {GuildaWeb.LayoutView, :navbar}}
   end
 
   def main_menu_entries(entries) do
@@ -72,6 +72,23 @@ defmodule GuildaWeb.MenuLive do
       end
 
     live_redirect(text, to: route, class: classes)
+  end
+
+  def menu_entry(assigns) do
+    %{entry: %{menu: menu, module: module, to: _route}, context: context} = assigns
+
+    class =
+      if to_string(menu.module) =~ to_string(module) do
+        active_class(context)
+      else
+        inactive_class(context)
+      end
+
+    assigns = assign(assigns, :class, class)
+
+    ~H"""
+    <.link navigate={@entry.to} class={@class}><%= @entry.text %></.link>
+    """
   end
 
   defp active_class(:main) do

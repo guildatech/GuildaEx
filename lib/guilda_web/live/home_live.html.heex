@@ -1,0 +1,68 @@
+<main class="flex flex-col flex-grow">
+  <div class="px-4 pb-8 m-auto max-w-7xl lg:px-8">
+    <div class="lg:grid lg:grid-cols-12 lg:gap-8">
+      <div class="py-4 sm:py-6 sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left lg:flex lg:items-center">
+        <div>
+          <h2 class="mt-4 text-4xl font-extrabold leading-10 tracking-tight sm:mt-5 sm:leading-none sm:text-6xl lg:mt-6 lg:text-5xl xl:text-6xl">
+            <%= gettext("Welcome to") %>
+            <br class="hidden md:inline" /> Guilda<span class="text-yellow-400">Tech</span>
+          </h2>
+          <p class="mt-3 text-base font-medium text-yellow-500 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
+            <%= gettext(
+              "We are an inclusive community where all kinds of issues are addressed, including programming. "
+            ) %>
+          </p>
+        </div>
+      </div>
+      <div class="lg:col-span-6">
+        <div class="sm:max-w-md sm:w-full sm:mx-auto sm:rounded-lg sm:overflow-hidden">
+          <div class="px-4 md:py-8 sm:px-10">
+            <div class="flex justify-center">
+              <Icons.guilda class="h-56 sm:h-64" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div :if={@featured_episode} class="flex flex-row items-center justify-between mt-6 bg-white shadow sm:rounded-lg">
+      <div class="flex-grow px-4 py-5 sm:p-6">
+        <h3 class="text-lg font-medium leading-6 text-gray-900 md:text-xl">
+          <%= gettext("Quem Programa?") %>
+        </h3>
+        <div class="mt-3 text-sm md:text-base">
+          <%= live_redirect to: Routes.podcast_episode_index_path(@socket, :index), class: "font-medium text-yellow-500 hover:text-yellow-500" do %>
+            <%= gettext("Listen to the new episode of the GuildaTech podcast") %>
+            <span aria-hidden="true">&rarr;</span>
+          <% end %>
+        </div>
+      </div>
+      <div class="flex-grow-0 flex-shrink-0 hidden md:flex">
+        <img
+          class="object-cover rounded-r-lg h-36"
+          src={@featured_episode.cover_url}
+          alt={gettext("%{episode_name} episode cover", episode_name: @featured_episode.title)}
+        />
+      </div>
+    </div>
+
+    <div class="flex flex-row items-center justify-between max-w-5xl mt-8">
+      <p class="text-sm font-semibold tracking-wide uppercase"><%= gettext("Connect") %></p>
+      <div class="flex justify-center px-1">
+        <.link navigate="https://github.com/guildatech/" title="GitHub" class="text-yellow-300 hover:text-yellow-400">
+          <Icons.github class="h-9 sm:h-10" />
+        </.link>
+      </div>
+      <div class="flex justify-center px-1">
+        <.link navigate="https://t.me/guildatech" title="Telegram" class="text-yellow-300 hover:text-yellow-400">
+          <Icons.telegram class="h-9 sm:h-10" />
+        </.link>
+      </div>
+      <div class="flex justify-center px-1">
+        <.link navigate="https://twitter.com/guildatech" title="Twitter" class="text-yellow-300 hover:text-yellow-400">
+          <Icons.twitter class="h-9 sm:h-10" />
+        </.link>
+      </div>
+    </div>
+  </div>
+</main>

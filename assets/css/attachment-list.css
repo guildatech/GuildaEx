@@ -1,6 +1,7 @@
 .AttachmentList {
   @apply mb-3 border border-gray-200 divide-y divide-gray-200 rounded-md;
 }
+
 .AttachmentList:empty {
   display: none;
 }

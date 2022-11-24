@@ -1,4 +1,4 @@
-defmodule GuildaWeb.PageLiveTest do
+defmodule GuildaWeb.HomeLiveTest do
   use GuildaWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
@@ -7,10 +7,10 @@ defmodule GuildaWeb.PageLiveTest do
 
   describe "index" do
     test "disconnected and connected render", %{conn: conn} do
-      {:ok, page_live, disconnected_html} = live(conn, "/")
+      {:ok, view, disconnected_html} = live(conn, "/")
       refute disconnected_html =~ "Listen to the new"
       assert disconnected_html =~ "Welcome to"
-      assert render(page_live) =~ "Welcome to"
+      assert render(view) =~ "Welcome to"
     end
 
     test "displays a link to podcasts if there are episodes", %{conn: conn} do

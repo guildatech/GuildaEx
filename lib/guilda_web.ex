@@ -33,6 +33,8 @@ defmodule GuildaWeb do
         root: "lib/guilda_web/templates",
         namespace: GuildaWeb
 
+      use Phoenix.Component
+
       # Import convenience functions from controllers
       import Phoenix.Controller,
         only: [get_flash: 1, get_flash: 2, view_module: 1, view_template: 1]
@@ -44,7 +46,7 @@ defmodule GuildaWeb do
 
   def live_view(opts \\ []) do
     quote do
-      opts = Keyword.merge([layout: {GuildaWeb.LayoutView, "live.html"}], unquote(opts))
+      opts = Keyword.merge([layout: {GuildaWeb.LayoutView, :live}], unquote(opts))
       use Phoenix.LiveView, opts
 
       def handle_info({:flash, key, message}, socket) do
@@ -78,9 +80,6 @@ defmodule GuildaWeb do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
-      # Import LiveView helpers (live_render, live_component, live_patch, etc)
-      import Phoenix.LiveView.Helpers
-
       # Import basic rendering functionality (render, render_layout, etc)
       import Phoenix.View
 
@@ -88,17 +87,10 @@ defmodule GuildaWeb do
       import GuildaWeb.Components.Badge
       import GuildaWeb.Components.Button
       import GuildaWeb.Components.Dialog
-      import GuildaWeb.Components.Form
-      import GuildaWeb.Components.LayoutComponents
-      import GuildaWeb.Components.Link
-      import GuildaWeb.ErrorHelpers
       import GuildaWeb.Gettext
-      import GuildaWeb.Helpers
-      import GuildaWeb.ViewHelpers
 
-      alias GuildaWeb.InputHelpers
+      alias GuildaWeb.Icons
       alias GuildaWeb.Router.Helpers, as: Routes
-
       alias Phoenix.LiveView.JS
     end
   end

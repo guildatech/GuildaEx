@@ -1,4 +1,4 @@
-<%= live_render @socket, GuildaWeb.MenuLive, id: "menu", session: %{"menu" => @menu, "current_user" => @current_user} %>
+<%= live_render(@socket, GuildaWeb.MenuLive, id: "menu", session: %{"menu" => @menu, "current_user" => @current_user}) %>
 <!-- Flash messages start -->
 <%= if msg = live_flash(@flash, :info) do %>
   <div class="alert alert-info" role="alert" phx-click="lv:clear-flash" phx-value-key="info">

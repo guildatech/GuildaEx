@@ -1,7 +1,7 @@
-<.guest_content title={"Sign in"} flash={get_flash(@conn)}>
+<.guest_content title="Sign in" flash={get_flash(@conn)}>
   <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
     <div class="px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10">
-      <.form let={f} for={@conn} action={Routes.user_session_path(@conn, :create)} as={:user}>
+      <.form :let={f} for={@conn} action={Routes.user_session_path(@conn, :create)} as={:user}>
         <div class="space-y-6">
           <%= if @error_message do %>
             <div class="alert alert-danger">
@@ -10,28 +10,33 @@
           <% end %>
 
           <div>
-            <%= label f, :email, class: "block text-sm font-medium text-gray-700" %>
-            <div class="mt-1">
-              <%= email_input f, :email, required: true, class: "block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm" %>
-            </div>
+            <.input field={{f, :email}} label={gettext("Email")} />
           </div>
 
           <div>
-            <%= label f, :password, class: "block text-sm font-medium text-gray-700" %>
-            <div class="mt-1">
-              <%= password_input f, :password, required: true, class: "block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm" %>
-            </div>
+            <.input type="password" field={{f, :password}} label={gettext("Password")} />
           </div>
 
           <div class="flex items-center justify-between">
             <div class="text-sm">
-              <%= link "Forgot your password?", to: Routes.user_reset_password_path(@conn, :new), class: "font-medium text-primary-600 hover:text-primary-500" %> |
-              <%= link "Register", to: Routes.user_registration_path(@conn, :new), class: "font-medium text-primary-600 hover:text-primary-500" %>
+              <.link
+                navigate={Routes.user_reset_password_path(@conn, :new)}
+                class="font-medium text-primary-600 hover:text-primary-500"
+              >
+                <%= gettext("Forgot your password?") %>
+              </.link>
+              |
+              <.link
+                navigate={Routes.user_registration_path(@conn, :new)}
+                class="font-medium text-primary-600 hover:text-primary-500"
+              >
+                <%= gettext("Register") %>
+              </.link>
             </div>
           </div>
 
           <div>
-            <.button button_type="submit" label={gettext("Sign in")} class="w-full" />
+            <.button type="submit" class="w-full"><%= gettext("Sign in") %></.button>
           </div>
         </div>
       </.form>
@@ -41,14 +46,22 @@
             <div class="w-full border-t border-gray-300"></div>
           </div>
           <div class="relative flex justify-center text-sm">
-            <span class="px-2 text-gray-500 bg-white"> <%= gettext("Or continue with") %> </span>
+            <span class="px-2 text-gray-500 bg-white"><%= gettext("Or continue with") %></span>
           </div>
         </div>
 
         <div class="grid grid-cols-1 gap-3 mt-6">
           <div>
             <div id="telegram-login-button" class="flex items-center justify-center text-center" phx-update="ignore">
-              <script async src="https://telegram.org/js/telegram-widget.js?18" data-telegram-login={GuildaWeb.AuthController.telegram_bot_username()} data-size="large" data-auth-url={Routes.auth_path(@conn, :telegram_callback)} data-request-access="write"></script>
+              <script
+                async
+                src="https://telegram.org/js/telegram-widget.js?18"
+                data-telegram-login={GuildaWeb.AuthController.telegram_bot_username()}
+                data-size="large"
+                data-auth-url={Routes.auth_path(@conn, :telegram_callback)}
+                data-request-access="write"
+              >
+              </script>
             </div>
           </div>
         </div>

@@ -56,7 +56,7 @@ defmodule GuildaWeb.AuthControllerTest do
       {:ok, _user} = Accounts.connect_provider(AuditLog.system(), user, :telegram, params["id"])
       conn = put_session(conn, :telegram_bot_token, token)
       conn = get(conn, Routes.auth_path(conn, :telegram_callback, params))
-      assert redirected_to(conn) == Routes.page_path(conn, :index)
+      assert redirected_to(conn) == Routes.home_path(conn, :index)
       refute get_flash(conn, :error)
     end
 
@@ -93,7 +93,7 @@ defmodule GuildaWeb.AuthControllerTest do
       {token, params} = @jefferson
       conn = put_session(conn, :telegram_bot_token, token)
       conn = get(conn, Routes.auth_path(conn, :telegram_callback, %{params | "first_name" => "unknown"}))
-      assert redirected_to(conn) == Routes.page_path(conn, :index)
+      assert redirected_to(conn) == Routes.home_path(conn, :index)
       assert get_flash(conn, :error) =~ "Unable to authenticate. Please try again later."
     end
   end

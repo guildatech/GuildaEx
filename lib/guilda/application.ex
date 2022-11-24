@@ -38,13 +38,13 @@ defmodule Guilda.Application do
     :ok
   end
 
-  if Application.get_env(:guilda, :environment) == :test do
+  if Application.compile_env(:guilda, :environment) == :test do
     def guilda_bot_config do
       [method: :noup, token: "token"]
     end
   else
     def guilda_bot_config do
-      case Application.get_env(:guilda, :auth)[:telegram_bot_token] do
+      case Application.fetch_env!(:guilda, :auth)[:telegram_bot_token] do
         nil -> [method: :noup, token: "token"]
         token -> [method: :polling, token: token]
       end

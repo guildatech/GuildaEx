@@ -12,20 +12,20 @@ defmodule GuildaWeb.UserSettingsLive.TOTPComponent do
   def render(assigns) do
     ~H"""
     <div>
-    <.content_section title={gettext("2FA")} subtitle={gettext("Even more security goodies.")}}>
-      <.card>
-        <:title>
-          <h3><%= gettext("Two-factor authentication") %></h3>
-          <%= if @current_totp do %>
-            <div class="flex-shrink-0">
-              <.badge label={gettext("Enabled")} color="success" size="lg" />
-            </div>
-          <% end %>
-        </:title>
-      <%= if @backup_codes, do: render_backup_codes(assigns) %>
-      <%= if @editing_totp, do: render_totp_form(assigns), else: render_enable_form(assigns) %>
-      </.card>
-    </.content_section>
+      <.content_section title={gettext("2FA")} subtitle={gettext("Even more security goodies.")}>
+        <.card>
+          <:title>
+            <h3><%= gettext("Two-factor authentication") %></h3>
+            <%= if @current_totp do %>
+              <div class="flex-shrink-0">
+                <.badge label={gettext("Enabled")} color="success" size="lg" />
+              </div>
+            <% end %>
+          </:title>
+          <%= if @backup_codes, do: render_backup_codes(assigns) %>
+          <%= if @editing_totp, do: render_totp_form(assigns), else: render_enable_form(assigns) %>
+        </.card>
+      </.content_section>
     </div>
     """
   end
@@ -33,15 +33,21 @@ defmodule GuildaWeb.UserSettingsLive.TOTPComponent do
   defp render_backup_codes(assigns) do
     ~H"""
     <.modal
-      show={true}
+      show
       id="totp-backup-codes-modal"
-      title={gettext("Backup Codes")}
       on_cancel={
         JS.push("hide_backup_codes", target: @myself)
         |> hide_modal("totp-backup-codes-modal")
       }
     >
-      <p class="max-w-xl prose text-gray-600"><%= raw gettext("Two-factor authentication is enabled. In case you lose access to your phone, you will need one of the backup codes below. <strong>Keep these backup codes safe</strong>. You can also generate new codes at any time.") %></p>
+      <:title><%= gettext("Backup Codes") %></:title>
+      <p class="max-w-xl prose text-gray-600">
+        <%= raw(
+          gettext(
+            "Two-factor authentication is enabled. In case you lose access to your phone, you will need one of the backup codes below. <strong>Keep these backup codes safe</strong>. You can also generate new codes at any time."
+          )
+        ) %>
+      </p>
 
       <div class="py-5 my-4 bg-gray-100 rounded-md">
         <%= for backup_code <- @backup_codes do %>
@@ -58,11 +64,10 @@ defmodule GuildaWeb.UserSettingsLive.TOTPComponent do
       </div>
 
       <:cancel><%= gettext("Close") %></:cancel>
-      <:extra_footer>
-        <%= if @editing_totp do %>
+      <:actions>
         <.button
+          :if={@editing_totp}
           id="btn-regenerate-backup"
-          color="gray"
           variant="outline"
           class="inline-flex justify-center w-full font-medium sm:w-auto sm:text-sm sm:ml-3"
           phx-click="regenerate_backup_codes"
@@ -71,18 +76,19 @@ defmodule GuildaWeb.UserSettingsLive.TOTPComponent do
         >
           <%= gettext("Regenerate backup codes") %>
         </.button>
-        <% end %>
-      </:extra_footer>
+      </:actions>
     </.modal>
     """
   end
 
   defp render_totp_form(assigns) do
     ~H"""
-    <.form let={f} for={@totp_changeset} id="form-update-totp" phx_submit="update_totp" phx_target={@myself}>
+    <.form :let={f} for={@totp_changeset} id="form-update-totp" phx-submit="update_totp" phx-target={@myself}>
       <%= if @secret_display == :as_text do %>
-      <p class="max-w-xl prose text-gray-600">To <%= if @current_totp, do: "change", else: "enable" %> two-factor authentication,
-        enter the secret below into your two-factor authentication app in your phone.</p>
+        <p class="max-w-xl prose text-gray-600">
+          To <%= if @current_totp, do: "change", else: "enable" %> two-factor authentication,
+          enter the secret below into your two-factor authentication app in your phone.
+        </p>
 
         <div id="totp-secret" class="p-5 my-4 font-mono text-lg bg-gray-100 rounded-md">
           <%= format_secret(@editing_totp.secret) %>
@@ -92,11 +98,13 @@ defmodule GuildaWeb.UserSettingsLive.TOTPComponent do
           Or <a href="#" phx-click="display_secret_as_qrcode" phx-target={@myself}>scan the QR Code</a> instead.
         </p>
       <% else %>
-        <p class="max-w-xl prose text-gray-600">To <%= if @current_totp, do: "change", else: "enable" %> two-factor authentication,
-        scan the image below with the two-factor authentication app in your phone
-        and then enter the authentication code at the bottom. If you can't use QR Code,
-        <a href="#" id="btn-manual-secret" phx-click="display_secret_as_text" phx-target={@myself}>enter your secret</a>
-        manually.</p>
+        <p class="max-w-xl prose text-gray-600">
+          To <%= if @current_totp, do: "change", else: "enable" %> two-factor authentication,
+          scan the image below with the two-factor authentication app in your phone
+          and then enter the authentication code at the bottom. If you can't use QR Code,
+          <a href="#" id="btn-manual-secret" phx-click="display_secret_as_text" phx-target={@myself}>enter your secret</a>
+          manually.
+        </p>
 
         <div class="my-4 text-center">
           <div class="d-inline-block">
@@ -107,12 +115,14 @@ defmodule GuildaWeb.UserSettingsLive.TOTPComponent do
 
       <div class="grid grid-cols-6 gap-6">
         <div class="col-span-6 sm:col-span-4">
-          <.form_field type="text_input" form={f} field={:code} label={gettext("Authentication code")} autocomplete="off" />
+          <.input field={{f, :code}} type="text" label={gettext("Authentication code")} autocomplete="off" />
         </div>
       </div>
       <div class="mt-5 space-x-3">
-        <.button button_type="submit" label={gettext("Verify code")} phx-disable-with={gettext("Verifying...")} />
-        <.button color="white" label={gettext("Cancel")} phx-target={@myself} phx-click="cancel_totp" />
+        <.button type="submit" color="primary" phx-disable-with={gettext("Verifying...")}>
+          <%= gettext("Verify code") %>
+        </.button>
+        <.button phx-target={@myself} phx-click="cancel_totp"><%= gettext("Cancel") %></.button>
       </div>
 
       <%= if @current_totp do %>
@@ -122,8 +132,13 @@ defmodule GuildaWeb.UserSettingsLive.TOTPComponent do
             see your available backup codes
           </a>
           or
-          <a href="#" id="btn-disable-totp" phx-click="disable_totp" phx-target={@myself}
-            data-confirm="Are you sure you want to disable Two-factor authentication?">
+          <a
+            href="#"
+            id="btn-disable-totp"
+            phx-click="disable_totp"
+            phx-target={@myself}
+            data-confirm="Are you sure you want to disable Two-factor authentication?"
+          >
             disable two-factor authentication
           </a>
           altogether.
@@ -136,18 +151,31 @@ defmodule GuildaWeb.UserSettingsLive.TOTPComponent do
   defp render_enable_form(assigns) do
     ~H"""
     <.form
-      let={f} for={@user_changeset}
+      :let={f}
+      for={@user_changeset}
       id="form-submit-totp"
-      phx_change="change_totp"
-      phx_submit="submit_totp"
-      phx_target={@myself}
+      phx-change="change_totp"
+      phx-submit="submit_totp"
+      phx-target={@myself}
     >
       <div class="grid grid-cols-6 gap-6">
         <div class="col-span-6 sm:col-span-4">
-          <.form_field type="password_input" id="current_password_for_totp" phx-debounce="blur" name="current_password" value={@current_password} form={f} field={:current_password} label={if @current_totp, do: gettext("Enter your current password to change 2FA"), else: gettext("Enter your current password to enable 2FA")} />
+          <.input
+            field={{f, :current_password}}
+            type="password"
+            id="current_password_for_totp"
+            phx-debounce="blur"
+            name="current_password"
+            value={@current_password}
+            label={
+              if @current_totp,
+                do: gettext("Enter your current password to change 2FA"),
+                else: gettext("Enter your current password to enable 2FA")
+            }
+          />
         </div>
       </div>
-      <.button button_type="submit" class="mt-5">
+      <.button type="submit" class="mt-5">
         <%= if @current_totp do %>
           <%= gettext("Change two-factor authentication") %>
         <% else %>

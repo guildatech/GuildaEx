@@ -138,7 +138,7 @@ defmodule GuildaWeb.UserSettingsLiveTest do
 
       html =
         settings_live
-        |> element("#totp-backup-codes-modal-close-btn", "Close")
+        |> element("#totp-backup-codes-modal-cancel", "Close")
         |> render_click()
 
       # Until we close the modal and see the whole page
@@ -241,7 +241,7 @@ defmodule GuildaWeb.UserSettingsLiveTest do
 
       # Now we close and reopen to find the same token
       settings_live
-      |> element("#totp-backup-codes-modal-close-btn", "Close")
+      |> element("#totp-backup-codes-modal-cancel", "Close")
       |> render_click()
 
       html =

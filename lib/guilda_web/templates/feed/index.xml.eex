@@ -29,7 +29,7 @@
       <![CDATA[<%= episode.description %>]]>
       </description>
       <itunes:author><%= episode.hosts %></itunes:author>
-      <itunes:duration><%= format_seconds(episode.length) %></itunes:duration>
+      <itunes:duration><%= GuildaWeb.ViewHelpers.format_seconds(episode.length) %></itunes:duration>
       <itunes:explicit>false</itunes:explicit>
     </item> 
   <% end %>

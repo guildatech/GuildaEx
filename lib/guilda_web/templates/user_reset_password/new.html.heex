@@ -1,24 +1,32 @@
-<.guest_content title={"Forgot your password?"} flash={get_flash(@conn)}>
+<.guest_content title="Forgot your password?" flash={get_flash(@conn)}>
   <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
     <div class="px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10">
-      <.form let={f} for={:user} action={Routes.user_reset_password_path(@conn, :create)}>
+      <.form :let={f} for={:user} action={Routes.user_reset_password_path(@conn, :create)}>
         <div class="space-y-6">
           <div>
-            <%= label f, :email, class: "block text-sm font-medium text-gray-700" %>
-            <div class="mt-1">
-              <%= email_input f, :email, required: true, class: "block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm" %>
-            </div>
+            <.input field={{f, :email}} label={gettext("Email")} />
           </div>
 
           <div class="flex items-center justify-between">
             <div class="text-sm">
-              <%= link "Register", to: Routes.user_registration_path(@conn, :new), class: "font-medium text-primary-600 hover:text-primary-500" %> |
-              <%= link "Sign in", to: Routes.user_session_path(@conn, :new), class: "font-medium text-primary-600 hover:text-primary-500" %>
+              <.link
+                navigate={Routes.user_registration_path(@conn, :new)}
+                class="font-medium text-primary-600 hover:text-primary-500"
+              >
+                <%= gettext("Register") %>
+              </.link>
+              |
+              <.link
+                navigate={Routes.user_session_path(@conn, :new)}
+                class="font-medium text-primary-600 hover:text-primary-500"
+              >
+                <%= gettext("Sign in") %>
+              </.link>
             </div>
           </div>
 
           <div>
-            <.button button_type="submit" label={gettext("Send instructions to reset password")} class="w-full" />
+            <.button type="submit" class="w-full"><%= gettext("Send instructions to reset password") %></.button>
           </div>
         </div>
       </.form>

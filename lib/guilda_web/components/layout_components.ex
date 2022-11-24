@@ -12,14 +12,13 @@ defmodule GuildaWeb.Components.LayoutComponents do
     <header class="pt-10">
       <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8 sm:flex sm:items-center sm:justify-between">
         <div class="flex-1 min-w-0">
-        <h1 class="text-3xl font-bold leading-tight text-gray-900">
-          <%= @title %>
-        </h1>
+          <h1 class="text-3xl font-bold leading-tight text-gray-900">
+            <%= @title %>
+          </h1>
         </div>
         <%= render_slot(@header_action) %>
       </div>
     </header>
-
     <!-- Main wrapper start -->
     <main class="px-4 py-6 mx-auto pb-36 max-w-7xl sm:px-6 lg:px-8">
       <!-- Content grid start -->
@@ -39,10 +38,14 @@ defmodule GuildaWeb.Components.LayoutComponents do
       <!-- Content grid start -->
       <div class="flex flex-col justify-center min-h-full py-12 sm:px-6 lg:px-8">
         <div class="sm:mx-auto sm:w-full sm:max-w-md">
-          <img class="w-auto h-24 mx-auto" src={Routes.static_path(GuildaWeb.Endpoint, "/images/guilda-logo.png")} alt="GuildaTech logo" />
+          <img
+            class="w-auto h-24 mx-auto"
+            src={Routes.static_path(GuildaWeb.Endpoint, "/images/guilda-logo.png")}
+            alt="GuildaTech logo"
+          />
           <h1 class="mt-6 text-3xl font-extrabold text-center text-gray-900"><%= @title %></h1>
         </div>
-          <%= render_slot(@inner_block) %>
+        <%= render_slot(@inner_block) %>
       </div>
       <!-- Content grid end -->
     </main>
@@ -55,8 +58,7 @@ defmodule GuildaWeb.Components.LayoutComponents do
 
     ~H"""
     <!-- Section start -->
-      <div class="md:grid md:grid-cols-3 md:gap-6">
-
+    <div class="md:grid md:grid-cols-3 md:gap-6">
       <!-- Left column -->
       <div class="md:col-span-1">
         <h3 class="text-lg font-medium leading-6 text-gray-900"><%= @title %></h3>
@@ -73,7 +75,6 @@ defmodule GuildaWeb.Components.LayoutComponents do
         <%= render_slot(@inner_block) %>
       </div>
       <!-- Right column end -->
-
     </div>
     <!-- Section end -->
     """

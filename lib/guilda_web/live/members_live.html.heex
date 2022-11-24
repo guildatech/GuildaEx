@@ -1,23 +1,39 @@
 <.main_content title={gettext("Members list")} flash={@flash}>
   <%= if @markers == [] do %>
     <div class="max-w-lg mx-auto text-center">
-      <.remix_icon icon="road-map-line" class="text-gray-400 text-7xl" />
+      <Heroicons.map class="text-gray-400 w-20 text-7xl m-auto" />
       <h3 class="mt-4 text-lg font-medium text-gray-900"><%= gettext("No location shared") %></h3>
-      <p class="mt-2 text-sm text-gray-500"><%= gettext("Submit your location to our bot @%{bot_name} and be the first to appear on our member map!", bot_name: @bot_name) %></p>
+      <p class="mt-2 text-sm text-gray-500">
+        <%= gettext("Submit your location to our bot @%{bot_name} and be the first to appear on our member map!",
+          bot_name: @bot_name
+        ) %>
+      </p>
     </div>
   <% else %>
     <div class="min-h-[500px]">
       <leaflet-map id="map" phx-update="append">
-        <%= for marker <- @markers do %>
-          <leaflet-marker id={"#{marker.lat}-#{marker.lng}"} lat={marker.lat} lng={marker.lng} />
-        <% end %>
+        <leaflet-marker :for={marker <- @markers} id={"#{marker.lat}-#{marker.lng}"} lat={marker.lat} lng={marker.lng} />
       </leaflet-map>
     </div>
   <% end %>
   <div class="mt-5 prose">
     <h2 class="text-lg font-medium text-gray-900"><%= gettext("How to share your location") %></h2>
-    <p><%= raw gettext("To register on the members map, 1) register your user account, 2) connect your Telegram account in the Settings page and 3) send your geographic location to our bot (%{link}). Sending location depends on the use of GPS, and only Telegram mobile clients (Android and iPhone) support sending coordinates.", link: safe_to_string(link("@#{@bot_name}", to: "https://t.me/#{@bot_name}"))) %></p>
-    <p><%= raw gettext("It is important to send a private message <strong>directly</strong> to our bot %{link} with your location. <strong>Don't send your location to the group!</strong>", link: safe_to_string(link("@#{@bot_name}", to: "https://t.me/#{@bot_name}"))) %></p>
+    <p>
+      <%= raw(
+        gettext(
+          "To register on the members map, 1) register your user account, 2) connect your Telegram account in the Settings page and 3) send your geographic location to our bot (%{link}). Sending location depends on the use of GPS, and only Telegram mobile clients (Android and iPhone) support sending coordinates.",
+          link: safe_to_string(link("@#{@bot_name}", to: "https://t.me/#{@bot_name}"))
+        )
+      ) %>
+    </p>
+    <p>
+      <%= raw(
+        gettext(
+          "It is important to send a private message <strong>directly</strong> to our bot %{link} with your location. <strong>Don't send your location to the group!</strong>",
+          link: safe_to_string(link("@#{@bot_name}", to: "https://t.me/#{@bot_name}"))
+        )
+      ) %>
+    </p>
     <p><%= gettext("To ensure your privacy, all shared locations are saved with a 10km error margin.") %></p>
   </div>
 </.main_content>

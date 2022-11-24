@@ -1,7 +1,7 @@
-<.guest_content title={"Reset password"} flash={get_flash(@conn)}>
+<.guest_content title="Reset password" flash={get_flash(@conn)}>
   <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
     <div class="px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10">
-      <.form let={f} for={@changeset} action={Routes.user_reset_password_path(@conn, :update, @token)}>
+      <.form :let={f} for={@changeset} action={Routes.user_reset_password_path(@conn, :update, @token)}>
         <div class="space-y-6">
           <%= if @changeset.action do %>
             <div class="mb-3 alert alert-danger">
@@ -9,30 +9,33 @@
             </div>
           <% end %>
           <div>
-            <%= label f, :password, gettext("New password"), class: "block text-sm font-medium text-gray-700" %>
-            <div class="mt-1">
-              <%= password_input f, :password, required: true, class: "block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm" %>
-              <%= error_tag f, :password %>
-            </div>
+            <.input type="password" field={{f, :password}} label={gettext("New password")} />
           </div>
 
           <div>
-            <%= label f, :password_confirmation, gettext("Confirm new password"), class: "block text-sm font-medium text-gray-700" %>
-            <div class="mt-1">
-              <%= password_input f, :password_confirmation, required: true, class: "block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm" %>
-              <%= error_tag f, :password_confirmation %>
-            </div>
+            <.input type="password" field={{f, :password_confirmation}} label={gettext("Confirm new password")} />
           </div>
 
           <div class="flex items-center justify-between">
             <div class="text-sm">
-              <%= link "Register", to: Routes.user_registration_path(@conn, :new), class: "font-medium text-primary-600 hover:text-primary-500" %> |
-              <%= link "Sign in", to: Routes.user_session_path(@conn, :new), class: "font-medium text-primary-600 hover:text-primary-500" %>
+              <.link
+                navigate={Routes.user_registration_path(@conn, :new)}
+                class="font-medium text-primary-600 hover:text-primary-500"
+              >
+                <%= gettext("Register") %>
+              </.link>
+              |
+              <.link
+                navigate={Routes.user_session_path(@conn, :new)}
+                class="font-medium text-primary-600 hover:text-primary-500"
+              >
+                <%= gettext("Sign in") %>
+              </.link>
             </div>
           </div>
 
           <div>
-            <.button button_type="submit" label={gettext("Reset password")} class="w-full" />
+            <.button type="submit" class="w-full"><%= gettext("Reset password") %></.button>
           </div>
         </div>
       </.form>
