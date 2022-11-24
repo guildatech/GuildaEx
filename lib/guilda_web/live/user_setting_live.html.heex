@@ -16,13 +16,38 @@
 
     <.content_section title={gettext("Password")} subtitle={gettext("Keep your account secure.")}>
       <.card>
-        <.form id="change-password-form" :let={f} for={@password_changeset} phx-submit="update-password" phx-change="validate-password" action={Routes.user_settings_path(@socket, :update_password)} phx-trigger-action={@password_trigger_action}>
+        <.form
+          :let={f}
+          id="change-password-form"
+          for={@password_changeset}
+          phx-submit="update-password"
+          phx-change="validate-password"
+          action={Routes.user_settings_path(@socket, :update_password)}
+          phx-trigger-action={@password_trigger_action}
+        >
           <div class="grid grid-cols-6 gap-6">
             <div class="col-span-6 sm:col-span-4">
               <div class="space-y-6">
-                <.input field={{f, :password}} label={gettext("New password")} phx-debounce="blur" value={input_value(f, :password)} />
-                <.input field={{f, :password_confirmation}} label={gettext("Confirm new password")} phx-debounce="blur" value={input_value(f, :password_confirmation)} />
-                <.input field={{f, :current_password}} name={:current_password} id="current_password_for_password" label={gettext("Current password")} phx-debounce="blur" value={@current_password} />
+                <.input
+                  field={{f, :password}}
+                  label={gettext("New password")}
+                  phx-debounce="blur"
+                  value={input_value(f, :password)}
+                />
+                <.input
+                  field={{f, :password_confirmation}}
+                  label={gettext("Confirm new password")}
+                  phx-debounce="blur"
+                  value={input_value(f, :password_confirmation)}
+                />
+                <.input
+                  field={{f, :current_password}}
+                  name={:current_password}
+                  id="current_password_for_password"
+                  label={gettext("Current password")}
+                  phx-debounce="blur"
+                  value={@current_password}
+                />
               </div>
             </div>
           </div>
@@ -41,31 +66,47 @@
         audit_context={@audit_context}
       />
 
-      <.content_section title={gettext("Connected accounts")} subtitle={gettext("Add other ways to sign in.")}}>
+      <.content_section title={gettext("Connected accounts")} subtitle={gettext("Add other ways to sign in.")} }>
         <.card>
           <div class="flex flex-row items-center justify-center">
             <div class="flex flex-col items-center text-center">
-            <Icons.telegram class={"h-16 #{if @current_user.telegram_id, do: "text-primary-500", else: "text-primary-200"}"} />
-            <%= if @current_user.telegram_id do %>
-              <.button variant="outline" color="danger" size="xs" id="disconnect-telegram-trigger" phx-click={show_modal("disconnect-telegram-modal")}><%= gettext("Disconnect") %></.button>
-              <.modal
-                type="delete"
-                id="disconnect-telegram-modal"
-                on_confirm={
-                  JS.push("disconnect-telegram")
-                  |> hide_modal("disconnect-telegram-modal")
-                }
-              >
-                <:title><%= gettext("Disconnect") %></:title>
-                <%= gettext("Are you sure you want to disconnect your Telegram account?") %>
-                <:cancel><%= gettext("Cancel") %></:cancel>
-                <:confirm><%= gettext("Disconnect Telegram") %></:confirm>
-              </.modal>
-            <% else %>
-              <div id="telegram-login-button" class="flex items-center justify-center text-center" phx-update="ignore">
-                <script async src="https://telegram.org/js/telegram-widget.js?18" data-telegram-login={GuildaWeb.AuthController.telegram_bot_username()} data-size="large" data-auth-url={Routes.auth_path(@socket, :telegram_callback)} data-request-access="write"></script>
-              </div>
-            <% end %>
+              <Icons.telegram class={"h-16 #{if @current_user.telegram_id, do: "text-primary-500", else: "text-primary-200"}"} />
+              <%= if @current_user.telegram_id do %>
+                <.button
+                  variant="outline"
+                  color="danger"
+                  size="xs"
+                  id="disconnect-telegram-trigger"
+                  phx-click={show_modal("disconnect-telegram-modal")}
+                >
+                  <%= gettext("Disconnect") %>
+                </.button>
+                <.modal
+                  type="delete"
+                  id="disconnect-telegram-modal"
+                  on_confirm={
+                    JS.push("disconnect-telegram")
+                    |> hide_modal("disconnect-telegram-modal")
+                  }
+                >
+                  <:title><%= gettext("Disconnect") %></:title>
+                  <%= gettext("Are you sure you want to disconnect your Telegram account?") %>
+                  <:cancel><%= gettext("Cancel") %></:cancel>
+                  <:confirm><%= gettext("Disconnect Telegram") %></:confirm>
+                </.modal>
+              <% else %>
+                <div id="telegram-login-button" class="flex items-center justify-center text-center" phx-update="ignore">
+                  <script
+                    async
+                    src="https://telegram.org/js/telegram-widget.js?18"
+                    data-telegram-login={GuildaWeb.AuthController.telegram_bot_username()}
+                    data-size="large"
+                    data-auth-url={Routes.auth_path(@socket, :telegram_callback)}
+                    data-request-access="write"
+                  >
+                  </script>
+                </div>
+              <% end %>
             </div>
           </div>
         </.card>
@@ -74,7 +115,11 @@
   <% end %>
 
   <%= if @is_legacy_account? || @current_user.confirmed_at do %>
-    <.content_section title={gettext("Location")} subtitle={gettext("Share your location to be listed on the members map")}}>
+    <.content_section
+      title={gettext("Location")}
+      subtitle={gettext("Share your location to be listed on the members map")}
+      }
+    >
       <div class="bg-white shadow sm:rounded-lg">
         <%= if @current_user.geom do %>
           <div class="px-4 py-5 sm:p-6">
@@ -83,26 +128,51 @@
             </h3>
             <.user_coordinates coordinates={@current_user.geom.coordinates} />
             <div class="flex justify-end mt-5">
-              <.button id="remove-location-trigger" phx-click={show_modal("remove-location-modal")} variant="outline" color="danger"><%= gettext("Remove location") %></.button>
+              <.button
+                id="remove-location-trigger"
+                phx-click={show_modal("remove-location-modal")}
+                variant="outline"
+                color="danger"
+              >
+                <%= gettext("Remove location") %>
+              </.button>
             </div>
           </div>
         <% else %>
           <%= if @current_user.telegram_id do %>
-          <div class="px-4 py-5 sm:p-6">
-            <h3 class="text-lg font-medium leading-6 text-gray-900">
-              <%= gettext("You're not sharing your location") %>
-            </h3>
-            <div class="mt-2 sm:flex sm:items-start sm:justify-between">
-              <div class="max-w-xl prose text-gray-600">
-                <p><%= raw gettext("To register on the members map, send your geographic location to our bot (%{link}). Sending location depends on the use of GPS, and only Telegram mobile clients (Android and iPhone) support sending coordinates.", link: safe_to_string(link("@#{@bot_name}", to: "https://t.me/#{@bot_name}"))) %></p>
-                <p><%= raw gettext("It is important to send a private message <strong>directly</strong> to our bot %{link} with your location. <strong>Don't send your location to the group!</strong>", link: safe_to_string(link("@#{@bot_name}", to: "https://t.me/#{@bot_name}"))) %></p>
-                <p><%= gettext("To ensure your privacy, all shared locations are saved with a 10km error margin.") %></p>
+            <div class="px-4 py-5 sm:p-6">
+              <h3 class="text-lg font-medium leading-6 text-gray-900">
+                <%= gettext("You're not sharing your location") %>
+              </h3>
+              <div class="mt-2 sm:flex sm:items-start sm:justify-between">
+                <div class="max-w-xl prose text-gray-600">
+                  <p>
+                    <%= raw(
+                      gettext(
+                        "To register on the members map, send your geographic location to our bot (%{link}). Sending location depends on the use of GPS, and only Telegram mobile clients (Android and iPhone) support sending coordinates.",
+                        link: safe_to_string(link("@#{@bot_name}", to: "https://t.me/#{@bot_name}"))
+                      )
+                    ) %>
+                  </p>
+                  <p>
+                    <%= raw(
+                      gettext(
+                        "It is important to send a private message <strong>directly</strong> to our bot %{link} with your location. <strong>Don't send your location to the group!</strong>",
+                        link: safe_to_string(link("@#{@bot_name}", to: "https://t.me/#{@bot_name}"))
+                      )
+                    ) %>
+                  </p>
+                  <p>
+                    <%= gettext("To ensure your privacy, all shared locations are saved with a 10km error margin.") %>
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
           <% else %>
             <.card>
-              <p class="max-w-xl prose text-gray-600"><%= gettext("Connect your Telegram account to be able to share your location.") %></p>
+              <p class="max-w-xl prose text-gray-600">
+                <%= gettext("Connect your Telegram account to be able to share your location.") %>
+              </p>
             </.card>
           <% end %>
         <% end %>

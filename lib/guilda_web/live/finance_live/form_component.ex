@@ -86,11 +86,14 @@ defmodule GuildaWeb.FinanceLive.FormComponent do
     type = Map.get(attrs, "transaction_type")
 
     Map.update(attrs, "amount", "", fn
-      "" when type == "inflow" ->
+      "" ->
         "0.00"
 
-      "" ->
-        "-0.00"
+      "0" ->
+        "0.00"
+
+      "0.00" ->
+        "0.00"
 
       value when type == "inflow" ->
         String.replace(value, "-", "")

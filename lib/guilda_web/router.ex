@@ -85,7 +85,7 @@ defmodule GuildaWeb.Router do
     scope "/", GuildaWeb do
       pipe_through [:browser, :assign_menu]
 
-      live "/", PageLive, :index
+      live "/", HomeLive, :index
 
       live "/podcast", PodcastEpisodeLive.Index, :index
       live "/podcast/new", PodcastEpisodeLive.Index, :new

@@ -75,7 +75,7 @@ defmodule GuildaWeb.MenuLive do
   end
 
   def menu_entry(assigns) do
-    %{entry: %{menu: menu, module: module, to: route}, context: context} = assigns
+    %{entry: %{menu: menu, module: module, to: _route}, context: context} = assigns
 
     class =
       if to_string(menu.module) =~ to_string(module) do

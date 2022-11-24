@@ -1,119 +1,180 @@
 <div>
-<.modal id="episode-form-modal" patch={@return_to} show>
-  <:title><%= @title %></:title>
-  <.form let={f} for={@changeset} id="episode-form" phx-target={@myself} phx-change="validate" phx-submit="save">
-    <%= live_file_input @uploads.file, class: "hidden"%>
-    <%= live_file_input @uploads.cover, class: "hidden" %>
-    <div class="space-y-6">
-      <div class="sm:col-span-6">
-        <label class="block text-sm font-medium text-gray-700">
-          <%= gettext("Cover image") %>
-        </label>
+  <.modal id="episode-form-modal" patch={@return_to} show>
+    <:title><%= @title %></:title>
+    <.form :let={f} for={@changeset} id="episode-form" phx-target={@myself} phx-change="validate" phx-submit="save">
+      <%= live_file_input(@uploads.file, class: "hidden") %>
+      <%= live_file_input(@uploads.cover, class: "hidden") %>
+      <div class="space-y-6">
+        <div class="sm:col-span-6">
+          <label class="block text-sm font-medium text-gray-700">
+            <%= gettext("Cover image") %>
+          </label>
 
-        <div
-          :for={entry <- @uploads.cover.entries}
-          class="flex flex-col items-center justify-center mt-1 space-y-2"
-        >
-          <.live_img_preview entry={entry} width="150" />
-          <%= if err = Enum.find(@uploads.cover.errors, fn {ref, _msg} -> ref == entry.ref end) do %>
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-800">
-              <%= Phoenix.Naming.humanize(elem(err, 1)) %>
-            </span>
-          <% else %>
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-              <%= entry.progress %>%
-            </span>
-          <% end %>
-          <button type="button" class="AttachmentList__file-action" phx-click="cancel-cover-entry" phx-value-ref={entry.ref} phx-target={@myself}><%= gettext("Delete") %></button>
-        </div>
-
-        <div
-          :if={@uploads.cover.entries == []}
-          phx-drop-target={@uploads.cover.ref}
-          class="flex justify-center px-6 pt-5 pb-6 mt-2 border-2 border-gray-300 border-dashed rounded-md"
-        >
-          <div class="space-y-1 text-center">
-            <svg class="w-12 h-12 mx-auto text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-              <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-            </svg>
-            <div class="flex text-sm text-gray-600">
-              <%= label(for: @uploads.cover.ref, class: "relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500") do %>
-                <%= gettext("Select a file") %>
-              <% end %>
-              <p class="pl-1"><%= gettext("or drag and drop") %></p>
-            </div>
-            <p class="text-xs text-gray-500">
-              <%= gettext("File size up to %{size}", size: Sizeable.filesize(@uploads.cover.max_file_size, base: 3)) %>
-            </p>
-          </div>
-        </div>
-
-        <.error :if={@uploads.cover.entries == []} :for={msg <- translate_errors(f.errors || [], :cover_url)} message={msg} />
-      </div>
-
-      <div class="sm:col-span-6">
-        <label class="block text-sm font-medium text-gray-700">
-          <%= gettext("File") %>
-        </label>
-
-        <ul class="AttachmentList"><!-- do not remove this comment, it is necessary to hide the element if there are no attachments
-    -----><li
-            :for={entry <- @uploads.file.entries}
-            class="AttachmentList__item"
-          >
-            <div class="AttachmentList__wrapper">
-              <svg class="flex-shrink-0 w-5 h-5 text-gray-400" x-description="Heroicon name: paper-clip" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"> <path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd"></path></svg>
-              <span class="AttachmentList__file-name" title={entry.client_name}>
-                <%= entry.client_name %>
+          <div :for={entry <- @uploads.cover.entries} class="flex flex-col items-center justify-center mt-1 space-y-2">
+            <.live_img_preview entry={entry} width="150" />
+            <%= if err = Enum.find(@uploads.cover.errors, fn {ref, _msg} -> ref == entry.ref end) do %>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-800">
+                <%= Phoenix.Naming.humanize(elem(err, 1)) %>
               </span>
-              <%= if err = Enum.find(@uploads.file.errors, fn {ref, _msg} -> ref == entry.ref end) do %>
-                <.badge label={Phoenix.Naming.humanize(elem(err, 1))} color="danger" />
-              <% else %>
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                  <%= entry.progress %>%
-                </span>
-              <% end %>
-            </div>
-            <div class="AttachmentList__file-action-wrapper">
-              <button type="button" class="AttachmentList__file-action" phx-click="cancel-file-entry" phx-value-ref={entry.ref} phx-target={@myself} data-confirm={gettext("Delete attachment: %{filename}?", filename: entry.client_name)}>
-                <%= gettext("Delete") %>
-              </button>
-            </div>
-          </li><!-- do not remove this comment, it is necessary to hide the element if there are no attachments
-    --></ul>
-
-        <div
-          :if={@uploads.file.entries == []}
-          phx-drop-target={@uploads.file.ref}
-          class="flex justify-center px-6 pt-5 pb-6 mt-2 border-2 border-gray-300 border-dashed rounded-md"
-        >
-          <div class="space-y-1 text-center">
-            <svg class="w-12 h-12 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
-            <div class="flex text-sm text-gray-600">
-              <%= label(for: @uploads.file.ref, class: "relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500") do %>
-                <%= gettext("Select a file") %>
-              <% end %>
-              <p class="pl-1"><%= gettext("or drag and drop") %></p>
-            </div>
-            <p class="text-xs text-gray-500">
-              <%= gettext("File size up to %{size}", size: Sizeable.filesize(@uploads.file.max_file_size, base: 3)) %>
-            </p>
+            <% else %>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                <%= entry.progress %>%
+              </span>
+            <% end %>
+            <button
+              type="button"
+              class="AttachmentList__file-action"
+              phx-click="cancel-cover-entry"
+              phx-value-ref={entry.ref}
+              phx-target={@myself}
+            >
+              <%= gettext("Delete") %>
+            </button>
           </div>
+
+          <div
+            :if={@uploads.cover.entries == []}
+            phx-drop-target={@uploads.cover.ref}
+            class="flex justify-center px-6 pt-5 pb-6 mt-2 border-2 border-gray-300 border-dashed rounded-md"
+          >
+            <div class="space-y-1 text-center">
+              <svg
+                class="w-12 h-12 mx-auto text-gray-400"
+                stroke="currentColor"
+                fill="none"
+                viewBox="0 0 48 48"
+                aria-hidden="true"
+              >
+                <path
+                  d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                </path>
+              </svg>
+              <div class="flex text-sm text-gray-600">
+                <%= label(for: @uploads.cover.ref, class: "relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500") do %>
+                  <%= gettext("Select a file") %>
+                <% end %>
+                <p class="pl-1"><%= gettext("or drag and drop") %></p>
+              </div>
+              <p class="text-xs text-gray-500">
+                <%= gettext("File size up to %{size}", size: Sizeable.filesize(@uploads.cover.max_file_size, base: 3)) %>
+              </p>
+            </div>
+          </div>
+
+          <.error
+            :for={msg <- translate_errors(f.errors || [], :cover_url)}
+            :if={@uploads.cover.entries == []}
+            message={msg}
+          />
         </div>
 
-        <.error :if={@uploads.file.entries == []} :for={msg <- translate_errors(f.errors || [], :file_url)} message={msg} />
+        <div class="sm:col-span-6">
+          <label class="block text-sm font-medium text-gray-700">
+            <%= gettext("File") %>
+          </label>
+
+          <ul class="AttachmentList">
+            <!-- do not remove this comment, it is necessary to hide the element if there are no attachments
+    ----->
+            <li :for={entry <- @uploads.file.entries} class="AttachmentList__item">
+              <div class="AttachmentList__wrapper">
+                <svg
+                  class="flex-shrink-0 w-5 h-5 text-gray-400"
+                  x-description="Heroicon name: paper-clip"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z"
+                    clip-rule="evenodd"
+                  >
+                  </path>
+                </svg>
+                <span class="AttachmentList__file-name" title={entry.client_name}>
+                  <%= entry.client_name %>
+                </span>
+                <%= if err = Enum.find(@uploads.file.errors, fn {ref, _msg} -> ref == entry.ref end) do %>
+                  <.badge label={Phoenix.Naming.humanize(elem(err, 1))} color="danger" />
+                <% else %>
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                    <%= entry.progress %>%
+                  </span>
+                <% end %>
+              </div>
+              <div class="AttachmentList__file-action-wrapper">
+                <button
+                  type="button"
+                  class="AttachmentList__file-action"
+                  phx-click="cancel-file-entry"
+                  phx-value-ref={entry.ref}
+                  phx-target={@myself}
+                  data-confirm={gettext("Delete attachment: %{filename}?", filename: entry.client_name)}
+                >
+                  <%= gettext("Delete") %>
+                </button>
+              </div>
+            </li>
+            <!-- do not remove this comment, it is necessary to hide the element if there are no attachments
+    -->
+          </ul>
+
+          <div
+            :if={@uploads.file.entries == []}
+            phx-drop-target={@uploads.file.ref}
+            class="flex justify-center px-6 pt-5 pb-6 mt-2 border-2 border-gray-300 border-dashed rounded-md"
+          >
+            <div class="space-y-1 text-center">
+              <svg
+                class="w-12 h-12 mx-auto text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
+                >
+                </path>
+              </svg>
+              <div class="flex text-sm text-gray-600">
+                <%= label(for: @uploads.file.ref, class: "relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500") do %>
+                  <%= gettext("Select a file") %>
+                <% end %>
+                <p class="pl-1"><%= gettext("or drag and drop") %></p>
+              </div>
+              <p class="text-xs text-gray-500">
+                <%= gettext("File size up to %{size}", size: Sizeable.filesize(@uploads.file.max_file_size, base: 3)) %>
+              </p>
+            </div>
+          </div>
+
+          <.error
+            :for={msg <- translate_errors(f.errors || [], :file_url)}
+            :if={@uploads.file.entries == []}
+            message={msg}
+          />
+        </div>
+
+        <.input field={{f, :slug}} type="text" label={gettext("Slug")} />
+        <.input field={{f, :title}} type="text" label={gettext("Title")} />
+        <.input field={{f, :description}} type="textarea" label={gettext("Description")} />
+        <.input field={{f, :hosts}} type="text" label={gettext("Hosts")} />
+        <.input field={{f, :aired_date}} type="datepicker" label={gettext("Release date")} />
+        <.input field={{f, :length}} type="number" label={gettext("Length")} hint={gettext("In seconds")} />
       </div>
+    </.form>
 
-      <.input field={{f, :slug}} type="text" label={gettext("Slug")} />
-      <.input field={{f, :title}} type="text" label={gettext("Title")} />
-      <.input field={{f, :description}} type="textarea" label={gettext("Description")} />
-      <.input field={{f, :hosts}} type="text" label={gettext("Hosts")} />
-      <.input field={{f, :aired_date}} type="text" label={gettext("Release date")} phx-hook="DatePicker" />
-      <.input field={{f, :length}} type="number" label={gettext("Length")} hint={gettext("In seconds")} />
-    </div>
-  </.form>
-
-  <:submit form="episode-form"><%= gettext("Save") %></:submit>
-  <:cancel><%= gettext("Cancel") %></:cancel>
-</.modal>
+    <:submit form="episode-form"><%= gettext("Save") %></:submit>
+    <:cancel><%= gettext("Cancel") %></:cancel>
+  </.modal>
 </div>

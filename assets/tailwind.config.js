@@ -25,6 +25,7 @@ module.exports = {
       },
       colors: {
         primary: colors.amber,
+        brand: colors.amber,
       },
     },
   },

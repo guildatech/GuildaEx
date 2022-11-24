@@ -4,6 +4,7 @@ defmodule GuildaWeb.Components do
   """
   use Phoenix.Component
   import GuildaWeb.Gettext, warn: false
+  alias GuildaWeb.Router.Helpers, as: Routes
   alias Phoenix.LiveView.JS
 
   @doc """
@@ -21,7 +22,6 @@ defmodule GuildaWeb.Components do
   attr :kind, :atom, doc: "one of :info, :error used for styling and flash lookup"
   attr :autoshow, :boolean, default: true, doc: "whether to auto show the flash on mount"
   attr :close, :boolean, default: true, doc: "whether the flash can be closed"
-
   slot :inner_block, doc: "the optional inner block that renders the flash message"
 
   def flash(assigns) do
@@ -53,40 +53,6 @@ defmodule GuildaWeb.Components do
   end
 
   @doc """
-  Renders a simple form.
-
-  ## Examples
-
-      <.simple_form :let={f} for={:user} phx-change="validate" phx-submit="save">
-        <.input field={{f, :email}} label="Email"/>
-        <.input field={{f, :username}} label="Username" />
-        <:actions>
-          <.button>Save</.button>
-        <:actions>
-      </.simple_form>
-  """
-  attr :for, :any, default: nil, doc: "the datastructure for the form"
-  attr :as, :any, default: nil, doc: "the server side parameter to collect all input under"
-  attr :rest, :global, doc: "the arbitrary HTML attributes to apply to the form tag"
-  attr :autocomplete, :boolean, default: nil
-
-  slot :inner_block, required: true
-  slot :actions, doc: "the slot for form actions, such as a submit button"
-
-  def simple_form(assigns) do
-    ~H"""
-    <.form :let={f} for={@for} as={@as} autocomplete={@autocomplete} {@rest}>
-      <div class="space-y-8 bg-white mt-10">
-        <%= render_slot(@inner_block, f) %>
-        <div :for={action <- @actions} class="mt-2 flex items-center justify-between gap-6">
-          <%= render_slot(action, f) %>
-        </div>
-      </div>
-    </.form>
-    """
-  end
-
-  @doc """
   Renders an input with label and error messages.
 
   A `%Phoenix.HTML.Form{}` and field name may be passed to the input
@@ -101,31 +67,43 @@ defmodule GuildaWeb.Components do
   attr :id, :any
   attr :name, :any
   attr :label, :string, default: nil
-  attr :required, :boolean, default: false
-  attr :pattern, :string, default: nil
-  attr :inline_prefix, :string, default: nil
+  attr :hint, :string, default: nil, doc: "informational text displayed below the input"
+  attr :prefix, :string, default: nil, doc: "a prefix to be prepended inside the input field"
 
   attr :type, :string,
     default: "text",
-    doc: ~s|one of "text", "textarea", "number" "email", "date", "time", "datetime", "select"|
+    values: ~w(checkbox color date datetime-local email file hidden month number password
+               range radio search select tel text textarea time url week)
 
   attr :value, :any
   attr :field, :any, doc: "a %Phoenix.HTML.Form{}/field name tuple, for example: {f, :email}"
   attr :errors, :list
-  attr :rest, :global, doc: "the arbitrary HTML attributes for the input tag"
+  attr :checked, :boolean, doc: "the checked flag for checkbox inputs"
+  attr :prompt, :string, default: nil, doc: "the prompt for select inputs"
+  attr :options, :list, doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2"
+  attr :multiple, :boolean, default: false, doc: "the multiple flag for select inputs"
+  attr :rest, :global, include: ~w(autocomplete disabled form max maxlength min minlength
+                                                pattern placeholder readonly required size step)
+
+  attr :hidden_input, :boolean,
+    default: true,
+    doc: "wether to show or not a hidden input for the unchecked checkbox input"
 
   slot :inner_block
-  slot :option, doc: "the slot for select input options"
 
   slot :entry, doc: "the slot for radio inputs" do
-    attr :label, :string, required: true
+    attr :label, :string
+    attr :checked, :boolean
     attr :value, :string, required: true
   end
 
   def input(%{field: {f, field}} = assigns) do
     assigns
     |> assign(field: nil)
-    |> assign_new(:name, fn -> Phoenix.HTML.Form.input_name(f, field) end)
+    |> assign_new(:name, fn ->
+      name = Phoenix.HTML.Form.input_name(f, field)
+      if assigns.multiple, do: name <> "[]", else: name
+    end)
     |> assign_new(:id, fn -> Phoenix.HTML.Form.input_id(f, field) end)
     |> assign_new(:value, fn -> Phoenix.HTML.Form.input_value(f, field) end)
     |> assign_new(:errors, fn -> translate_errors(f.errors || [], field) end)
@@ -133,16 +111,24 @@ defmodule GuildaWeb.Components do
   end
 
   def input(%{type: "checkbox"} = assigns) do
+    assigns = assign_new(assigns, :checked, fn -> input_equals?(assigns.value, "true") end)
+
     ~H"""
     <label phx-feedback-for={@name} class="flex items-center gap-4 text-sm leading-6 text-zinc-600">
+      <input :if={@hidden_input} type="hidden" value="false" />
       <input
         type="checkbox"
         id={@id || @name}
         name={@name}
-        required={@required}
+        value={@value}
+        checked={@checked}
         class="rounded border-zinc-300 text-zinc-900 focus:ring-amber-900"
       />
-      <%= @label %>
+      <%= if @inner_block != [] do %>
+        <%= render_slot(@inner_block) %>
+      <% else %>
+        <%= @label %>
+      <% end %>
     </label>
     """
   end
@@ -151,31 +137,29 @@ defmodule GuildaWeb.Components do
     ~H"""
     <div phx-feedback-for={@name}>
       <.label :if={@label} for={@id} aria-hidden="true"><%= @label %></.label>
-      <fieldset class="mt-4">
+      <fieldset class={[@label && "mt-1"]}>
         <legend class="sr-only"><%= @label %></legend>
         <div class="space-y-4">
-          <div
-            :for={entry <- @entry}
-            class="flex items-center"
-          >
+          <div :for={entry <- @entry} class="flex items-center">
             <input
-              id={"radio-#{Phoenix.Param.to_param(@name)}-#{Phoenix.Param.to_param(entry.value)}"}
+              id={radio_id(@id, entry.value)}
               name={@name}
               type="radio"
               value={entry.value}
               class="h-4 w-4 border-gray-300 text-primary-600 focus:ring-primary-500"
-              {assigns_to_attributes(entry)}
-              phx-update="ignore"
-            >
-            <label
-              for={"radio-#{Phoenix.Param.to_param(@name)}-#{Phoenix.Param.to_param(entry.value)}"}
-              class="ml-3 block text-sm font-medium text-gray-700 cursor-pointer"
-            >
-              <%= entry.label %>
+              checked={Map.get_lazy(entry, :checked, fn -> input_equals?(assigns.value, entry.value) end)}
+            />
+            <label for={radio_id(@id, entry.value)} class="ml-3 block text-sm text-gray-700 cursor-pointer">
+              <%= if Map.get(entry, :label) do %>
+                <%= entry.label %>
+              <% else %>
+                <%= render_slot(entry) %>
+              <% end %>
             </label>
           </div>
         </div>
       </fieldset>
+      <p :if={@hint} class="mt-2 text-sm text-gray-500"><%= @hint %></p>
       <.error :for={msg <- @errors} message={msg} />
     </div>
     """
@@ -184,17 +168,18 @@ defmodule GuildaWeb.Components do
   def input(%{type: "select"} = assigns) do
     ~H"""
     <div phx-feedback-for={@name}>
-      <.label :if={@label} for={@id}><%= @label %></.label>
+      <.label :if={@label} for={@id} class="mb-1"><%= @label %></.label>
       <select
         id={@id}
         name={@name}
-        autocomplete={@name}
-        required={@required}
         class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
+        multiple={@multiple}
         {@rest}
       >
-        <option :for={opt <- @option} {assigns_to_attributes(opt)}><%= render_slot(opt) %></option>
+        <option :if={@prompt} value=""><%= @prompt %></option>
+        <%= Phoenix.HTML.Form.options_for_select(@options, @value) %>
       </select>
+      <p :if={@hint} class="mt-2 text-sm text-gray-500"><%= @hint %></p>
       <.error :for={msg <- @errors} message={msg} />
     </div>
     """
@@ -203,11 +188,10 @@ defmodule GuildaWeb.Components do
   def input(%{type: "textarea"} = assigns) do
     ~H"""
     <div phx-feedback-for={@name}>
-      <.label :if={@label} for={@id}><%= @label %></.label>
+      <.label :if={@label} for={@id} class="mb-1"><%= @label %></.label>
       <textarea
         id={@id || @name}
         name={@name}
-        required={@required}
         class={[
           input_border(@errors),
           "mt-2 block min-h-[6rem] w-full rounded-lg border-zinc-300 py-[calc(theme(spacing.2)-1px)] px-[calc(theme(spacing.3)-1px)]",
@@ -216,36 +200,63 @@ defmodule GuildaWeb.Components do
         ]}
         {@rest}
       ><%= @value %></textarea>
+      <p :if={@hint} class="mt-2 text-sm text-gray-500"><%= @hint %></p>
       <.error :for={msg <- @errors} message={msg} />
     </div>
     """
   end
 
-  def input(%{type: "text", inline_prefix: prefix} = assigns) when not is_nil(prefix) do
+  def input(%{type: "datepicker"} = assigns) do
     ~H"""
     <div phx-feedback-for={@name}>
-      <.label :if={@label} for={@id}><%= @label %></.label>
-      <div class="relative mt-1 rounded-md shadow-sm">
-        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-          <span class="text-gray-500 sm:text-sm"><%= @inline_prefix %></span>
-        </div>
+      <.label :if={@label} for={@id} class="mb-1"><%= @label %></.label>
+      <div phx-update="ignore" id={"#{@id || @name}-datepicker"} class="mt-1">
         <input
-          type={@type}
+          type="text_input"
           name={@name}
           id={@id || @name}
-          pattern={@pattern}
+          value={@value}
+          autocomplete="off"
+          phx-hook="DatePicker"
+          class={[
+            input_border(@errors),
+            "block w-full rounded-lg border-zinc-300 py-[calc(theme(spacing.2)-1px)] px-[calc(theme(spacing.3)-1px)]",
+            "text-zinc-900 focus:outline-none focus:ring-4 sm:text-sm sm:leading-6",
+            "phx-no-feedback:border-zinc-300 phx-no-feedback:focus:border-amber-400 phx-no-feedback:focus:ring-zinc-800/5"
+          ]}
+          {@rest}
+        />
+      </div>
+      <p :if={@hint} class="mt-2 text-sm text-gray-500"><%= @hint %></p>
+      <.error :for={msg <- @errors} message={msg} />
+    </div>
+    """
+  end
+
+  def input(%{type: "text", prefix: prefix} = assigns) when not is_nil(prefix) do
+    ~H"""
+    <div phx-feedback-for={@name}>
+      <.label :if={@label} for={@id} class="mb-1"><%= @label %></.label>
+      <div class="relative mt-1 rounded-md shadow-sm">
+        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+          <span class="text-gray-500 sm:text-sm"><%= @prefix %></span>
+        </div>
+        <input
+          type="text"
+          name={@name}
+          id={@id || @name}
           value={@value}
           class={[
             input_border(@errors),
             "block w-full rounded-lg border-zinc-300 py-[calc(theme(spacing.2)-1px)] px-[calc(theme(spacing.3)-1px)]",
             "text-zinc-900 focus:outline-none focus:ring-4 sm:text-sm sm:leading-6",
             "phx-no-feedback:border-zinc-300 phx-no-feedback:focus:border-amber-400 phx-no-feedback:focus:ring-zinc-800/5",
-            @label && "mt-1",
-            "pl-7"
+            @prefix && "pl-7"
           ]}
           {@rest}
         />
       </div>
+      <p :if={@hint} class="mt-2 text-sm text-gray-500"><%= @hint %></p>
       <.error :for={msg <- @errors} message={msg} />
     </div>
     """
@@ -259,7 +270,6 @@ defmodule GuildaWeb.Components do
         type={@type}
         name={@name}
         id={@id || @name}
-        pattern={@pattern}
         value={@value}
         class={[
           input_border(@errors),
@@ -270,6 +280,7 @@ defmodule GuildaWeb.Components do
         ]}
         {@rest}
       />
+      <p :if={@hint} class="mt-2 text-sm text-gray-500"><%= @hint %></p>
       <.error :for={msg <- @errors} message={msg} />
     </div>
     """
@@ -285,11 +296,12 @@ defmodule GuildaWeb.Components do
   Renders a label.
   """
   attr :for, :string, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def label(assigns) do
     ~H"""
-    <label for={@for} class="block text-sm font-medium text-gray-700">
+    <label for={@for} class="block text-sm font-medium text-gray-700" {@rest}>
       <%= render_slot(@inner_block) %>
     </label>
     """
@@ -302,7 +314,7 @@ defmodule GuildaWeb.Components do
 
   def error(assigns) do
     ~H"""
-    <p class="phx-no-feedback:hidden mt-2 flex gap-3 text-sm leading-6 text-rose-600">
+    <p class="phx-no-feedback:hidden mt-3 flex gap-3 text-sm leading-6 text-rose-600">
       <Heroicons.exclamation_circle mini class="mt-0.5 h-5 w-5 flex-none fill-rose-500" />
       <%= @message %>
     </p>
@@ -362,23 +374,25 @@ defmodule GuildaWeb.Components do
       <table class="min-w-full divide-y divide-gray-300 bg-white">
         <thead class="text-left text-xs uppercase tracking-wide text-zinc-500 bg-gray-50 font-medium">
           <tr>
-            <th :for={{col, i} <- Enum.with_index(@col)} class={["py-3", i == 0 && "pl-4 pr-3" || "px-3"]} align={Map.get(col, :align)}><%= col[:label] %></th>
+            <th
+              :for={{col, i} <- Enum.with_index(@col)}
+              class={["py-3", (i == 0 && "pl-4 pr-3") || "px-3"]}
+              align={Map.get(col, :align)}
+            >
+              <%= col[:label] %>
+            </th>
             <th :if={@action != []} class="relative px-3 py-3"><span class="sr-only"><%= gettext("Actions") %></span></th>
           </tr>
         </thead>
         <tbody class="relative divide-y divide-gray-300 text-sm leading-6 text-zinc-700">
-          <tr
-            :for={row <- @rows}
-            id={@row_id && @row_id.(row) || "#{@id}-#{Phoenix.Param.to_param(row)}"}
-            class="group"
-          >
+          <tr :for={row <- @rows} id={(@row_id && @row_id.(row)) || "#{@id}-#{Phoenix.Param.to_param(row)}"} class="group">
             <td
               :for={{col, i} <- Enum.with_index(@col)}
               phx-click={@row_click && @row_click.(row)}
               class={["relative p-0", @row_click && "hover:cursor-pointer"]}
               align={Map.get(col, :align)}
             >
-              <div class={["block py-3", i == 0 && "pl-4 pr-3" || "px-3"]}>
+              <div class={["block py-3", (i == 0 && "pl-4 pr-3") || "px-3"]}>
                 <span class="absolute -inset-y-px right-0 -left-4 group-hover:bg-gray-50 sm:rounded-l-xl" />
                 <span class={["relative", i == 0 && "font-semibold text-zinc-900"]}>
                   <%= render_slot(col, row) %>
@@ -404,33 +418,6 @@ defmodule GuildaWeb.Components do
   end
 
   @doc """
-  Renders a data list.
-
-  ## Examples
-
-      <.list>
-        <:item title="Title"><%= @post.title %></:item>
-        <:item title="Views"><%= @post.views %></:item>
-      </.list>
-  """
-  slot :item, required: true do
-    attr :title, :string, required: true
-  end
-
-  def list(assigns) do
-    ~H"""
-    <div class="mt-14">
-      <dl class="-my-4 divide-y divide-zinc-100">
-        <div :for={item <- @item} class="flex gap-4 py-4 sm:gap-8">
-          <dt class="w-1/4 flex-none text-[0.8125rem] leading-6 text-zinc-500"><%= item.title %></dt>
-          <dd class="text-sm leading-6 text-zinc-700"><%= render_slot(item) %></dd>
-        </div>
-      </dl>
-    </div>
-    """
-  end
-
-  @doc """
   Renders a back navigation link.
 
   ## Examples
@@ -443,10 +430,7 @@ defmodule GuildaWeb.Components do
   def back(assigns) do
     ~H"""
     <div class="mt-16">
-      <.link
-        navigate={@navigate}
-        class="text-sm font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
-      >
+      <.link navigate={@navigate} class="text-sm font-semibold leading-6 text-zinc-900 hover:text-zinc-700">
         <Heroicons.arrow_left solid class="w-3 h-3 stroke-current inline" />
         <%= render_slot(@inner_block) %>
       </.link>
@@ -533,6 +517,16 @@ defmodule GuildaWeb.Components do
     for {^field, {msg, opts}} <- errors, do: translate_error({msg, opts})
   end
 
+  defp input_equals?(val1, val2) do
+    Phoenix.HTML.html_escape(val1) == Phoenix.HTML.html_escape(val2)
+  end
+
+  defp radio_id(id, value) do
+    {:safe, value} = Phoenix.HTML.html_escape(value)
+    value_id = value |> IO.iodata_to_binary() |> String.replace(~r/\W/u, "_")
+    id <> "_" <> value_id
+  end
+
   def main_content(assigns) do
     assigns = assign_new(assigns, :header_action, fn -> [] end)
 
@@ -540,14 +534,13 @@ defmodule GuildaWeb.Components do
     <header class="pt-10">
       <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8 sm:flex sm:items-center sm:justify-between">
         <div class="flex-1 min-w-0">
-        <h1 class="text-3xl font-bold leading-tight text-gray-900">
-          <%= @title %>
-        </h1>
+          <h1 class="text-3xl font-bold leading-tight text-gray-900">
+            <%= @title %>
+          </h1>
         </div>
         <%= render_slot(@header_action) %>
       </div>
     </header>
-
     <!-- Main wrapper start -->
     <main class="px-4 py-6 mx-auto pb-36 max-w-7xl sm:px-6 lg:px-8">
       <!-- Content grid start -->
@@ -567,10 +560,14 @@ defmodule GuildaWeb.Components do
       <!-- Content grid start -->
       <div class="flex flex-col justify-center min-h-full py-12 sm:px-6 lg:px-8">
         <div class="sm:mx-auto sm:w-full sm:max-w-md">
-          <img class="w-auto h-24 mx-auto" src={Routes.static_path(GuildaWeb.Endpoint, "/images/guilda-logo.png")} alt="GuildaTech logo" />
+          <img
+            class="w-auto h-24 mx-auto"
+            src={Routes.static_path(GuildaWeb.Endpoint, "/images/guilda-logo.png")}
+            alt="GuildaTech logo"
+          />
           <h1 class="mt-6 text-3xl font-extrabold text-center text-gray-900"><%= @title %></h1>
         </div>
-          <%= render_slot(@inner_block) %>
+        <%= render_slot(@inner_block) %>
       </div>
       <!-- Content grid end -->
     </main>
@@ -583,8 +580,7 @@ defmodule GuildaWeb.Components do
 
     ~H"""
     <!-- Section start -->
-      <div class="md:grid md:grid-cols-3 md:gap-6">
-
+    <div class="md:grid md:grid-cols-3 md:gap-6">
       <!-- Left column -->
       <div class="md:col-span-1">
         <h3 class="text-lg font-medium leading-6 text-gray-900"><%= @title %></h3>
@@ -601,7 +597,6 @@ defmodule GuildaWeb.Components do
         <%= render_slot(@inner_block) %>
       </div>
       <!-- Right column end -->
-
     </div>
     <!-- Section end -->
     """

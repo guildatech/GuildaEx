@@ -1,7 +1,7 @@
-<.guest_content title={"Sign in"} flash={get_flash(@conn)}>
+<.guest_content title="Sign in" flash={get_flash(@conn)}>
   <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
     <div class="px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10">
-      <.form let={f} for={@conn} action={Routes.user_session_path(@conn, :create)} as={:user}>
+      <.form :let={f} for={@conn} action={Routes.user_session_path(@conn, :create)} as={:user}>
         <div class="space-y-6">
           <%= if @error_message do %>
             <div class="alert alert-danger">
@@ -19,8 +19,19 @@
 
           <div class="flex items-center justify-between">
             <div class="text-sm">
-              <.link navigate={Routes.user_reset_password_path(@conn, :new)} class="font-medium text-primary-600 hover:text-primary-500"><%= gettext("Forgot your password?") %></.link> |
-              <.link navigate={Routes.user_registration_path(@conn, :new)} class="font-medium text-primary-600 hover:text-primary-500"><%= gettext("Register") %></.link>
+              <.link
+                navigate={Routes.user_reset_password_path(@conn, :new)}
+                class="font-medium text-primary-600 hover:text-primary-500"
+              >
+                <%= gettext("Forgot your password?") %>
+              </.link>
+              |
+              <.link
+                navigate={Routes.user_registration_path(@conn, :new)}
+                class="font-medium text-primary-600 hover:text-primary-500"
+              >
+                <%= gettext("Register") %>
+              </.link>
             </div>
           </div>
 
@@ -35,14 +46,22 @@
             <div class="w-full border-t border-gray-300"></div>
           </div>
           <div class="relative flex justify-center text-sm">
-            <span class="px-2 text-gray-500 bg-white"> <%= gettext("Or continue with") %> </span>
+            <span class="px-2 text-gray-500 bg-white"><%= gettext("Or continue with") %></span>
           </div>
         </div>
 
         <div class="grid grid-cols-1 gap-3 mt-6">
           <div>
             <div id="telegram-login-button" class="flex items-center justify-center text-center" phx-update="ignore">
-              <script async src="https://telegram.org/js/telegram-widget.js?18" data-telegram-login={GuildaWeb.AuthController.telegram_bot_username()} data-size="large" data-auth-url={Routes.auth_path(@conn, :telegram_callback)} data-request-access="write"></script>
+              <script
+                async
+                src="https://telegram.org/js/telegram-widget.js?18"
+                data-telegram-login={GuildaWeb.AuthController.telegram_bot_username()}
+                data-size="large"
+                data-auth-url={Routes.auth_path(@conn, :telegram_callback)}
+                data-request-access="write"
+              >
+              </script>
             </div>
           </div>
         </div>

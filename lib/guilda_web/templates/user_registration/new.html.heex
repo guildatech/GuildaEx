@@ -1,7 +1,7 @@
 <.guest_content title={gettext("Register")} flash={get_flash(@conn)}>
   <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
     <div class="px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10">
-      <.form let={f} for={@changeset} action={Routes.user_registration_path(@conn, :create)}>
+      <.form :let={f} for={@changeset} action={Routes.user_registration_path(@conn, :create)}>
         <div class="space-y-6">
           <.error
             :if={@changeset.action}
@@ -18,8 +18,19 @@
 
           <div class="flex items-center justify-between">
             <div class="text-sm">
-              <.link navigate={Routes.user_session_path(@conn, :new)} class="font-medium text-primary-600 hover:text-primary-500"><%= gettext("Sign in") %></.link> |
-              <.link navigate={Routes.user_reset_password_path(@conn, :new)} class="font-medium text-primary-600 hover:text-primary-500"><%= gettext("Forgot your password?") %></.link>
+              <.link
+                navigate={Routes.user_session_path(@conn, :new)}
+                class="font-medium text-primary-600 hover:text-primary-500"
+              >
+                <%= gettext("Sign in") %>
+              </.link>
+              |
+              <.link
+                navigate={Routes.user_reset_password_path(@conn, :new)}
+                class="font-medium text-primary-600 hover:text-primary-500"
+              >
+                <%= gettext("Forgot your password?") %>
+              </.link>
             </div>
           </div>
 

@@ -42,11 +42,7 @@ defmodule GuildaWeb.Components.Button do
 
   def button(assigns) do
     ~H"""
-    <button
-      type={@type}
-      class={button_classes(assigns)}
-      {@rest}
-    >
+    <button type={@type} class={button_classes(assigns)} {@rest}>
       <%= if @inner_block != [] do %>
         <%= render_slot(@inner_block) %>
       <% else %>

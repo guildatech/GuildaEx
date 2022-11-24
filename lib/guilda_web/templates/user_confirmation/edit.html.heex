@@ -1,7 +1,7 @@
-<.guest_content title={"Confirm account"} flash={get_flash(@conn)}>
+<.guest_content title="Confirm account" flash={get_flash(@conn)}>
   <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
     <div class="px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10">
-      <.form let={_f} for={:user} action={Routes.user_confirmation_path(@conn, :update, @token)}>
+      <.form :let={_f} for={:user} action={Routes.user_confirmation_path(@conn, :update, @token)}>
         <div class="space-y-6">
           <div>
             <.button type="submit" class="w-full"><%= gettext("Confirm my account") %></.button>
@@ -9,8 +9,19 @@
 
           <div class="flex items-center justify-between">
             <div class="text-sm">
-              <.link navigate={Routes.user_registration_path(@conn, :new)} class="font-medium text-primary-600 hover:text-primary-500"><%= gettext("Register") %></.link> |
-              <.link navigate={Routes.user_session_path(@conn, :new)} class="font-medium text-primary-600 hover:text-primary-500"><%= gettext("Sign in") %></.link>
+              <.link
+                navigate={Routes.user_registration_path(@conn, :new)}
+                class="font-medium text-primary-600 hover:text-primary-500"
+              >
+                <%= gettext("Register") %>
+              </.link>
+              |
+              <.link
+                navigate={Routes.user_session_path(@conn, :new)}
+                class="font-medium text-primary-600 hover:text-primary-500"
+              >
+                <%= gettext("Sign in") %>
+              </.link>
             </div>
           </div>
         </div>

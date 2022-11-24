@@ -36,7 +36,9 @@ defmodule GuildaWeb.Helpers do
         <%= for row <- @rows do %>
           <tr id={@row_id && @row_id.(row)}>
             <%= for col <- @col do %>
-              <td class={"Table__td #{Map.get(col, :class)}"} {column_extra_attributes(col)}><%= render_slot(col, row) %></td>
+              <td class={"Table__td #{Map.get(col, :class)}"} {column_extra_attributes(col)}>
+                <%= render_slot(col, row) %>
+              </td>
             <% end %>
           </tr>
         <% end %>

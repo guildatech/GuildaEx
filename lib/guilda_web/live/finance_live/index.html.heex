@@ -2,16 +2,15 @@
   <:header_action :if={Bodyguard.permit?(Finances, :create_transaction, @current_user)}>
     <div class="flex mt-4 sm:mt-0 sm:ml-4">
       <span class="order-1 sm:order-0">
-        <.button color="white" patch={Routes.finance_index_path(@socket, :new)}><%= gettext("New Transaction") %></.button>
+        <.button color="white" patch={Routes.finance_index_path(@socket, :new)}>
+          <%= gettext("New Transaction") %>
+        </.button>
       </span>
     </div>
   </:header_action>
 
   <div class="shadow sm:rounded-md sm:overflow-hidden">
-    <.table
-      id="transactions-table"
-      rows={@transactions}
-    >
+    <.table id="transactions-table" rows={@transactions}>
       <:col :let={transaction} label={gettext("Date")}>
         <%= transaction.date %>
       </:col>
@@ -29,10 +28,20 @@
       </:col>
 
       <:action :let={transaction} :if={Bodyguard.permit?(Finances, :update_transaction, @current_user)}>
-        <.button size="xs" vairant="outline" patch={Routes.finance_index_path(@socket, :edit, transaction)}><%= gettext("Edit") %></.button>
+        <.button size="xs" variant="outline" patch={Routes.finance_index_path(@socket, :edit, transaction)}>
+          <%= gettext("Edit") %>
+        </.button>
       </:action>
       <:action :let={transaction} :if={Bodyguard.permit?(Finances, :delete_transaction, @current_user)}>
-        <.button size="xs" color="danger" variant="outline" id={"delete-transaction-#{transaction.id}"} phx-click={show_modal("delete-modal-#{transaction.id}")}><%= gettext("Delete") %></.button>
+        <.button
+          size="xs"
+          color="danger"
+          variant="outline"
+          id={"delete-transaction-#{transaction.id}"}
+          phx-click={show_modal("delete-modal-#{transaction.id}")}
+        >
+          <%= gettext("Delete") %>
+        </.button>
       </:action>
     </.table>
   </div>
@@ -49,7 +58,10 @@
       }
     >
       <:title><%= gettext("Delete") %></:title>
-      <%= gettext("Are you sure you want to remove the record from %{date} with amount %{value}?", date: transaction.date, value: transaction.amount) %>
+      <%= gettext("Are you sure you want to remove the record from %{date} with amount %{value}?",
+        date: transaction.date,
+        value: transaction.amount
+      ) %>
       <:cancel><%= gettext("Cancel") %></:cancel>
       <:confirm><%= gettext("Delete") %></:confirm>
     </.modal>

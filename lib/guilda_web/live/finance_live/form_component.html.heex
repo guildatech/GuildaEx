@@ -1,20 +1,27 @@
 <div>
-<.modal id="transaction-form-modal" patch={@return_to} show>
-  <:title><%= @title %></:title>
-  <.form :let={f} for={@changeset} id="transaction-form" phx-target={@myself} phx-change="validate" phx-submit="save">
-    <div class="space-y-6">
-      <.input type="text" field={{f, :payee}} label={gettext("Beneficiary")} />
-      <.input type="text" field={{f, :amount}} label={gettext("Amount")} phx-hook="CurrencyMask" inputmode="numeric" inline_prefix="$" />
-      <.input type="radio" field={{f, :transaction_type}} label={gettext("Transaction type")}>
-        <:entry label={gettext("Inflow")} value="inflow" checked={Kernel.to_string(Ecto.Changeset.get_field(@changeset, :transaction_type)) == "inflow"} />
-        <:entry label={gettext("Outflow")} value="outflow" checked={Kernel.to_string(Ecto.Changeset.get_field(@changeset, :transaction_type)) == "outflow"} />
-      </.input>
-      <.input field={{f, :date}} type="text" label={gettext("Date")} phx-hook="DatePicker" data-remove-min-date="true" />
-      <.input field={{f, :note}} type="textarea" label={gettext("Note")} />
-    </div>
-  </.form>
+  <.modal id="transaction-form-modal" patch={@return_to} show prevent_click_away>
+    <:title><%= @title %></:title>
+    <.form :let={f} for={@changeset} id="transaction-form" phx-target={@myself} phx-change="validate" phx-submit="save">
+      <div class="space-y-6">
+        <.input type="text" field={{f, :payee}} label={gettext("Beneficiary")} />
+        <.input
+          type="text"
+          field={{f, :amount}}
+          label={gettext("Amount")}
+          phx-hook="CurrencyMask"
+          inputmode="numeric"
+          prefix="$"
+        />
+        <.input type="radio" field={{f, :transaction_type}} label={gettext("Transaction type")}>
+          <:entry label={gettext("Inflow")} value="inflow" />
+          <:entry label={gettext("Outflow")} value="outflow" />
+        </.input>
+        <.input field={{f, :date}} type="datepicker" data-remove-min-date="true" label="Date" />
+        <.input field={{f, :note}} type="textarea" label={gettext("Note")} />
+      </div>
+    </.form>
 
-  <:submit form="transaction-form"><%= gettext("Save") %></:submit>
-  <:cancel><%= gettext("Cancel") %></:cancel>
-</.modal>
+    <:submit form="transaction-form"><%= gettext("Save") %></:submit>
+    <:cancel><%= gettext("Cancel") %></:cancel>
+  </.modal>
 </div>

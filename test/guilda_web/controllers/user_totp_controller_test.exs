@@ -28,7 +28,7 @@ defmodule GuildaWeb.UserTOTPControllerTest do
 
     test "can logout while totp is pending", %{conn: conn} do
       conn = delete(conn, Routes.user_session_path(conn, :delete))
-      assert redirected_to(conn) == Routes.page_path(conn, :index)
+      assert redirected_to(conn) == Routes.home_path(conn, :index)
       refute get_session(conn, :user_token)
       assert get_flash(conn, :info) =~ "Signed out successfully"
     end
@@ -38,7 +38,7 @@ defmodule GuildaWeb.UserTOTPControllerTest do
              |> delete_session(@pending)
              |> get(Routes.user_totp_path(conn, :new))
              |> redirected_to() ==
-               Routes.page_path(conn, :index)
+               Routes.home_path(conn, :index)
     end
   end
 
@@ -46,7 +46,7 @@ defmodule GuildaWeb.UserTOTPControllerTest do
     test "validates totp", %{conn: conn, totp: totp} do
       code = NimbleTOTP.verification_code(totp.secret)
       conn = post(conn, Routes.user_totp_path(conn, :create), %{"user" => %{"code" => code}})
-      assert redirected_to(conn) == Routes.page_path(conn, :index)
+      assert redirected_to(conn) == Routes.home_path(conn, :index)
       assert get_session(conn, @pending) == nil
     end
 
@@ -54,7 +54,7 @@ defmodule GuildaWeb.UserTOTPControllerTest do
       code = Enum.random(totp.backup_codes).code
 
       new_conn = post(conn, Routes.user_totp_path(conn, :create), %{"user" => %{"code" => code}})
-      assert redirected_to(new_conn) == Routes.page_path(new_conn, :index)
+      assert redirected_to(new_conn) == Routes.home_path(new_conn, :index)
       assert get_session(new_conn, @pending) == nil
       assert get_flash(new_conn, :info) =~ "You have 9 backup codes left"
 

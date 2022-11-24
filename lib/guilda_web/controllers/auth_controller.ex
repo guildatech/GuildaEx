@@ -49,7 +49,7 @@ defmodule GuildaWeb.AuthController do
       _ ->
         conn
         |> put_flash(:error, gettext("Unable to authenticate. Please try again later."))
-        |> redirect(to: Routes.page_path(conn, :index))
+        |> redirect(to: Routes.home_path(conn, :index))
     end
   end
 

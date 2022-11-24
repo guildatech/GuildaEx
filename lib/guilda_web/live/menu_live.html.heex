@@ -3,13 +3,19 @@
     <div class="flex justify-between h-16">
       <div class="flex">
         <div class="flex items-center flex-shrink-0">
-          <%= link to: Routes.page_path(@socket, :index), title: gettext("Home page") do %>
+          <%= link to: Routes.home_path(@socket, :index), title: gettext("Home page") do %>
             <img class="w-auto h-11" src={Routes.static_path(@socket, "/images/guilda-logo.png")} alt="GuildaTech logo" />
           <% end %>
         </div>
         <div class="hidden space-x-8 sm:-my-px sm:ml-6 sm:flex">
           <.menu_entry :for={entry <- main_menu_entries(@entries)} entry={entry} context={:main} />
-          <.link :if={function_exported?(Routes, :live_dashboard_path, 2)} navigate={Routes.live_dashboard_path(@socket, :home)} class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out"><%= gettext("LiveDashboard") %></.link>
+          <.link
+            :if={function_exported?(Routes, :live_dashboard_path, 2)}
+            navigate={Routes.live_dashboard_path(@socket, :home)}
+            class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out"
+          >
+            <%= gettext("LiveDashboard") %>
+          </.link>
         </div>
       </div>
 
@@ -31,7 +37,8 @@
             <!--
               Profile dropdown panel, show/hide based on dropdown state.
             -->
-            <div class="absolute right-0 w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5"
+            <div
+              class="absolute right-0 w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5"
               x-show="open"
               x-transition:enter="transition ease-out duration-200"
               x-transition:enter-start="transform opacity-0 scale-95"
@@ -49,13 +56,21 @@
                 </p>
               </div>
               <div class="py-1">
-                <.link navigate={Routes.user_session_path(GuildaWeb.Endpoint, :delete)} method={:delete} class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><%= gettext("Sign out") %></.link>
+                <.link
+                  navigate={Routes.user_session_path(GuildaWeb.Endpoint, :delete)}
+                  method={:delete}
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  <%= gettext("Sign out") %>
+                </.link>
               </div>
             </div>
           </div>
         <% else %>
           <div class="flex space-x-2 shrink-0">
-            <.button href={Routes.user_session_path(GuildaWeb.Endpoint, :new)} color="primary"><%= gettext("Sign in") %></.button>
+            <.button href={Routes.user_session_path(GuildaWeb.Endpoint, :new)} color="primary">
+              <%= gettext("Sign in") %>
+            </.button>
             <.button href={Routes.user_registration_path(GuildaWeb.Endpoint, :new)}><%= gettext("Register") %></.button>
           </div>
         <% end %>
@@ -63,7 +78,8 @@
 
       <div class="flex items-center -mr-2 sm:hidden">
         <!-- Mobile menu button -->
-        <button class="inline-flex items-center justify-center p-2 text-gray-400 rounded-md hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-yellow-500"
+        <button
+          class="inline-flex items-center justify-center p-2 text-gray-400 rounded-md hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-yellow-500"
           @click="mobileOpen = !mobileOpen"
         >
           <!-- Menu open: hide, Menu closed: show -->
@@ -78,7 +94,6 @@
       </div>
     </div>
   </div>
-
   <!--
     Mobile menu, toggle classes based on menu state.
 
