@@ -55,7 +55,7 @@ defmodule GuildaWeb.Presence do
   end
 
   def subscribe_to_online_users do
-    Phoenix.PubSub.subscribe(@pubsub, topic())
+    Phoenix.PubSub.subscribe(@pubsub, "proxy:" <> topic())
   end
 
   def list_users(topic) do
