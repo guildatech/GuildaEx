@@ -47,7 +47,7 @@ defmodule GuildaWeb.OnlineMembersLive do
   end
 
   @impl Phoenix.LiveView
-  def handle_info({GuildaWeb.Presence, _users}, socket) do
+  def handle_info(_, socket) do
     {:noreply, count_users(socket)}
   end
 
