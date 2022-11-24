@@ -73,10 +73,11 @@
               <Icons.telegram class={"h-16 #{if @current_user.telegram_id, do: "text-primary-500", else: "text-primary-200"}"} />
               <%= if @current_user.telegram_id do %>
                 <.button
-                  variant="outline"
-                  color="danger"
-                  size="xs"
                   id="disconnect-telegram-trigger"
+                  size="xs"
+                  color="danger"
+                  variant="outline"
+                  class="mt-6"
                   phx-click={show_modal("disconnect-telegram-modal")}
                 >
                   <%= gettext("Disconnect") %>
@@ -117,8 +118,7 @@
   <%= if @is_legacy_account? || @current_user.confirmed_at do %>
     <.content_section
       title={gettext("Location")}
-      subtitle={gettext("Share your location to be listed on the members map")}
-      }
+      subtitle={gettext("Share your location to be listed on the members map.")}
     >
       <div class="bg-white shadow sm:rounded-lg">
         <%= if @current_user.geom do %>

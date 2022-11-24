@@ -12,15 +12,15 @@ defmodule GuildaWeb.UserSettingsLive.TOTPComponent do
   def render(assigns) do
     ~H"""
     <div>
-      <.content_section title={gettext("2FA")} subtitle={gettext("Even more security goodies.")}>
+      <.content_section
+        title={gettext("Two-factor authentication")}
+        subtitle={gettext("Another layer of security to your account.")}
+      >
         <.card>
-          <:title>
-            <h3><%= gettext("Two-factor authentication") %></h3>
-            <%= if @current_totp do %>
-              <div class="flex-shrink-0">
-                <.badge label={gettext("Enabled")} color="success" size="lg" />
-              </div>
-            <% end %>
+          <:title :if={@current_totp}>
+            <div class="flex-shrink-0">
+              <.badge label={gettext("Enabled")} color="success" size="lg" />
+            </div>
           </:title>
           <%= if @backup_codes, do: render_backup_codes(assigns) %>
           <%= if @editing_totp, do: render_totp_form(assigns), else: render_enable_form(assigns) %>
@@ -50,17 +50,15 @@ defmodule GuildaWeb.UserSettingsLive.TOTPComponent do
       </p>
 
       <div class="py-5 my-4 bg-gray-100 rounded-md">
-        <%= for backup_code <- @backup_codes do %>
-          <div class="font-mono text-center">
-            <h4>
-              <%= if backup_code.used_at do %>
-                <del class="text-gray-400"><%= backup_code.code %></del>
-              <% else %>
-                <%= backup_code.code %>
-              <% end %>
-            </h4>
-          </div>
-        <% end %>
+        <div :for={backup_code <- @backup_codes} class="font-mono text-center">
+          <h4>
+            <%= if backup_code.used_at do %>
+              <del class="text-gray-400"><%= backup_code.code %></del>
+            <% else %>
+              <%= backup_code.code %>
+            <% end %>
+          </h4>
+        </div>
       </div>
 
       <:cancel><%= gettext("Close") %></:cancel>
