@@ -54,11 +54,13 @@ defmodule GuildaWeb.UserSettingsLive.AddEmailPasswordComponent do
           </div>
         </div>
         <.card class="mt-5">
-          <.form id="add-email-form" :let={f} for={@changeset} phx-submit="add-email" phx-target={@myself}>
+          <.form :let={f} id="add-email-form" for={@changeset} phx-submit="add-email" phx-target={@myself}>
             <div class="grid grid-cols-6 gap-6">
               <div class="col-span-6 sm:col-span-4">
-                <.input field={{f, :email}} type="text" />
-                <.input field={{f, :password}} type="password" />
+                <div class="space-y-6">
+                  <.input field={{f, :email}} type="text" label={gettext("Email")} />
+                  <.input field={{f, :password}} type="password" label={gettext("Password")} />
+                </div>
               </div>
             </div>
           </.form>
